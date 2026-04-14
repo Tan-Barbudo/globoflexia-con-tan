@@ -128,16 +128,16 @@
   <div class="container">
 
     <div class="hero">
-      <img src="logo.png" class="logo" alt="Logo Tan Barbudo">
-      <h1>Globoflexia con Tan Barbudo 🎈</h1>
-      <p>Aprende paso a paso y diviértete creando figuras increíbles</p>
-
-      <iframe class="video-frame"
-        src="https://www.youtube.com/embed/eaYm1U4eEAM"
-        allowfullscreen>
-      </iframe>
+      <div class="nav-tabs" style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-bottom:20px;">
+        <button onclick="showTab('tab-videos')">🎬 Videos</button>
+        <button onclick="showTab('tab-docs')">📄 Documentos</button>
+        <button onclick="showTab('tab-notes')">📝 Notas</button>
+        <button onclick="showTab('tab-info')">🌐 Info y Redes</button>
+      </div>
+      <img src="banner.png" alt="Banner Curso" style="width:100%; border-radius:16px; margin-top:15px;">
     </div>
 
+    <div id="tab-videos">
     <div class="grid">
       <div class="card">
         <h2>Alumno</h2>
@@ -153,6 +153,7 @@
 
       <div class="card">
         <h2>Video</h2>
+        <p style="background:#fff8d6; padding:12px; border-radius:12px; color:#6b4f00; font-weight:bold; margin-bottom:12px;">Selecciona un video de la lista, míralo completo y luego marca cuando ya lo hayas visto para llevar tu avance.</p>
         <iframe id="videoFrame" class="video-frame"></iframe>
         <h3 id="videoTitle"></h3>
         <p id="videoDescription"></p>
@@ -164,8 +165,45 @@
       <h2>Videos</h2>
       <div id="videoList"></div>
     </div>
+    </div>
 
-  </div>
+    <div id="tab-docs" style="display:none;">
+      <div class="card">
+        <h2>Documentos</h2>
+        <p>Aquí puedes agregar guías, PDFs, listas de materiales y recursos complementarios.</p>
+        <ul>
+          <li><a href="#" target="_blank">Guía básica de globoflexia</a></li>
+          <li><a href="#" target="_blank">Lista de materiales recomendados</a></li>
+          <li><a href="#" target="_blank">Consejos para shows infantiles</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div id="tab-notes" style="display:none;">
+      <div class="card">
+        <h2>Notas y Pensamiento</h2>
+        <p id="briefThought">"La creatividad también puede abrir puertas para compartir alegría, amor y esperanza."</p>
+        <p>Aquí puedes sumar consejos, ideas breves, recordatorios y pensamientos especiales para tus alumnos.</p>
+      </div>
+    </div>
+
+    <div id="tab-info" style="display:none;">
+      <div class="card">
+        <h2>Información y Redes Sociales</h2>
+        <p>Bienvenido a este espacio de aprendizaje con Tan Barbudo. Aquí encontrarás ideas creativas, videos y recursos para crecer en globoflexia.</p>
+        <h3>Redes Sociales</h3>
+        <ul>
+          <li><a href="https://youtube.com/@payasotanbarbudo?si=orYgWrJ4gCb75uxn" target="_blank">YouTube</a></li>
+          <li><a href="https://www.tiktok.com/@payasotanbarbudo?_r=1&_t=ZS-94L1Ar177eG" target="_blank">TikTok</a></li>
+          <li><a href="https://www.facebook.com/share/1CyiA78nQJ/" target="_blank">Facebook</a></li>
+          <li><a href="https://www.instagram.com/payasotanbarbudo?igsh=dWo2a3U0ZmhiNWdn" target="_blank">Instagram</a></li>
+          <li><a href="https://whatsapp.com/channel/0029VadZPwbC6ZveKodyvh41" target="_blank">Canal WhatsApp</a></li>
+          <li><a href="https://tanbarbudo-elpayaso.blogspot.com/?m=1" target="_blank">Blog</a></li>
+        </ul>
+        <h3>Pensamiento breve</h3>
+        <p>"Cada figura que haces puede convertirse en una sonrisa, y cada sonrisa en una oportunidad para bendecir."</p>
+      </div>
+    </div>
 
 <script>
 const STORAGE_KEY = 'curso';
@@ -364,6 +402,18 @@ function updateProgress(){
   const percent= total? (seen/total)*100:0;
 
   progressText.textContent=`${seen} de ${total} vistos`;
+  progressFill.style.width=percent+"%";
+}
+
+function showTab(tabId){
+  const tabs = ['tab-videos','tab-docs','tab-notes','tab-info'];
+  tabs.forEach(id => {
+    const el = document.getElementById(id);
+    if(el){ el.style.display = 'none'; }
+  });
+  const active = document.getElementById(tabId);
+  if(active){ active.style.display = 'block'; }
+} de ${total} vistos`;
   progressFill.style.width=percent+"%";
 }
 
