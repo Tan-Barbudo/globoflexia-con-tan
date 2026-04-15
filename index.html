@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Globoflexia con Tan</title>
+  <title>Globoflexia con Tan Barbudo</title>
   <style>
     * { box-sizing: border-box; }
     body {
@@ -156,6 +156,7 @@
         <button onclick="showTab('tab-docs')">📄 Descargas</button>
         <button onclick="showTab('tab-notes')">📝 Notas</button>
         <button onclick="showTab('tab-info')">🌐 Redes Sociales</button>
+        <button onclick="showTab('tab-live')">🔴 En Vivo</button>
       </div>
 
       <img src="logo.png" class="logo" alt="Logo Tan Barbudo">
@@ -196,17 +197,17 @@
 
     <div id="tab-docs" style="display:none;">
       <div class="card">
-        <h2>Documentos</h2>
-        <p>Aquí puedes agregar guías, PDFs, listas de materiales y recursos complementarios.</p>
+        <h2>Descargas</h2>
+        <p>Aquí puedes descargar materiales, guías y recursos para acompañar tu aprendizaje.</p>
         <ul>
-          <li><a href="#" target="_blank">Guía básica de globoflexia</a></li>
-          <li><a href="#" target="_blank">Lista de materiales recomendados</a></li>
-          <li><a href="#" target="_blank">Consejos para shows infantiles</a></li>
+          <li>📘 <a href="https://drive.google.com/file/d/16h36SGpHWzMysT_iOw_Sn9pfs3bqYI2_/view?usp=sharing" target="_blank">Documento de apoyo del curso</a></li>
+          <li>🎈 <a href="#" target="_blank">Lista de materiales recomendados</a></li>
+          <li>🎭 <a href="#" target="_blank">Consejos para shows infantiles</a></li>
         </ul>
       </div>
     </div>
 
-    <div id="tab-notes" style="display:none;">
+    <div id="tab-notes" style="display:none;"> style="display:none;">
       <div class="card">
         <h2>Notas y Pensamiento</h2>
         <p id="briefThought">"La creatividad también puede abrir puertas para compartir alegría, amor y esperanza."</p>
@@ -217,8 +218,7 @@
     <div id="tab-info" style="display:none;">
       <div class="card">
         <h2>Redes Sociales</h2>
-        <p>Bienvenido a este espacio de aprendizaje con Tan Barbudo. Aquí encontrarás ideas creativas, videos y recursos para crecer en globoflexia.</p>
-        <h3>Redes Sociales</h3>
+        <p>Sigue a Tan Barbudo en sus redes para ver más ideas, videos, novedades y contenido creativo.</p>
         <ul>
           <li><a href="https://youtube.com/@payasotanbarbudo?si=orYgWrJ4gCb75uxn" target="_blank">YouTube</a></li>
           <li><a href="https://www.tiktok.com/@payasotanbarbudo?_r=1&_t=ZS-94L1Ar177eG" target="_blank">TikTok</a></li>
@@ -231,6 +231,16 @@
         <p>"Cada figura que haces puede convertirse en una sonrisa, y cada sonrisa en una oportunidad para bendecir."</p>
       </div>
     </div>
+
+    <div id="tab-live" style="display:none;">
+      <div class="card">
+        <h2>Transmisión en Vivo 🔴</h2>
+        <p>Aquí podrás ver transmisiones en vivo desde YouTube. Si no hay una activa, vuelve más tarde o revisa mis redes.</p>
+        <iframe class="video-frame" src="" allowfullscreen></iframe>
+        <p>Tip: aquí puedes pegar el enlace embed de tu próxima transmisión en vivo cuando la tengas lista. Si la transmisión todavía no comenzó, esta ventana puede verse vacía hasta que el directo esté activo.</p>
+      </div>
+    </div>
+  </div>
   </div>
 
   <script>
@@ -467,7 +477,7 @@
     }
 
     function showTab(tabId) {
-      const tabs = ['tab-videos', 'tab-docs', 'tab-notes', 'tab-info'];
+      const tabs = ['tab-videos', 'tab-docs', 'tab-notes', 'tab-info', 'tab-live'];
       tabs.forEach(id => {
         const el = document.getElementById(id);
         if (el) el.style.display = 'none';
