@@ -125,20 +125,19 @@
       <img src="logo.png" alt="Logo Tan Barbudo" class="w-28 h-28 object-contain mx-auto mb-4">
       <p class="inline-block bg-[#FFF0B8] text-[#8B6500] px-4 py-1 rounded-full font-bold mb-3">🎈 Curso online</p>
       <h1 class="text-4xl font-extrabold mb-2">Globoflexia con Tan Barbudo</h1>
-      <p class="text-slate-600 mb-6">Accede a tus clases, recursos, catálogo y progreso.</p>
+      <p class="text-slate-600 mb-6">Ingresa tu nombre y la contraseña del curso.</p>
 
       <div class="space-y-3 text-left">
-        <input id="email" class="input" type="email" placeholder="Correo electrónico">
-        <input id="password" class="input" type="password" placeholder="Contraseña">
+        <input id="studentNameLogin" class="input" type="text" placeholder="Tu nombre">
+        <input id="coursePassword" class="input" type="password" placeholder="Contraseña del curso">
       </div>
 
       <div class="flex flex-col gap-3 mt-6">
-        <button onclick="loginUser()" class="btn-primary">Entrar</button>
-        <button onclick="registerUser()" class="btn-secondary">Crear cuenta</button>
-        <button onclick="loginWithGoogle()" class="btn-secondary">Entrar con Google</button>
+        <button onclick="loginWithCoursePassword()" class="btn-primary">Entrar al curso</button>
       </div>
 
       <p id="authMessage" class="mt-4 text-sm font-bold text-red-500"></p>
+      <p class="mt-4 text-xs text-slate-500">Acceso exclusivo para alumnos autorizados por Tan Barbudo.</p>
     </div>
   </section>
 
@@ -187,7 +186,7 @@
         <button class="tab-btn" onclick="showTab('tab-catalogo', this)">🎈 Catálogo</button>
         <button class="tab-btn" onclick="showTab('tab-canva', this)">🎨 Canva</button>
         <button class="tab-btn" onclick="showTab('tab-docs', this)">📄 Descargas</button>
-        <button class="tab-btn" onclick="showTab('tab-notes', this)">📝 Notas</button>
+        <button class="tab-btn" onclick="showTab('tab-notes', this)">📝 Preguntas</button>
         <button class="tab-btn" onclick="showTab('tab-info', this)">🌐 Redes</button>
         <button class="tab-btn" onclick="showTab('tab-live', this)">🔴 En vivo</button>
       </nav>
@@ -224,15 +223,13 @@
         <div class="card p-6">
           <h2 class="text-3xl font-extrabold mb-3">Catálogo de figuras tipo menú</h2>
           <p class="text-slate-600 mb-5">Aquí podrás mostrar figuras para cumpleaños, eventos, clases y ventas.</p>
-
+          <img src="catalogo.png" alt="Catálogo de globoflexia" class="w-full max-w-3xl rounded-3xl mb-5 border mx-auto">
           <div class="grid md:grid-cols-2 xl:grid-cols-4 gap-4">
             <div class="card p-4 shadow-none border"><div class="text-5xl mb-2">🐶</div><h3 class="font-title text-xl font-bold">Perro</h3><p>Básico, ideal para comenzar.</p></div>
             <div class="card p-4 shadow-none border"><div class="text-5xl mb-2">⚔️</div><h3 class="font-title text-xl font-bold">Espada</h3><p>Rápida para eventos.</p></div>
             <div class="card p-4 shadow-none border"><div class="text-5xl mb-2">🌸</div><h3 class="font-title text-xl font-bold">Flor</h3><p>Bonita y muy pedida.</p></div>
             <div class="card p-4 shadow-none border"><div class="text-5xl mb-2">👑</div><h3 class="font-title text-xl font-bold">Corona</h3><p>Perfecta para fiestas.</p></div>
           </div>
-
-          <p class="mt-5 text-sm text-slate-500">Después podemos conectar este catálogo a imágenes reales y una plantilla editable de Canva.</p>
         </div>
       </section>
 
@@ -261,9 +258,11 @@
 
       <section id="tab-notes" class="hidden">
         <div class="card p-6">
-          <h2 class="text-3xl font-extrabold mb-3">Notas del curso</h2>
-          <p class="text-xl font-bold text-[#40B89C] mb-3">“La creatividad también puede abrir puertas para compartir alegría, amor y esperanza.”</p>
-          <p class="text-slate-600">Aquí puedes sumar consejos, ideas, recordatorios y pensamientos para tus alumnos.</p>
+          <h2 class="text-3xl font-extrabold mb-3">Preguntas o dudas del alumno</h2>
+          <p class="text-slate-600 mb-4">El alumno puede dejar una duda. Se guardará en Firebase para que Tan pueda revisarla.</p>
+          <textarea id="studentQuestion" class="input min-h-[140px]" placeholder="Escribe tu pregunta o duda aquí..."></textarea>
+          <button onclick="sendQuestion()" class="btn-primary mt-4">Enviar pregunta</button>
+          <p id="questionMessage" class="mt-3 font-bold text-[#40B89C]"></p>
         </div>
       </section>
 
@@ -292,36 +291,27 @@
   </main>
 
   <script type="module">
-    /*
-      IMPORTANTE:
-      1. Entra a Firebase Console.
-      2. Crea un proyecto.
-      3. Activa Authentication: Email/Password y Google.
-      4. Copia tu configuración real aquí abajo.
-    */
-
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import {
-  getFirestore,
-  doc,
-  setDoc,
-  getDoc,
-  serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+      getFirestore,
+      collection,
+      addDoc,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
     const firebaseConfig = {
-  apiKey: "AIzaSyDShp-WOGdI3_ST8WoTLa6Jm5UqGludJ38",
-  authDomain: "globoflexia-tan-barbudo.firebaseapp.com",
-  projectId: "globoflexia-tan-barbudo",
-  storageBucket: "globoflexia-tan-barbudo.firebasestorage.app",
-  messagingSenderId: "372829377933",
-  appId: "1:372829377933:web:5f0686db4eb7e74f68d9c4",
-  measurementId: "G-8TNL59G05J"
+      apiKey: "PEGA_AQUI_TU_API_KEY",
+      authDomain: "globoflexia-tan-barbudo.firebaseapp.com",
+      projectId: "globoflexia-tan-barbudo",
+      storageBucket: "globoflexia-tan-barbudo.firebasestorage.app",
+      messagingSenderId: "372829377933",
+      appId: "PEGA_AQUI_TU_APP_ID_REAL"
     };
 
- const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-const provider = new GoogleAuthProvider();
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const COURSE_PASSWORD = "globos2026";
 
     const videos = [
       {
@@ -363,85 +353,57 @@ const provider = new GoogleAuthProvider();
     ];
 
     let selectedVideo = videos[0];
+    let currentStudentName = localStorage.getItem("studentName") || "";
     let watched = JSON.parse(localStorage.getItem("watchedVideos") || "[]");
 
     const loginBox = document.getElementById("loginBox");
     const appBox = document.getElementById("appBox");
     const authMessage = document.getElementById("authMessage");
 
-    window.loginUser = async function () {
-      try {
-        authMessage.textContent = "";
-        const email = document.getElementById("email").value;
-        const password = document.getElementById("password").value;
-        await signInWithEmailAndPassword(auth, email, password);
-      } catch (error) {
-        authMessage.textContent = "No se pudo iniciar sesión. Revisa correo y contraseña.";
+    window.loginWithCoursePassword = async function () {
+      const name = document.getElementById("studentNameLogin").value.trim();
+      const password = document.getElementById("coursePassword").value.trim();
+
+      if (!name) {
+        authMessage.textContent = "Escribe tu nombre para entrar.";
+        return;
       }
+
+      if (password !== COURSE_PASSWORD) {
+        authMessage.textContent = "Contraseña incorrecta. Revisa los datos enviados por Tan Barbudo.";
+        return;
+      }
+
+      currentStudentName = name;
+      localStorage.setItem("studentName", name);
+      localStorage.setItem("courseAccess", "true");
+
+      try {
+        await addDoc(collection(db, "accessLogs"), {
+          name: name,
+          action: "login",
+          createdAt: serverTimestamp(),
+          userAgent: navigator.userAgent
+        });
+      } catch (error) {
+        console.log("No se pudo guardar el acceso", error);
+      }
+
+      enterApp();
     };
 
-  window.registerUser = async function () {
-  try {
-    authMessage.textContent = "";
+    window.logoutUser = function () {
+      localStorage.removeItem("courseAccess");
+      appBox.classList.add("hidden");
+      loginBox.classList.remove("hidden");
+    };
 
-    const email = document.getElementById("email").value.trim().toLowerCase();
-    const password = document.getElementById("password").value;
-
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
-
-    await setDoc(doc(db, "users", user.email), {
-      uid: user.uid,
-      email: user.email,
-      estado: "pendiente",
-      createdAt: serverTimestamp()
-    });
-
-    await signOut(auth);
-
-    authMessage.textContent = "Cuenta creada. Espera la aprobación de Tan Barbudo para ingresar 🎈";
-  } catch (error) {
-    authMessage.textContent = "No se pudo registrar. Usa un correo válido y contraseña de 6 caracteres o más.";
-  }
-};
-
-   onAuthStateChanged(auth, async (user) => {
-  if (user) {
-    const email = user.email.toLowerCase();
-    const userRef = doc(db, "users", email);
-    const userSnap = await getDoc(userRef);
-
-    if (!userSnap.exists()) {
-      await setDoc(userRef, {
-        uid: user.uid,
-        email: email,
-        estado: "pendiente",
-        createdAt: serverTimestamp()
-      });
-
-      await signOut(auth);
-      authMessage.textContent = "Tu cuenta está pendiente de aprobación 🎈";
-      return;
+    function enterApp() {
+      loginBox.classList.add("hidden");
+      appBox.classList.remove("hidden");
+      document.getElementById("userEmail").textContent = currentStudentName || "Alumno";
+      initApp();
     }
-
-    const userData = userSnap.data();
-
-    if (userData.estado !== "aprobado") {
-      await signOut(auth);
-      authMessage.textContent = "Tu cuenta todavía está pendiente de aprobación 🎈";
-      return;
-    }
-
-    loginBox.classList.add("hidden");
-    appBox.classList.remove("hidden");
-    document.getElementById("userEmail").textContent = user.email || "Usuario";
-    initApp();
-
-  } else {
-    loginBox.classList.remove("hidden");
-    appBox.classList.add("hidden");
-  }
-});
 
     function initApp() {
       renderVideoList();
@@ -450,6 +412,10 @@ const provider = new GoogleAuthProvider();
 
       const savedName = localStorage.getItem("studentName");
       if (savedName) document.getElementById("studentName").value = savedName;
+    }
+
+    if (localStorage.getItem("courseAccess") === "true") {
+      enterApp();
     }
 
     window.showTab = function (tabId, btn = null) {
@@ -503,9 +469,35 @@ const provider = new GoogleAuthProvider();
     }
 
     window.saveStudentName = function () {
-      const name = document.getElementById("studentName").value;
+      const name = document.getElementById("studentName").value.trim();
+      if (!name) return alert("Escribe tu nombre 🎈");
+      currentStudentName = name;
       localStorage.setItem("studentName", name);
+      document.getElementById("userEmail").textContent = name;
       alert("Nombre guardado 🎈");
+    };
+
+    window.sendQuestion = async function () {
+      const question = document.getElementById("studentQuestion").value.trim();
+      const message = document.getElementById("questionMessage");
+      const name = localStorage.getItem("studentName") || currentStudentName || "Alumno sin nombre";
+
+      if (!question) {
+        message.textContent = "Escribe una pregunta antes de enviar.";
+        return;
+      }
+
+      try {
+        await addDoc(collection(db, "questions"), {
+          name: name,
+          question: question,
+          createdAt: serverTimestamp()
+        });
+        document.getElementById("studentQuestion").value = "";
+        message.textContent = "Pregunta enviada correctamente 🎈";
+      } catch (error) {
+        message.textContent = "No se pudo enviar la pregunta. Intenta otra vez.";
+      }
     };
   </script>
 </body>
