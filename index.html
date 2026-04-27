@@ -1,127 +1,486 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Globoflexia con Tan Barbudo</title>
-  <link rel="stylesheet" href="./styles.css">
+  <meta name="description" content="Curso de globoflexia creativo y personalizado con Tan Barbudo." />
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --rojo: #EE4040;
+      --verde: #40B89C;
+      --amarillo: #F8BD3F;
+      --oscuro: #22333B;
+      --fondo: #EAF8FF;
+      --suave: #F7FCFF;
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--fondo);
+      color: var(--oscuro);
+    }
+
+    h1, h2, h3, .font-title {
+      font-family: 'Baloo 2', cursive;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--rojo), var(--verde));
+      color: white;
+      font-weight: 800;
+      border-radius: 999px;
+      padding: 12px 22px;
+      box-shadow: 0 12px 24px rgba(238, 64, 64, .25);
+      transition: .2s;
+    }
+
+    .btn-primary:hover { transform: translateY(-2px) scale(1.02); }
+
+    .btn-secondary {
+      background: white;
+      color: var(--rojo);
+      font-weight: 800;
+      border-radius: 999px;
+      padding: 12px 22px;
+      border: 2px solid rgba(238,64,64,.2);
+    }
+
+    .card {
+      background: white;
+      border-radius: 28px;
+      box-shadow: 0 14px 35px rgba(34,51,59,.08);
+      border: 1px solid rgba(34,51,59,.06);
+    }
+
+    .input {
+      width: 100%;
+      padding: 13px 16px;
+      border-radius: 18px;
+      border: 2px solid #e8eef2;
+      outline: none;
+    }
+
+    .input:focus {
+      border-color: var(--verde);
+      box-shadow: 0 0 0 4px rgba(64,184,156,.15);
+    }
+
+    .tab-btn {
+      padding: 11px 15px;
+      border-radius: 999px;
+      font-weight: 800;
+      background: white;
+      color: var(--oscuro);
+      border: 1px solid #e7eef2;
+    }
+
+    .tab-btn.active {
+      background: var(--rojo);
+      color: white;
+    }
+
+    .video-frame {
+      width: 100%;
+      aspect-ratio: 16/9;
+      border: 0;
+      border-radius: 22px;
+      background: #dcecf5;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 16px;
+      border-radius: 999px;
+      background: #e8f3f7;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--verde), var(--amarillo));
+      width: 0%;
+      transition: .3s;
+    }
+
+    .balloon-bg {
+      background:
+        radial-gradient(circle at 10% 10%, rgba(248,189,63,.35), transparent 22%),
+        radial-gradient(circle at 90% 20%, rgba(64,184,156,.28), transparent 20%),
+        radial-gradient(circle at 70% 90%, rgba(238,64,64,.25), transparent 25%),
+        linear-gradient(160deg, #ffffff 0%, #EAF8FF 100%);
+    }
+  </style>
 </head>
+
 <body>
-  <div id="loginBox" class="card login-card">
-    <img src="logo.png" class="logo" alt="Logo Tan Barbudo">
-    <h2>Iniciar Sesión</h2>
-    <p class="muted">Accede a tu curso con tu correo, contraseña o Google.</p>
+  <section id="loginBox" class="min-h-screen flex items-center justify-center px-5 balloon-bg">
+    <div class="card max-w-md w-full p-8 text-center">
+      <img src="logo.png" alt="Logo Tan Barbudo" class="w-28 h-28 object-contain mx-auto mb-4">
+      <p class="inline-block bg-[#FFF0B8] text-[#8B6500] px-4 py-1 rounded-full font-bold mb-3">🎈 Curso online</p>
+      <h1 class="text-4xl font-extrabold mb-2">Globoflexia con Tan Barbudo</h1>
+      <p class="text-slate-600 mb-6">Accede a tus clases, recursos, catálogo y progreso.</p>
 
-    <input type="email" id="email" placeholder="Correo electrónico">
-    <input type="password" id="password" placeholder="Contraseña">
-
-    <div style="display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:10px;">
-      <button onclick="loginUser()">Entrar</button>
-      <button onclick="registerUser()">Registrarme</button>
-      <button class="secondary" onclick="loginWithGoogle()">Entrar con Google</button>
-    </div>
-  </div>
-
-  <div id="appBox" style="display:none;">
-    <div class="container">
-      <div class="card top-user-card">
-        <p><strong>Sesión iniciada como:</strong> <span id="userEmail"></span></p>
-        <button class="secondary" onclick="logoutUser()">Cerrar sesión</button>
+      <div class="space-y-3 text-left">
+        <input id="email" class="input" type="email" placeholder="Correo electrónico">
+        <input id="password" class="input" type="password" placeholder="Contraseña">
       </div>
 
-      <div class="hero">
-        <div class="nav-tabs">
-          <button onclick="showTab('tab-videos')">🎬 Tutoriales</button>
-          <button onclick="showTab('tab-docs')">📄 Descargas</button>
-          <button onclick="showTab('tab-notes')">📝 Notas</button>
-          <button onclick="showTab('tab-info')">🌐 Redes Sociales</button>
-          <button onclick="showTab('tab-live')">🔴 En Vivo</button>
+      <div class="flex flex-col gap-3 mt-6">
+        <button onclick="loginUser()" class="btn-primary">Entrar</button>
+        <button onclick="registerUser()" class="btn-secondary">Crear cuenta</button>
+        <button onclick="loginWithGoogle()" class="btn-secondary">Entrar con Google</button>
+      </div>
+
+      <p id="authMessage" class="mt-4 text-sm font-bold text-red-500"></p>
+    </div>
+  </section>
+
+  <main id="appBox" class="hidden min-h-screen">
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-slate-100">
+      <div class="max-w-7xl mx-auto px-5 py-4 flex items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <img src="logo.png" class="w-12 h-12 object-contain" alt="Logo">
+          <div>
+            <h2 class="font-title text-2xl font-extrabold text-[#EE4040]">Globoflexia con Tan</h2>
+            <p class="text-xs font-bold text-slate-500">Curso creativo y personalizado</p>
+          </div>
         </div>
 
-        <img src="logo.png" class="logo" alt="Logo Tan Barbudo">
-        <h1>Globoflexia con Tan Barbudo 🎈</h1>
-        <p>Aprende paso a paso y diviértete creando figuras increíbles.</p>
-        <img src="banner.png" alt="Banner Curso" style="width:100%; border-radius:18px; margin-top:15px;">
+        <div class="hidden md:flex items-center gap-2">
+          <span class="text-sm font-bold">👤 <span id="userEmail"></span></span>
+          <button onclick="logoutUser()" class="btn-secondary !py-2 !px-4">Salir</button>
+        </div>
+      </div>
+    </header>
+
+    <section class="max-w-7xl mx-auto px-5 py-8">
+      <div class="grid lg:grid-cols-3 gap-6 mb-8">
+        <div class="card lg:col-span-2 p-7 balloon-bg">
+          <p class="inline-block bg-white px-4 py-1 rounded-full font-extrabold text-[#40B89C] mb-3">🎈 Bienvenido al curso</p>
+          <h1 class="text-4xl md:text-5xl font-extrabold mb-3">¡Hola, artista de globos!</h1>
+          <p class="text-lg text-slate-600 mb-6">Aprende paso a paso, mira los tutoriales, descarga recursos y lleva tu progreso.</p>
+          <div class="flex flex-wrap gap-3">
+            <button onclick="showTab('tab-videos')" class="btn-primary">Continuar aprendiendo</button>
+            <button onclick="showTab('tab-catalogo')" class="btn-secondary">Ver catálogo</button>
+          </div>
+        </div>
+
+        <div class="card p-7 bg-[#EE4040] text-white">
+          <h2 class="text-3xl font-extrabold mb-4">Mi progreso</h2>
+          <p id="progressText" class="font-bold mb-3">0 de 0 vistos</p>
+          <div class="progress-bar bg-white/25">
+            <div id="progressFill" class="progress-fill"></div>
+          </div>
+          <p class="mt-5 text-white/90">Cada figura es un paso más para sorprender, enseñar y emprender.</p>
+        </div>
       </div>
 
-      <div id="tab-videos">
-        <div class="grid">
-          <div class="card">
-            <h2>Alumno</h2>
-            <input type="text" id="studentName" placeholder="Tu nombre">
-            <button onclick="saveStudentName()">Guardar nombre</button>
+      <nav class="flex flex-wrap gap-2 mb-6">
+        <button class="tab-btn active" onclick="showTab('tab-videos', this)">🎬 Tutoriales</button>
+        <button class="tab-btn" onclick="showTab('tab-catalogo', this)">🎈 Catálogo</button>
+        <button class="tab-btn" onclick="showTab('tab-canva', this)">🎨 Canva</button>
+        <button class="tab-btn" onclick="showTab('tab-docs', this)">📄 Descargas</button>
+        <button class="tab-btn" onclick="showTab('tab-notes', this)">📝 Notas</button>
+        <button class="tab-btn" onclick="showTab('tab-info', this)">🌐 Redes</button>
+        <button class="tab-btn" onclick="showTab('tab-live', this)">🔴 En vivo</button>
+      </nav>
 
-            <h2 style="margin-top:20px;">Progreso</h2>
-            <p id="progressText">0 de 0 vistos</p>
-            <div class="progress-bar">
-              <div class="progress-fill" id="progressFill"></div>
+      <section id="tab-videos">
+        <div class="grid lg:grid-cols-3 gap-6">
+          <div class="card p-6">
+            <h2 class="text-3xl font-extrabold mb-3">Alumno</h2>
+            <input id="studentName" class="input mb-3" type="text" placeholder="Tu nombre">
+            <button onclick="saveStudentName()" class="btn-primary w-full">Guardar nombre</button>
+
+            <div class="mt-6 p-5 rounded-3xl bg-[#EAF8FF]">
+              <h3 class="text-xl font-extrabold">Ruta rápida</h3>
+              <p class="text-sm text-slate-600">Mira el video, practica la figura y marca como visto.</p>
             </div>
           </div>
 
-          <div class="card">
-            <h2>Video</h2>
-            <p class="helper-box">Selecciona un video de la lista, míralo completo y luego marca cuando ya lo hayas visto para llevar tu avance.</p>
+          <div class="card p-6 lg:col-span-2">
+            <h2 class="text-3xl font-extrabold mb-3">Clase seleccionada</h2>
             <iframe id="videoFrame" class="video-frame" src="" allowfullscreen></iframe>
-            <h3 id="videoTitle">Selecciona un video</h3>
-            <p id="videoDescription">Aquí verás la descripción del video elegido.</p>
-            <button class="success" onclick="markAsWatched()">Marcar como visto</button>
+            <h3 id="videoTitle" class="text-2xl font-extrabold mt-4">Selecciona un video</h3>
+            <p id="videoDescription" class="text-slate-600 mb-4">Aquí verás la descripción del video elegido.</p>
+            <button onclick="markAsWatched()" class="btn-primary">Marcar como visto</button>
           </div>
         </div>
 
-        <div class="card">
-          <h2>Tutoriales</h2>
-          <div id="videoList"></div>
+        <div class="card p-6 mt-6">
+          <h2 class="text-3xl font-extrabold mb-4">Tutoriales del curso</h2>
+          <div id="videoList" class="grid md:grid-cols-2 xl:grid-cols-3 gap-4"></div>
         </div>
-      </div>
+      </section>
 
-      <div id="tab-docs" style="display:none;">
-        <div class="card">
-          <h2>Descargas</h2>
-          <p>Aquí puedes descargar materiales, guías y recursos para acompañar tu aprendizaje.</p>
-          <ul>
-            <li>📘 <a href="https://drive.google.com/file/d/16h36SGpHWzMysT_iOw_Sn9pfs3bqYI2_/view?usp=sharing" target="_blank">Documento de apoyo del curso</a></li>
-            <li>🎈 <a href="#" target="_blank">Lista de materiales recomendados</a></li>
-            <li>🎭 <a href="#" target="_blank">Consejos para shows infantiles</a></li>
+      <section id="tab-catalogo" class="hidden">
+        <div class="card p-6">
+          <h2 class="text-3xl font-extrabold mb-3">Catálogo de figuras tipo menú</h2>
+          <p class="text-slate-600 mb-5">Aquí podrás mostrar figuras para cumpleaños, eventos, clases y ventas.</p>
+
+          <div class="grid md:grid-cols-2 xl:grid-cols-4 gap-4">
+            <div class="card p-4 shadow-none border"><div class="text-5xl mb-2">🐶</div><h3 class="font-title text-xl font-bold">Perro</h3><p>Básico, ideal para comenzar.</p></div>
+            <div class="card p-4 shadow-none border"><div class="text-5xl mb-2">⚔️</div><h3 class="font-title text-xl font-bold">Espada</h3><p>Rápida para eventos.</p></div>
+            <div class="card p-4 shadow-none border"><div class="text-5xl mb-2">🌸</div><h3 class="font-title text-xl font-bold">Flor</h3><p>Bonita y muy pedida.</p></div>
+            <div class="card p-4 shadow-none border"><div class="text-5xl mb-2">👑</div><h3 class="font-title text-xl font-bold">Corona</h3><p>Perfecta para fiestas.</p></div>
+          </div>
+
+          <p class="mt-5 text-sm text-slate-500">Después podemos conectar este catálogo a imágenes reales y una plantilla editable de Canva.</p>
+        </div>
+      </section>
+
+      <section id="tab-canva" class="hidden">
+        <div class="card p-6">
+          <h2 class="text-3xl font-extrabold mb-3">Plantillas editables en Canva</h2>
+          <p class="text-slate-600 mb-5">Espacio para dejar plantillas de menú, certificados, publicidad y recursos visuales.</p>
+          <ul class="space-y-3">
+            <li>🎈 <a class="text-[#EE4040] font-bold underline" href="#" target="_blank">Plantilla de catálogo de globos</a></li>
+            <li>📜 <a class="text-[#EE4040] font-bold underline" href="#" target="_blank">Plantilla de certificado</a></li>
+            <li>📱 <a class="text-[#EE4040] font-bold underline" href="#" target="_blank">Plantilla para historias de Instagram</a></li>
           </ul>
         </div>
-      </div>
+      </section>
 
-      <div id="tab-notes" style="display:none;">
-        <div class="card">
-          <h2>Notas</h2>
-          <p id="briefThought">"La creatividad también puede abrir puertas para compartir alegría, amor y esperanza."</p>
-          <p>Aquí puedes sumar consejos, ideas breves, recordatorios y pensamientos especiales para tus alumnos.</p>
-        </div>
-      </div>
-
-      <div id="tab-info" style="display:none;">
-        <div class="card">
-          <h2>Redes Sociales</h2>
-          <p>Sigue a Tan Barbudo en sus redes para ver más ideas, videos, novedades y contenido creativo.</p>
-          <ul>
-            <li><a href="https://youtube.com/@payasotanbarbudo?si=orYgWrJ4gCb75uxn" target="_blank">YouTube</a></li>
-            <li><a href="https://www.tiktok.com/@payasotanbarbudo?_r=1&_t=ZS-94L1Ar177eG" target="_blank">TikTok</a></li>
-            <li><a href="https://www.facebook.com/share/1CyiA78nQJ/" target="_blank">Facebook</a></li>
-            <li><a href="https://www.instagram.com/payasotanbarbudo?igsh=dWo2a3U0ZmhiNWdn" target="_blank">Instagram</a></li>
-            <li><a href="https://whatsapp.com/channel/0029VadZPwbC6ZveKodyvh41" target="_blank">Canal WhatsApp</a></li>
-            <li><a href="https://tanbarbudo-elpayaso.blogspot.com/?m=1" target="_blank">Blog</a></li>
+      <section id="tab-docs" class="hidden">
+        <div class="card p-6">
+          <h2 class="text-3xl font-extrabold mb-3">Descargas</h2>
+          <ul class="space-y-3">
+            <li>📘 <a class="text-[#EE4040] font-bold underline" href="https://drive.google.com/file/d/16h36SGpHWzMysT_iOw_Sn9pfs3bqYI2_/view?usp=sharing" target="_blank">Documento de apoyo del curso</a></li>
+            <li>🎈 <a class="text-[#EE4040] font-bold underline" href="#" target="_blank">Lista de materiales recomendados</a></li>
+            <li>🎭 <a class="text-[#EE4040] font-bold underline" href="#" target="_blank">Consejos para shows infantiles</a></li>
           </ul>
-          <h3>Pensamiento breve</h3>
-          <p>"Cada figura que haces puede convertirse en una sonrisa, y cada sonrisa en una oportunidad para bendecir."</p>
         </div>
-      </div>
+      </section>
 
-      <div id="tab-live" style="display:none;">
-        <div class="card">
-          <h2>Transmisión en Vivo 🔴</h2>
-          <p>Aquí podrás ver transmisiones en vivo desde YouTube. Si no hay una activa, vuelve más tarde o revisa mis redes.</p>
-          <iframe class="video-frame" src="" allowfullscreen></iframe>
-          <p>Tip: cuando tengas un live programado o activo, pega aquí el enlace embed para que tus alumnos lo vean dentro de la plataforma.</p>
+      <section id="tab-notes" class="hidden">
+        <div class="card p-6">
+          <h2 class="text-3xl font-extrabold mb-3">Notas del curso</h2>
+          <p class="text-xl font-bold text-[#40B89C] mb-3">“La creatividad también puede abrir puertas para compartir alegría, amor y esperanza.”</p>
+          <p class="text-slate-600">Aquí puedes sumar consejos, ideas, recordatorios y pensamientos para tus alumnos.</p>
         </div>
-      </div>
-    </div>
-  </div>
+      </section>
 
-  <script type="module" src="./src/main.js"></script>
+      <section id="tab-info" class="hidden">
+        <div class="card p-6">
+          <h2 class="text-3xl font-extrabold mb-3">Redes sociales</h2>
+          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
+            <a class="btn-secondary text-center" href="https://youtube.com/@payasotanbarbudo?si=orYgWrJ4gCb75uxn" target="_blank">YouTube</a>
+            <a class="btn-secondary text-center" href="https://www.tiktok.com/@payasotanbarbudo?_r=1&_t=ZS-94L1Ar177eG" target="_blank">TikTok</a>
+            <a class="btn-secondary text-center" href="https://www.facebook.com/share/1CyiA78nQJ/" target="_blank">Facebook</a>
+            <a class="btn-secondary text-center" href="https://www.instagram.com/payasotanbarbudo?igsh=dWo2a3U0ZmhiNWdn" target="_blank">Instagram</a>
+            <a class="btn-secondary text-center" href="https://whatsapp.com/channel/0029VadZPwbC6ZveKodyvh41" target="_blank">Canal WhatsApp</a>
+            <a class="btn-secondary text-center" href="https://tanbarbudo-elpayaso.blogspot.com/?m=1" target="_blank">Blog</a>
+          </div>
+        </div>
+      </section>
+
+      <section id="tab-live" class="hidden">
+        <div class="card p-6">
+          <h2 class="text-3xl font-extrabold mb-3">Transmisión en vivo 🔴</h2>
+          <p class="text-slate-600 mb-4">Cuando tengas un vivo, cambia este enlace embed.</p>
+          <iframe class="video-frame" src="https://www.youtube.com/embed/live_stream?channel=UC_x5XG1OV2P6uZZ5FSM9Ttw" allowfullscreen></iframe>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script type="module">
+    /*
+      IMPORTANTE:
+      1. Entra a Firebase Console.
+      2. Crea un proyecto.
+      3. Activa Authentication: Email/Password y Google.
+      4. Copia tu configuración real aquí abajo.
+    */
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import {
+      getAuth,
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword,
+      signOut,
+      onAuthStateChanged,
+      GoogleAuthProvider,
+      signInWithPopup
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "TU_API_KEY",
+      authDomain: "TU_PROYECTO.firebaseapp.com",
+      projectId: "TU_PROYECTO",
+      storageBucket: "TU_PROYECTO.appspot.com",
+      messagingSenderId: "TU_SENDER_ID",
+      appId: "TU_APP_ID"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+
+    const videos = [
+      {
+        id: "clase1",
+        title: "Clase 1: Materiales básicos",
+        description: "Conoce los globos, infladores y herramientas básicas para comenzar.",
+        youtube: "https://www.youtube.com/embed/dQw4w9WgXcQ"
+      },
+      {
+        id: "clase2",
+        title: "Clase 2: Inflado y amarre",
+        description: "Aprende a inflar, medir y amarrar correctamente.",
+        youtube: "https://www.youtube.com/embed/ysz5S6PUM-U"
+      },
+      {
+        id: "clase3",
+        title: "Clase 3: Perro básico",
+        description: "La figura clásica para iniciar en globoflexia.",
+        youtube: "https://www.youtube.com/embed/jNQXAC9IVRw"
+      },
+      {
+        id: "clase4",
+        title: "Clase 4: Espada rápida",
+        description: "Figura ideal para eventos y cumpleaños.",
+        youtube: "https://www.youtube.com/embed/tgbNymZ7vqY"
+      },
+      {
+        id: "clase5",
+        title: "Clase 5: Flor",
+        description: "Una figura colorida para regalar y decorar.",
+        youtube: "https://www.youtube.com/embed/oHg5SJYRHA0"
+      },
+      {
+        id: "clase6",
+        title: "Clase 6: Ideas para vender",
+        description: "Cómo presentar tus figuras con menú y precios.",
+        youtube: "https://www.youtube.com/embed/ScMzIvxBSi4"
+      }
+    ];
+
+    let selectedVideo = videos[0];
+    let watched = JSON.parse(localStorage.getItem("watchedVideos") || "[]");
+
+    const loginBox = document.getElementById("loginBox");
+    const appBox = document.getElementById("appBox");
+    const authMessage = document.getElementById("authMessage");
+
+    window.loginUser = async function () {
+      try {
+        authMessage.textContent = "";
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+        await signInWithEmailAndPassword(auth, email, password);
+      } catch (error) {
+        authMessage.textContent = "No se pudo iniciar sesión. Revisa correo y contraseña.";
+      }
+    };
+
+    window.registerUser = async function () {
+      try {
+        authMessage.textContent = "";
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+        await createUserWithEmailAndPassword(auth, email, password);
+      } catch (error) {
+        authMessage.textContent = "No se pudo registrar. Usa un correo válido y contraseña de 6 caracteres o más.";
+      }
+    };
+
+    window.loginWithGoogle = async function () {
+      try {
+        authMessage.textContent = "";
+        await signInWithPopup(auth, provider);
+      } catch (error) {
+        authMessage.textContent = "No se pudo entrar con Google.";
+      }
+    };
+
+    window.logoutUser = async function () {
+      await signOut(auth);
+    };
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        loginBox.classList.add("hidden");
+        appBox.classList.remove("hidden");
+        document.getElementById("userEmail").textContent = user.email || "Usuario";
+        initApp();
+      } else {
+        loginBox.classList.remove("hidden");
+        appBox.classList.add("hidden");
+      }
+    });
+
+    function initApp() {
+      renderVideoList();
+      selectVideo(videos[0].id);
+      updateProgress();
+
+      const savedName = localStorage.getItem("studentName");
+      if (savedName) document.getElementById("studentName").value = savedName;
+    }
+
+    window.showTab = function (tabId, btn = null) {
+      const tabs = ["tab-videos", "tab-catalogo", "tab-canva", "tab-docs", "tab-notes", "tab-info", "tab-live"];
+      tabs.forEach(id => document.getElementById(id).classList.add("hidden"));
+      document.getElementById(tabId).classList.remove("hidden");
+
+      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+      if (btn) btn.classList.add("active");
+    };
+
+    function renderVideoList() {
+      const videoList = document.getElementById("videoList");
+      videoList.innerHTML = videos.map(video => {
+        const isWatched = watched.includes(video.id);
+        return `
+          <button onclick="selectVideo('${video.id}')" class="text-left card p-5 shadow-none border hover:border-[#EE4040] transition">
+            <p class="text-sm font-extrabold ${isWatched ? 'text-[#40B89C]' : 'text-[#EE4040]'}">
+              ${isWatched ? '✅ Visto' : '▶ Disponible'}
+            </p>
+            <h3 class="font-title text-xl font-extrabold">${video.title}</h3>
+            <p class="text-sm text-slate-600">${video.description}</p>
+          </button>
+        `;
+      }).join("");
+    }
+
+    window.selectVideo = function (id) {
+      selectedVideo = videos.find(v => v.id === id);
+      document.getElementById("videoFrame").src = selectedVideo.youtube;
+      document.getElementById("videoTitle").textContent = selectedVideo.title;
+      document.getElementById("videoDescription").textContent = selectedVideo.description;
+    };
+
+    window.markAsWatched = function () {
+      if (!selectedVideo) return;
+      if (!watched.includes(selectedVideo.id)) {
+        watched.push(selectedVideo.id);
+        localStorage.setItem("watchedVideos", JSON.stringify(watched));
+      }
+      renderVideoList();
+      updateProgress();
+    };
+
+    function updateProgress() {
+      const total = videos.length;
+      const done = watched.length;
+      const percent = total ? Math.round((done / total) * 100) : 0;
+      document.getElementById("progressText").textContent = `${done} de ${total} vistos · ${percent}%`;
+      document.getElementById("progressFill").style.width = `${percent}%`;
+    }
+
+    window.saveStudentName = function () {
+      const name = document.getElementById("studentName").value;
+      localStorage.setItem("studentName", name);
+      alert("Nombre guardado 🎈");
+    };
+  </script>
 </body>
 </html>
