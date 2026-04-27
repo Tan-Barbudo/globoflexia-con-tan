@@ -302,15 +302,12 @@
 
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import {
-      getAuth,
-      createUserWithEmailAndPassword,
-      signInWithEmailAndPassword,
-      signOut,
-      onAuthStateChanged,
-      GoogleAuthProvider,
-      signInWithPopup
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
+  getFirestore,
+  doc,
+  setDoc,
+  getDoc,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
     const firebaseConfig = {
   apiKey: "AIzaSyDShp-WOGdI3_ST8WoTLa6Jm5UqGludJ38",
   authDomain: "globoflexia-tan-barbudo.firebaseapp.com",
@@ -321,9 +318,10 @@
   measurementId: "G-8TNL59G05J"
     };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const provider = new GoogleAuthProvider();
+ const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const provider = new GoogleAuthProvider();
 
     const videos = [
       {
@@ -382,41 +380,68 @@
       }
     };
 
-    window.registerUser = async function () {
-      try {
-        authMessage.textContent = "";
-        const email = document.getElementById("email").value;
-        const password = document.getElementById("password").value;
-        await createUserWithEmailAndPassword(auth, email, password);
-      } catch (error) {
-        authMessage.textContent = "No se pudo registrar. Usa un correo válido y contraseña de 6 caracteres o más.";
-      }
-    };
+  window.registerUser = async function () {
+  try {
+    authMessage.textContent = "";
 
-    window.loginWithGoogle = async function () {
-      try {
-        authMessage.textContent = "";
-        await signInWithPopup(auth, provider);
-      } catch (error) {
-        authMessage.textContent = "No se pudo entrar con Google.";
-      }
-    };
+    const email = document.getElementById("email").value.trim().toLowerCase();
+    const password = document.getElementById("password").value;
 
-    window.logoutUser = async function () {
-      await signOut(auth);
-    };
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
 
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        loginBox.classList.add("hidden");
-        appBox.classList.remove("hidden");
-        document.getElementById("userEmail").textContent = user.email || "Usuario";
-        initApp();
-      } else {
-        loginBox.classList.remove("hidden");
-        appBox.classList.add("hidden");
-      }
+    await setDoc(doc(db, "users", user.email), {
+      uid: user.uid,
+      email: user.email,
+      estado: "pendiente",
+      createdAt: serverTimestamp()
     });
+
+    await signOut(auth);
+
+    authMessage.textContent = "Cuenta creada. Espera la aprobación de Tan Barbudo para ingresar 🎈";
+  } catch (error) {
+    authMessage.textContent = "No se pudo registrar. Usa un correo válido y contraseña de 6 caracteres o más.";
+  }
+};
+
+   onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    const email = user.email.toLowerCase();
+    const userRef = doc(db, "users", email);
+    const userSnap = await getDoc(userRef);
+
+    if (!userSnap.exists()) {
+      await setDoc(userRef, {
+        uid: user.uid,
+        email: email,
+        estado: "pendiente",
+        createdAt: serverTimestamp()
+      });
+
+      await signOut(auth);
+      authMessage.textContent = "Tu cuenta está pendiente de aprobación 🎈";
+      return;
+    }
+
+    const userData = userSnap.data();
+
+    if (userData.estado !== "aprobado") {
+      await signOut(auth);
+      authMessage.textContent = "Tu cuenta todavía está pendiente de aprobación 🎈";
+      return;
+    }
+
+    loginBox.classList.add("hidden");
+    appBox.classList.remove("hidden");
+    document.getElementById("userEmail").textContent = user.email || "Usuario";
+    initApp();
+
+  } else {
+    loginBox.classList.remove("hidden");
+    appBox.classList.add("hidden");
+  }
+});
 
     function initApp() {
       renderVideoList();
