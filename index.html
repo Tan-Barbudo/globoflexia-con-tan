@@ -116,7 +116,7 @@
 
         .section-header { margin-bottom: 30px; }
         
-        /* Reproductor Principal de Módulos */
+        /* Reproductor Principal de Inicio */
         .main-player-wrapper {
             background: var(--white);
             border-radius: 12px;
@@ -152,13 +152,11 @@
             background: var(--locked);
         }
 
-        .main-player-info {
-            padding: 30px;
-        }
+        .main-player-info { padding: 30px; }
         .main-player-info h2 { margin-bottom: 15px; color: var(--text-dark); font-size: 1.8rem; }
         .main-player-info p { color: var(--text-light); font-size: 1.1rem; line-height: 1.6; margin-bottom: 20px; }
 
-        /* Navegación de botones inferiores */
+        /* Navegación de botones (Pestaña Módulos) */
         .module-nav-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -277,10 +275,11 @@
                 </div>
             </div>
             <div class="nav-tabs">
-                <div class="nav-tab active" onclick="cambiarTab('modulos')">🏠 Inicio</div>
-                <div class="nav-tab" onclick="cambiarTab('modulos')">🎓 Módulos</div>
-                <div class="nav-tab" onclick="cambiarTab('tutoriales')">🎈 Tutoriales</div>
-                <div class="nav-tab" onclick="cambiarTab('consultas')">💬 Preguntas</div>
+                <!-- Se ha modificado el destino de los botones -->
+                <div class="nav-tab active" onclick="cambiarTab('inicio')" data-target="inicio">🏠 Inicio</div>
+                <div class="nav-tab" onclick="cambiarTab('modulos')" data-target="modulos">🎓 Módulos</div>
+                <div class="nav-tab" onclick="cambiarTab('tutoriales')" data-target="tutoriales">🎈 Tutoriales</div>
+                <div class="nav-tab" onclick="cambiarTab('consultas')" data-target="consultas">💬 Preguntas</div>
             </div>
             <div>
                 <span id="user-greeting" style="margin-right: 15px; font-weight: 600;"></span>
@@ -292,7 +291,6 @@
         <section style="max-width:1200px; margin:30px auto; background:white; border-radius:20px; overflow:hidden; box-shadow:0 8px 20px rgba(0,0,0,.08);">
             <img src="banner.png" style="width:100%;display:block;">
             <div style="padding:35px;">
-                <!-- Cambiado el estilo del H1 para que se adapte fluidamente (clamp) sin cortarse -->
                 <h1 style="font-size: clamp(1.8rem, 4vw, 2.5rem); line-height: 1.3; margin-bottom:15px; color: var(--text-dark);">
                     Dios te ha dado creatividad... ¡es momento de desarrollarla! 🎈
                 </h1>
@@ -303,8 +301,8 @@
         </section>
 
         <main>
-            <!-- Vista de Modulos -->
-            <section id="tab-modulos">
+            <!-- Vista de INICIO (Sólo el Reproductor) -->
+            <section id="tab-inicio">
                 <div class="section-header">
                     <h3 style="color: var(--text-dark); font-size: 1.5rem;">Ruta de Aprendizaje</h3>
                     <p>Completa el video actual para desbloquear el siguiente. Nivel actual: <span id="progress-text" style="font-weight: bold; color: var(--primary);">0</span>/5</p>
@@ -314,13 +312,17 @@
                 <div class="main-player-wrapper" id="main-player-container">
                     <!-- Se inyecta por JS -->
                 </div>
+            </section>
 
-                <!-- Botones de Navegación -->
-                <div style="margin-top: 20px;">
-                    <h3 style="color: var(--text-dark); margin-bottom: 20px;">Selecciona un Módulo:</h3>
-                    <div class="module-nav-grid" id="module-nav-container">
-                        <!-- Se inyecta por JS -->
-                    </div>
+            <!-- Vista de MÓDULOS (Sólo la grilla de selección) -->
+            <section id="tab-modulos" class="hidden">
+                <div class="section-header">
+                    <h3 style="color: var(--text-dark); font-size: 1.5rem;">Selecciona un Módulo</h3>
+                    <p>Repasa las clases que ya tienes desbloqueadas. Haz clic en cualquiera para ver el video.</p>
+                </div>
+
+                <div class="module-nav-grid" id="module-nav-container">
+                    <!-- Se inyecta por JS -->
                 </div>
             </section>
 
@@ -397,9 +399,8 @@
 
         // Estado del usuario
         let progresoActual = parseInt(localStorage.getItem('globoflexia_progreso')) || 0;
-        let moduloViendo = progresoActual; // Controla qué video se está mostrando en grande
+        let moduloViendo = progresoActual; 
         
-        // Estado de los tutoriales completados (arreglo de ytIds)
         let tutorialesCompletados = JSON.parse(localStorage.getItem('globoflexia_tutoriales_completados')) || [];
 
         // --- FUNCIONES DE AUTENTICACIÓN ---
@@ -439,13 +440,18 @@
         }
 
         function cambiarTab(tabId) {
+            // Actualizar estilo visual de las pestañas
             document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
-            event.target.classList.add('active');
+            const activeTab = document.querySelector(`.nav-tab[data-target="${tabId}"]`);
+            if(activeTab) activeTab.classList.add('active');
 
+            // Ocultar todas las secciones
+            document.getElementById('tab-inicio').classList.add('hidden');
             document.getElementById('tab-modulos').classList.add('hidden');
             document.getElementById('tab-tutoriales').classList.add('hidden');
             document.getElementById('tab-consultas').classList.add('hidden');
 
+            // Mostrar solo la seleccionada
             document.getElementById(`tab-${tabId}`).classList.remove('hidden');
         }
 
@@ -463,7 +469,7 @@
             
             document.getElementById('progress-text').innerText = progresoActual;
 
-            // 1. Renderizar Reproductor Principal
+            // 1. Renderizar Reproductor Principal (Para la pestaña INICIO)
             const modActual = modulosData[moduloViendo];
             const isAvailable = modActual.available;
             
@@ -498,7 +504,7 @@
                 </div>
             `;
 
-            // 2. Renderizar Cuadrícula Inferior de Botones
+            // 2. Renderizar Cuadrícula de Botones (Para la pestaña MÓDULOS)
             navContainer.innerHTML = '';
             modulosData.forEach((mod, index) => {
                 let statusIcon = '';
@@ -529,10 +535,12 @@
             });
         }
 
+        // Al hacer clic en un módulo desde la grilla
         function cambiarModuloViendo(index) {
             moduloViendo = index;
             renderModulos();
-            document.getElementById('tab-modulos').scrollIntoView({ behavior: 'smooth' });
+            cambiarTab('inicio'); // Te lleva automáticamente al reproductor de inicio
+            window.scrollTo({ top: 0, behavior: 'smooth' }); // Sube la pantalla
         }
 
         function avanzarProgreso() {
@@ -541,7 +549,7 @@
                 moduloViendo = progresoActual; 
                 localStorage.setItem('globoflexia_progreso', progresoActual);
                 renderModulos();
-                document.getElementById('tab-modulos').scrollIntoView({ behavior: 'smooth' });
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         }
 
