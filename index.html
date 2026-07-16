@@ -41,7 +41,7 @@
             border-radius: 6px;
             cursor: pointer;
             font-weight: 600;
-            transition: background 0.3s;
+            transition: all 0.3s ease;
             display: inline-block;
             text-align: center;
             font-size: 1rem;
@@ -116,7 +116,7 @@
 
         .section-header { margin-bottom: 30px; }
         
-        /* Reproductor Principal de Módulos (Nuevo Diseño) */
+        /* Reproductor Principal de Módulos */
         .main-player-wrapper {
             background: var(--white);
             border-radius: 12px;
@@ -199,8 +199,8 @@
             color: var(--text-light);
         }
 
-        /* Otras grillas (Tutoriales, Descargas) */
-        .tutorials-grid, .downloads-grid {
+        /* Grilla Tutoriales */
+        .tutorials-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 20px;
@@ -228,7 +228,7 @@
         }
         .tutorials-grid .video-container { padding-bottom: 177.77%; }
 
-        .card-body { padding: 20px; }
+        .card-body { padding: 15px; }
         
         /* Blog / Dudas */
         .consultas-container { max-width: 800px; margin: 0 auto; }
@@ -280,7 +280,6 @@
                 <div class="nav-tab active" onclick="cambiarTab('modulos')">🏠 Inicio</div>
                 <div class="nav-tab" onclick="cambiarTab('modulos')">🎓 Módulos</div>
                 <div class="nav-tab" onclick="cambiarTab('tutoriales')">🎈 Tutoriales</div>
-                <div class="nav-tab" onclick="cambiarTab('descargas')">📄 Descargas</div>
                 <div class="nav-tab" onclick="cambiarTab('consultas')">💬 Preguntas</div>
             </div>
             <div>
@@ -293,13 +292,18 @@
         <section style="max-width:1200px; margin:30px auto; background:white; border-radius:20px; overflow:hidden; box-shadow:0 8px 20px rgba(0,0,0,.08);">
             <img src="banner.png" style="width:100%;display:block;">
             <div style="padding:35px;">
-                <h1 style="font-size:42px; margin-bottom:15px; color: var(--text-dark);">Dios te ha dado creatividad... ¡es momento de desarrollarla! 🎈</h1>
-                <p style="font-size:18px; color:#666;">Aprende paso a paso y transforma un simple globo en una herramienta para sorprender, servir y bendecir.</p>
+                <!-- Cambiado el estilo del H1 para que se adapte fluidamente (clamp) sin cortarse -->
+                <h1 style="font-size: clamp(1.8rem, 4vw, 2.5rem); line-height: 1.3; margin-bottom:15px; color: var(--text-dark);">
+                    Dios te ha dado creatividad... ¡es momento de desarrollarla! 🎈
+                </h1>
+                <p style="font-size: clamp(1rem, 2vw, 1.125rem); color:#666;">
+                    Aprende paso a paso y transforma un simple globo en una herramienta para sorprender, servir y bendecir.
+                </p>
             </div>
         </section>
 
         <main>
-            <!-- Vista de Modulos (NUEVO DISEÑO) -->
+            <!-- Vista de Modulos -->
             <section id="tab-modulos">
                 <div class="section-header">
                     <h3 style="color: var(--text-dark); font-size: 1.5rem;">Ruta de Aprendizaje</h3>
@@ -328,28 +332,6 @@
                 </div>
                 <div class="tutorials-grid" id="tutorials-container">
                     <!-- Se inyecta por JS -->
-                </div>
-            </section>
-
-            <!-- Vista de Descargas -->
-            <section id="tab-descargas" class="hidden">
-                <div class="section-header">
-                    <h3 style="color: var(--text-dark);">Recursos y Archivos</h3>
-                    <p>Descarga el material complementario para acompañar tu aprendizaje.</p>
-                </div>
-                <div class="downloads-grid">
-                    <div class="card" style="padding: 30px; display: flex; flex-direction: column; align-items: center; text-align: center;">
-                        <div style="font-size: 50px; margin-bottom: 15px;">PDF</div>
-                        <h4 style="margin-bottom: 10px; color: var(--text-dark);">Guía de Materiales</h4>
-                        <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 20px; flex-grow: 1;">Lista completa de marcas recomendadas, medidas de globos y tipos de infladores ideales.</p>
-                        <a href="URL_DE_TU_PDF_AQUI" target="_blank" download class="btn" style="text-decoration: none; width: 100%;">Descargar Guía</a>
-                    </div>
-                    <div class="card" style="padding: 30px; display: flex; flex-direction: column; align-items: center; text-align: center;">
-                        <div style="font-size: 50px; margin-bottom: 15px;">📜</div>
-                        <h4 style="margin-bottom: 10px; color: var(--text-dark);">Tabla de Torciones</h4>
-                        <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 20px; flex-grow: 1;">Un resumen rápido con los nombres y técnicas de cada torción básica para imprimir.</p>
-                        <a href="URL_DE_TU_PDF_AQUI" target="_blank" download class="btn" style="text-decoration: none; width: 100%;">Descargar Tabla</a>
-                    </div>
                 </div>
             </section>
 
@@ -416,6 +398,9 @@
         // Estado del usuario
         let progresoActual = parseInt(localStorage.getItem('globoflexia_progreso')) || 0;
         let moduloViendo = progresoActual; // Controla qué video se está mostrando en grande
+        
+        // Estado de los tutoriales completados (arreglo de ytIds)
+        let tutorialesCompletados = JSON.parse(localStorage.getItem('globoflexia_tutoriales_completados')) || [];
 
         // --- FUNCIONES DE AUTENTICACIÓN ---
         function verificarSesion() {
@@ -459,7 +444,6 @@
 
             document.getElementById('tab-modulos').classList.add('hidden');
             document.getElementById('tab-tutoriales').classList.add('hidden');
-            document.getElementById('tab-descargas').classList.add('hidden');
             document.getElementById('tab-consultas').classList.add('hidden');
 
             document.getElementById(`tab-${tabId}`).classList.remove('hidden');
@@ -467,9 +451,7 @@
 
         // --- RENDERIZADO PRINCIPAL ---
         function renderizarApp() {
-            // Asegurarse de que el modulo viendo no exceda el progreso
             if (moduloViendo > progresoActual) moduloViendo = progresoActual;
-            
             renderModulos();
             renderTutoriales();
             renderConsultas();
@@ -500,7 +482,7 @@
                 </div>`;
             }
 
-            // Si está viendo exactamente el nivel en el que va (no uno anterior), mostramos botón avanzar
+            // Botón avanzar o completado
             if(isAvailable && moduloViendo === progresoActual && progresoActual < 4) {
                 btnHTML = `<button class="btn" style="margin-top: 15px;" onclick="avanzarProgreso()">✅ Marcar como Visto y Avanzar</button>`;
             } else if (moduloViendo < progresoActual) {
@@ -550,14 +532,13 @@
         function cambiarModuloViendo(index) {
             moduloViendo = index;
             renderModulos();
-            // Scroll suave hacia arriba para ver el video
             document.getElementById('tab-modulos').scrollIntoView({ behavior: 'smooth' });
         }
 
         function avanzarProgreso() {
             if(progresoActual < 4) {
                 progresoActual++;
-                moduloViendo = progresoActual; // Cambiar automáticamente la vista al nuevo nivel
+                moduloViendo = progresoActual; 
                 localStorage.setItem('globoflexia_progreso', progresoActual);
                 renderModulos();
                 document.getElementById('tab-modulos').scrollIntoView({ behavior: 'smooth' });
@@ -570,18 +551,38 @@
             container.innerHTML = '';
 
             tutorialesData.forEach(tut => {
+                const isCompleted = tutorialesCompletados.includes(tut.ytId);
                 const card = document.createElement('div');
                 card.className = 'card';
+                
+                let btnHtml = '';
+                if (isCompleted) {
+                    btnHtml = `<button class="btn" style="background: var(--success); width: 100%; padding: 8px; font-size: 0.9rem;" onclick="toggleTutorial('${tut.ytId}')">✅ Completado</button>`;
+                } else {
+                    btnHtml = `<button class="btn" style="background: var(--bg-color); color: var(--text-dark); border: 1px solid var(--border); width: 100%; padding: 8px; font-size: 0.9rem;" onclick="toggleTutorial('${tut.ytId}')">Marcar como visto</button>`;
+                }
+
                 card.innerHTML = `
                     <div class="video-container">
                         <iframe src="https://www.youtube.com/embed/${tut.ytId}?controls=0&modestbranding=1&rel=0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                     </div>
-                    <div class="card-body" style="padding: 10px;">
+                    <div class="card-body" style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
                         <h4 class="card-title" style="text-align: center; margin: 0;">🎈 ${tut.title}</h4>
+                        ${btnHtml}
                     </div>
                 `;
                 container.appendChild(card);
             });
+        }
+
+        function toggleTutorial(ytId) {
+            if (tutorialesCompletados.includes(ytId)) {
+                tutorialesCompletados = tutorialesCompletados.filter(id => id !== ytId);
+            } else {
+                tutorialesCompletados.push(ytId);
+            }
+            localStorage.setItem('globoflexia_tutoriales_completados', JSON.stringify(tutorialesCompletados));
+            renderTutoriales();
         }
 
         // --- FORO DE CONSULTAS ---
