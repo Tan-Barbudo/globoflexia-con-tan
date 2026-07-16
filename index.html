@@ -393,7 +393,9 @@
         }
 
         function escucharVideosDesdeNube() {
-            db.collection("videos").onSnapshot(function(snapshot) {
+            // CORRECCIÓN DE PROGRAMACIÓN: Modificamos la cadena de búsqueda a "'videos'" con comillas simples incluidas
+            // para que coincida exactamente con el nombre de colección que tienes en tu consola de Firestore.
+            db.collection("'videos'").onSnapshot(function(snapshot) {
                 tutorialesData = [];
                 snapshot.forEach(function(doc) {
                     const data = doc.data();
@@ -413,10 +415,10 @@
                         description: data.description || ""
                     });
                 });
-                console.log("Videos cargados desde Firestore:", tutorialesData);
+                console.log("Videos cargados desde la colección 'videos' de Firestore:", tutorialesData);
                 renderTutoriales();
             }, function(error) {
-                console.error("Error al obtener los videos de Firestore:", error);
+                console.error("Error al obtener los videos de la colección de Firestore:", error);
             });
         }
 
