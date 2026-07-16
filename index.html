@@ -324,9 +324,9 @@
         const auth = firebase.auth();
         const provider = new firebase.auth.GoogleAuthProvider();
 
-        // Forzar persistencia LOCAL explicítamente (evita pérdidas de estado en redirecciones)
+        // Forzar persistencia LOCAL explicítamente para evitar pérdidas de estado en redirecciones
         auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-            .catch((err) => console.error("Error de persistencia:", err));
+            .catch(function(err) { console.error("Error de persistencia:", err); });
 
         provider.setCustomParameters({ prompt: 'select_account' });
 
@@ -373,14 +373,14 @@
         function ingresarAPanel(user) {
             document.getElementById('login-view').classList.add('hidden');
             document.getElementById('app-view').classList.remove('hidden');
-            document.getElementById('user-greeting').innerText = `Hola, ${user.displayName || "Usuario"}`;
+            document.getElementById('user-greeting').innerText = "Hola, " + (user.displayName || "Usuario");
             
             localStorage.setItem('globoflexia_user', user.displayName || "Usuario");
             renderizarApp();
         }
 
-        // Observador de Autenticación
-        auth.onAuthStateChanged((user) => {
+        // Observador de Autenticación (Se ejecuta al cargar o al cambiar sesión)
+        auth.onAuthStateChanged(function(user) {
             console.log("Cambio de estado detectado. Usuario activo:", user ? user.displayName : "Ninguno");
             if (user) {
                 ingresarAPanel(user);
@@ -390,15 +390,15 @@
             }
         });
 
-        // Capturar redirección con depuración directa
+        // Capturar redirección con depuración directa al retornar de Google
         auth.getRedirectResult()
-            .then((result) => {
+            .then(function(result) {
                 if (result && result.user) {
                     console.log("Sesión establecida correctamente:", result.user.displayName);
                     ingresarAPanel(result.user);
                 }
             })
-            .catch((error) => {
+            .catch(function(error) {
                 console.error("Error crítico capturado tras la redirección:", error);
                 
                 // Mostrar alerta en pantalla para diagnosticar problemas de almacenamiento/cookies del navegador
@@ -416,7 +416,7 @@
             if (errorDiv) errorDiv.style.display = 'none'; 
 
             auth.signInWithRedirect(provider)
-                .catch((error) => {
+                .catch(function(error) {
                     console.error("Error al gatillar signInWithRedirect:", error);
                     alert("Error al iniciar el flujo: " + error.message);
                     if (errorDiv) {
@@ -427,7 +427,7 @@
         }
 
         function cerrarSesion() {
-            auth.signOut().then(() => {
+            auth.signOut().then(function() {
                 localStorage.clear(); 
                 location.reload(); 
             });
@@ -435,8 +435,8 @@
 
         // --- 4. FUNCIONES DE NAVEGACIÓN Y RENDERIZADO ---
         function cambiarTab(tabId) {
-            document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
-            const activeTab = document.querySelector(`.nav-tab[data-target="${tabId}"]`);
+            document.querySelectorAll('.nav-tab').forEach(function(el) { el.classList.remove('active'); });
+            const activeTab = document.querySelector(".nav-tab[data-target='" + tabId + "']");
             if(activeTab) activeTab.classList.add('active');
 
             document.getElementById('tab-inicio').classList.add('hidden');
@@ -444,7 +444,7 @@
             document.getElementById('tab-tutoriales').classList.add('hidden');
             document.getElementById('tab-consultas').classList.add('hidden');
 
-            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+            document.getElementById("tab-" + tabId).classList.remove('hidden');
         }
 
         function renderizarApp() {
@@ -467,34 +467,30 @@
             let btnHTML = '';
 
             if(isAvailable) {
-                playerHTML = `
-                <div class="main-video-container">
-                    <iframe src="https://www.youtube.com/embed/${modActual.ytId}?controls=0&modestbranding=1&rel=0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                </div>`;
+                playerHTML = "<div class='main-video-container'>" +
+                    "<iframe src='https://www.youtube.com/embed/" + modActual.ytId + "?controls=0&modestbranding=1&rel=0' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' allowfullscreen></iframe>" +
+                "</div>";
             } else {
-                playerHTML = `
-                <div class="main-video-container locked-bg">
-                    <span style="font-size: 1.2rem; text-align: center; padding: 0 20px;">🔒 Próximamente disponible</span>
-                </div>`;
+                playerHTML = "<div class='main-video-container locked-bg'>" +
+                    "<span style='font-size: 1.2rem; text-align: center; padding: 0 20px;'>🔒 Próximamente disponible</span>" +
+                "</div>";
             }
 
             if(isAvailable && moduloViendo === progresoActual && progresoActual < 4) {
-                btnHTML = `<button class="btn" style="margin-top: 15px; width: 100%;" onclick="avanzarProgreso()">✅ Marcar como Visto y Avanzar</button>`;
+                btnHTML = "<button class='btn' style='margin-top: 15px; width: 100%;' onclick='avanzarProgreso()'>✅ Marcar como Visto y Avanzar</button>";
             } else if (moduloViendo < progresoActual) {
-                btnHTML = `<div style="color: var(--success); font-weight: bold; font-size: 1.1rem; margin-top: 15px; text-align: center;">✓ Módulo Completado</div>`;
+                btnHTML = "<div style='color: var(--success); font-weight: bold; font-size: 1.1rem; margin-top: 15px; text-align: center;'>✓ Módulo Completado</div>";
             }
 
-            mainContainer.innerHTML = `
-                ${playerHTML}
-                <div class="main-player-info">
-                    <h2>${modActual.title}</h2>
-                    <p>${modActual.desc}</p>
-                    ${btnHTML}
-                </div>
-            `;
+            mainContainer.innerHTML = playerHTML +
+                "<div class='main-player-info'>" +
+                    "<h2>" + modActual.title + "</h2>" +
+                    "<p>" + modActual.desc + "</p>" +
+                    btnHTML +
+                "</div>";
 
             navContainer.innerHTML = '';
-            modulosData.forEach((mod, index) => {
+            modulosData.forEach(function(mod, index) {
                 let statusIcon = '';
                 let isLocked = false;
                 let activeClass = (index === moduloViendo) ? 'active' : '';
@@ -509,14 +505,12 @@
                 }
 
                 const btn = document.createElement('div');
-                btn.className = `mod-nav-btn ${isLocked ? 'locked' : ''} ${activeClass}`;
-                btn.innerHTML = `
-                    <span style="font-size: 1.5rem;">${statusIcon}</span>
-                    <span>${mod.title}</span>
-                `;
+                btn.className = "mod-nav-btn " + (isLocked ? 'locked' : '') + " " + activeClass;
+                btn.innerHTML = "<span style='font-size: 1.5rem;'>" + statusIcon + "</span>" +
+                    "<span>" + mod.title + "</span>";
                 
                 if(!isLocked) {
-                    btn.onclick = () => cambiarModuloViendo(index);
+                    btn.onclick = function() { cambiarModuloViendo(index); };
                 }
                 
                 navContainer.appendChild(btn);
@@ -544,34 +538,32 @@
             const container = document.getElementById('tutorials-container');
             container.innerHTML = '';
 
-            tutorialesData.forEach(tut => {
+            tutorialesData.forEach(function(tut) {
                 const isCompleted = tutorialesCompletados.includes(tut.ytId);
                 const card = document.createElement('div');
                 card.className = 'card';
                 
                 let btnHtml = '';
                 if (isCompleted) {
-                    btnHtml = `<button class="btn" style="background: var(--success); width: 100%; padding: 10px; font-size: 0.95rem;" onclick="toggleTutorial('${tut.ytId}')">✅ Completado</button>`;
+                    btnHtml = "<button class='btn' style='background: var(--success); width: 100%; padding: 10px; font-size: 0.95rem;' onclick=\"toggleTutorial('" + tut.ytId + "')\">✅ Completado</button>";
                 } else {
-                    btnHtml = `<button class="btn" style="background: var(--bg-color); color: var(--text-dark); border: 1px solid var(--border); width: 100%; padding: 10px; font-size: 0.95rem;" onclick="toggleTutorial('${tut.ytId}')">Marcar como visto</button>`;
+                    btnHtml = "<button class='btn' style='background: var(--bg-color); color: var(--text-dark); border: 1px solid var(--border); width: 100%; padding: 10px; font-size: 0.95rem;' onclick=\"toggleTutorial('" + tut.ytId + "')\">Marcar como visto</button>";
                 }
 
-                card.innerHTML = `
-                    <div class="video-container">
-                        <iframe src="https://www.youtube.com/embed/${tut.ytId}?controls=0&modestbranding=1&rel=0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                    </div>
-                    <div class="card-body" style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
-                        <h4 class="card-title" style="text-align: center; margin: 0;">🎈 ${tut.title}</h4>
-                        ${btnHtml}
-                    </div>
-                `;
+                card.innerHTML = "<div class='video-container'>" +
+                        "<iframe src='https://www.youtube.com/embed/" + tut.ytId + "?controls=0&modestbranding=1&rel=0' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' allowfullscreen></iframe>" +
+                    "</div>" +
+                    "<div class='card-body' style='display: flex; flex-direction: column; align-items: center; gap: 12px;'>" +
+                        "<h4 class='card-title' style='text-align: center; margin: 0;'>🎈 " + tut.title + "</h4>" +
+                        btnHtml +
+                    "</div>";
                 container.appendChild(card);
             });
         }
 
         function toggleTutorial(ytId) {
             if (tutorialesCompletados.includes(ytId)) {
-                tutorialesCompletados = tutorialesCompletados.filter(id => id !== ytId);
+                tutorialesCompletados = tutorialesCompletados.filter(function(id) { return id !== ytId; });
             } else {
                 tutorialesCompletados.push(ytId);
             }
@@ -582,20 +574,18 @@
         function renderConsultas() {
             const contenedorLista = document.getElementById('lista-consultas');
             contenedorLista.innerHTML = '';
-            const comentariosInvertidos = [...consultasData].reverse();
+            const comentariosInvertidos = [].concat(consultasData).reverse();
 
-            comentariosInvertidos.forEach(c => {
+            comentariosInvertidos.forEach(function(c) {
                 const comentarioDiv = document.createElement('div');
                 comentarioDiv.className = 'comentario-card';
-                comentarioDiv.innerHTML = `
-                    <div class="comentario-header">
-                        <strong>👤 ${c.autor}</strong>
-                        <span class="fecha">${c.fecha}</span>
-                    </div>
-                    <div class="comentario-body">
-                        ${c.texto}
-                    </div>
-                `;
+                comentarioDiv.innerHTML = "<div class='comentario-header'>" +
+                        "<strong>👤 " + c.autor + "</strong>" +
+                        "<span class='fecha'>" + c.fecha + "</span>" +
+                    "</div>" +
+                    "<div class='comentario-body'>" +
+                        c.texto +
+                    "</div>";
                 contenedorLista.appendChild(comentarioDiv);
             });
         }
@@ -612,7 +602,7 @@
             const autor = localStorage.getItem('globoflexia_user') || 'Usuario Anónimo';
             const fecha = new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
 
-            consultasData.push({ autor, texto, fecha });
+            consultasData.push({ autor: autor, texto: texto, fecha: fecha });
             localStorage.setItem('globoflexia_consultas', JSON.stringify(consultasData));
 
             textArea.value = '';
