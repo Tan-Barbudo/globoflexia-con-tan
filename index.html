@@ -56,6 +56,7 @@
             justify-content: center;
             align-items: center;
             background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            padding: 15px; /* Margen en móvil */
         }
 
         .login-card {
@@ -96,6 +97,8 @@
             position: sticky;
             top: 0;
             z-index: 10;
+            flex-wrap: wrap; /* Importante para que baje de linea si falta espacio */
+            gap: 15px;
         }
         
         .nav-tabs { display: flex; gap: 20px; }
@@ -159,7 +162,7 @@
         /* Navegación de botones (Pestaña Módulos) */
         .module-nav-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             gap: 15px;
         }
         
@@ -200,7 +203,7 @@
         /* Grilla Tutoriales */
         .tutorials-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 20px;
         }
         
@@ -238,6 +241,46 @@
         .comentario-header strong { color: var(--primary); font-size: 1rem; }
         .comentario-header .fecha { color: var(--text-light); }
         .comentario-body { line-height: 1.5; }
+
+        /* ========================================================= */
+        /* MAGIA RESPONSIVA (AJUSTES PARA CELULARES Y TABLETS)       */
+        /* ========================================================= */
+        @media (max-width: 768px) {
+            header {
+                padding: 12px 15px;
+            }
+            
+            /* Reordenamos los elementos usando "order" de flexbox */
+            .header-brand { order: 1; }
+            .header-user { order: 2; }
+            
+            /* La botonera pasa abajo (orden 3) y toma el 100% del ancho */
+            .nav-tabs {
+                order: 3;
+                width: 100%;
+                justify-content: space-between;
+                overflow-x: auto; /* Permite deslizar con el dedo si son muchas opciones */
+                padding-bottom: 5px;
+            }
+            
+            /* Ocultamos la barra espantosa de scroll en las pestañas */
+            .nav-tabs::-webkit-scrollbar { display: none; }
+            
+            /* Ajustamos tamaños para que no sea tan tosco en móvil */
+            .header-brand img { width: 45px !important; }
+            .brand-text h2 { font-size: 1.2rem !important; }
+            .brand-text p { display: none; } /* Ocultamos el subtitulo para hacer espacio */
+            
+            #user-greeting { display: none; } /* Ocultamos el 'Hola Tan' para hacer espacio */
+            
+            .nav-tab { font-size: 0.9rem; white-space: nowrap; }
+            
+            main { padding: 15px; } /* Reducimos los bordes del cuerpo principal */
+            
+            .main-player-info { padding: 20px; }
+            .main-player-info h2 { font-size: 1.4rem; }
+            .section-header h3 { font-size: 1.3rem !important; }
+        }
     </style>
 </head>
 <body>
@@ -267,34 +310,35 @@
     <!-- Aplicación Principal -->
     <div id="app-view" class="hidden">
         <header>
-            <div style="display:flex;align-items:center;gap:15px;">
+            <div class="header-brand" style="display:flex;align-items:center;gap:12px;">
                 <img src="logo.png" style="width:60px;">
-                <div>
+                <div class="brand-text">
                     <h2 style="margin:0;color:#EE4040;">Globoflexia con Tan</h2>
                     <p style="margin:0;font-size:13px;color:#666;">Curso creativo y personalizado</p>
                 </div>
             </div>
+            
             <div class="nav-tabs">
-                <!-- Se ha modificado el destino de los botones -->
                 <div class="nav-tab active" onclick="cambiarTab('inicio')" data-target="inicio">🏠 Inicio</div>
                 <div class="nav-tab" onclick="cambiarTab('modulos')" data-target="modulos">🎓 Módulos</div>
                 <div class="nav-tab" onclick="cambiarTab('tutoriales')" data-target="tutoriales">🎈 Tutoriales</div>
                 <div class="nav-tab" onclick="cambiarTab('consultas')" data-target="consultas">💬 Preguntas</div>
             </div>
-            <div>
-                <span id="user-greeting" style="margin-right: 15px; font-weight: 600;"></span>
-                <button class="btn" onclick="cerrarSesion()">Salir</button>
+            
+            <div class="header-user" style="display:flex;align-items:center;gap:15px;">
+                <span id="user-greeting" style="font-weight: 600;"></span>
+                <button class="btn" style="padding: 8px 16px; font-size: 0.9rem;" onclick="cerrarSesion()">Salir</button>
             </div>
         </header>
 
         <!-- Banner Principal -->
-        <section style="max-width:1200px; margin:30px auto; background:white; border-radius:20px; overflow:hidden; box-shadow:0 8px 20px rgba(0,0,0,.08);">
+        <section style="max-width:1200px; margin: 20px 15px; background:white; border-radius:20px; overflow:hidden; box-shadow:0 8px 20px rgba(0,0,0,.08); @media(min-width: 768px){margin: 30px auto;}">
             <img src="banner.png" style="width:100%;display:block;">
-            <div style="padding:35px;">
-                <h1 style="font-size: clamp(1.8rem, 4vw, 2.5rem); line-height: 1.3; margin-bottom:15px; color: var(--text-dark);">
+            <div style="padding: 25px; @media(min-width: 768px){padding: 35px;}">
+                <h1 style="font-size: clamp(1.6rem, 4vw, 2.5rem); line-height: 1.3; margin-bottom:15px; color: var(--text-dark);">
                     Dios te ha dado creatividad... ¡es momento de desarrollarla! 🎈
                 </h1>
-                <p style="font-size: clamp(1rem, 2vw, 1.125rem); color:#666;">
+                <p style="font-size: clamp(0.95rem, 2vw, 1.125rem); color:#666;">
                     Aprende paso a paso y transforma un simple globo en una herramienta para sorprender, servir y bendecir.
                 </p>
             </div>
@@ -484,15 +528,15 @@
             } else {
                 playerHTML = `
                 <div class="main-video-container locked-bg">
-                    <span>🔒 Próximamente disponible</span>
+                    <span style="font-size: 1.2rem; text-align: center; padding: 0 20px;">🔒 Próximamente disponible</span>
                 </div>`;
             }
 
             // Botón avanzar o completado
             if(isAvailable && moduloViendo === progresoActual && progresoActual < 4) {
-                btnHTML = `<button class="btn" style="margin-top: 15px;" onclick="avanzarProgreso()">✅ Marcar como Visto y Avanzar</button>`;
+                btnHTML = `<button class="btn" style="margin-top: 15px; width: 100%;" onclick="avanzarProgreso()">✅ Marcar como Visto y Avanzar</button>`;
             } else if (moduloViendo < progresoActual) {
-                btnHTML = `<div style="color: var(--success); font-weight: bold; font-size: 1.1rem; margin-top: 15px;">✓ Módulo Completado</div>`;
+                btnHTML = `<div style="color: var(--success); font-weight: bold; font-size: 1.1rem; margin-top: 15px; text-align: center;">✓ Módulo Completado</div>`;
             }
 
             mainContainer.innerHTML = `
@@ -539,8 +583,8 @@
         function cambiarModuloViendo(index) {
             moduloViendo = index;
             renderModulos();
-            cambiarTab('inicio'); // Te lleva automáticamente al reproductor de inicio
-            window.scrollTo({ top: 0, behavior: 'smooth' }); // Sube la pantalla
+            cambiarTab('inicio'); 
+            window.scrollTo({ top: 0, behavior: 'smooth' }); 
         }
 
         function avanzarProgreso() {
@@ -565,9 +609,9 @@
                 
                 let btnHtml = '';
                 if (isCompleted) {
-                    btnHtml = `<button class="btn" style="background: var(--success); width: 100%; padding: 8px; font-size: 0.9rem;" onclick="toggleTutorial('${tut.ytId}')">✅ Completado</button>`;
+                    btnHtml = `<button class="btn" style="background: var(--success); width: 100%; padding: 10px; font-size: 0.95rem;" onclick="toggleTutorial('${tut.ytId}')">✅ Completado</button>`;
                 } else {
-                    btnHtml = `<button class="btn" style="background: var(--bg-color); color: var(--text-dark); border: 1px solid var(--border); width: 100%; padding: 8px; font-size: 0.9rem;" onclick="toggleTutorial('${tut.ytId}')">Marcar como visto</button>`;
+                    btnHtml = `<button class="btn" style="background: var(--bg-color); color: var(--text-dark); border: 1px solid var(--border); width: 100%; padding: 10px; font-size: 0.95rem;" onclick="toggleTutorial('${tut.ytId}')">Marcar como visto</button>`;
                 }
 
                 card.innerHTML = `
