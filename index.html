@@ -362,16 +362,13 @@
         let moduloViendo = progresoActual; 
         let tutorialesCompletados = JSON.parse(localStorage.getItem('globoflexia_tutoriales_completados')) || [];
 
-      // --- 3. FUNCIONES DE AUTENTICACIÓN ---
-        
-        // Escuchar el cambio en el estado de autenticación de Firebase
+        // --- 3. FUNCIONES DE AUTENTICACIÓN (REDIRECCIÓN) ---
         auth.onAuthStateChanged((user) => {
             if (user) {
                 document.getElementById('login-view').classList.add('hidden');
                 document.getElementById('app-view').classList.remove('hidden');
                 document.getElementById('user-greeting').innerText = `Hola, ${user.displayName}`;
                 
-                // Guardamos el usuario localmente para el foro de consultas
                 localStorage.setItem('globoflexia_user', user.displayName);
                 renderizarApp();
             } else {
@@ -380,11 +377,11 @@
             }
         });
 
-        // Capturar y procesar el resultado si venimos de una redirección de Google
+        // Captura el estado después de la redirección al volver de Google
         auth.getRedirectResult()
             .then((result) => {
                 if (result.user) {
-                    console.log("Sesión restaurada tras redirección exitosa para:", result.user.displayName);
+                    console.log("Sesión activa de: ", result.user.displayName);
                 }
             })
             .catch((error) => {
@@ -396,25 +393,16 @@
                 }
             });
 
-        // Nueva función robusta utilizando redirección
         function iniciarSesionConGoogle() {
             const errorDiv = document.getElementById('login-error');
             errorDiv.style.display = 'none'; 
 
-            // Redireccionar al flujo oficial de login de Google
             auth.signInWithRedirect(provider)
                 .catch((error) => {
                     console.error("Error al iniciar sesión:", error);
                     errorDiv.innerText = "Error al iniciar sesión con Google. Intenta nuevamente.";
                     errorDiv.style.display = 'block';
                 });
-        }
-
-        function cerrarSesion() {
-            auth.signOut().then(() => {
-                localStorage.removeItem('globoflexia_user');
-                location.reload(); 
-            });
         }
 
         function cerrarSesion() {
