@@ -309,6 +309,12 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
 
     <script>
+     <!-- SDK de Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+
+    <script>
         // --- 1. CONFIGURACIÓN DE FIREBASE ---
         const firebaseConfig = {
             apiKey: "AIzaSyDShp-WOGdI3_ST8WoTLa6Jm5UqGludJ38",
@@ -324,7 +330,10 @@
         const auth = firebase.auth();
         const provider = new firebase.auth.GoogleAuthProvider();
 
-        // --- 2. BASE DE DATOS LOCAL Y VARIABLES ---
+        // Evita que pida seleccionar cuenta de Google repetitivamente si ya inició sesión
+        provider.setCustomParameters({ prompt: 'select_account' });
+
+        // --- 2. VARIABLES DE ESTADO Y DATOS LOCALES ---
         const modulosData = [
             { id: 0, title: "Introducción", desc: "Bienvenida y explicación de cómo trabajaremos durante las próximas semanas.", ytId: "W0r-6JJ8SZo", available: true },
             { id: 1, title: "Módulo 1", desc: "Cómo está organizado el curso y construcción de una base sólida antes de crear nuestras primeras figuras.", ytId: "uabgTdjDMfk", available: true },
@@ -362,26 +371,36 @@
         let moduloViendo = progresoActual; 
         let tutorialesCompletados = JSON.parse(localStorage.getItem('globoflexia_tutoriales_completados')) || [];
 
-        // --- 3. FUNCIONES DE AUTENTICACIÓN (REDIRECCIÓN) ---
+        // --- 3. FUNCIONES DE AUTENTICACIÓN MEJORADAS ---
+
+        // Función centralizada para controlar el flujo visual de ingreso
+        function ingresarAPanel(user) {
+            document.getElementById('login-view').classList.add('hidden');
+            document.getElementById('app-view').classList.remove('hidden');
+            document.getElementById('user-greeting').innerText = `Hola, ${user.displayName}`;
+            
+            localStorage.setItem('globoflexia_user', user.displayName);
+            renderizarApp();
+        }
+
+        // Escuchar el cambio en el estado de autenticación (Se ejecuta al cargar la página)
         auth.onAuthStateChanged((user) => {
             if (user) {
-                document.getElementById('login-view').classList.add('hidden');
-                document.getElementById('app-view').classList.remove('hidden');
-                document.getElementById('user-greeting').innerText = `Hola, ${user.displayName}`;
-                
-                localStorage.setItem('globoflexia_user', user.displayName);
-                renderizarApp();
+                // Si el usuario ya está logueado, lo enviamos directo al panel
+                ingresarAPanel(user);
             } else {
+                // Si no hay sesión, mostramos el login
                 document.getElementById('login-view').classList.remove('hidden');
                 document.getElementById('app-view').classList.add('hidden');
             }
         });
 
-        // Captura el estado después de la redirección al volver de Google
+        // Captura el resultado al volver de la redirección de Google
         auth.getRedirectResult()
             .then((result) => {
-                if (result.user) {
-                    console.log("Sesión activa de: ", result.user.displayName);
+                if (result && result.user) {
+                    console.log("Acceso exitoso tras redirección:", result.user.displayName);
+                    ingresarAPanel(result.user);
                 }
             })
             .catch((error) => {
@@ -395,13 +414,15 @@
 
         function iniciarSesionConGoogle() {
             const errorDiv = document.getElementById('login-error');
-            errorDiv.style.display = 'none'; 
+            if (errorDiv) errorDiv.style.display = 'none'; 
 
             auth.signInWithRedirect(provider)
                 .catch((error) => {
                     console.error("Error al iniciar sesión:", error);
-                    errorDiv.innerText = "Error al iniciar sesión con Google. Intenta nuevamente.";
-                    errorDiv.style.display = 'block';
+                    if (errorDiv) {
+                        errorDiv.innerText = "Error al conectar con Google. Intenta nuevamente.";
+                        errorDiv.style.display = 'block';
+                    }
                 });
         }
 
