@@ -195,13 +195,20 @@
       <section id="tab-videos">
         <div class="grid lg:grid-cols-3 gap-6">
           <div class="card p-6">
-            <h2 class="text-3xl font-extrabold mb-3">Alumno</h2>
-            <input id="studentName" class="input mb-3" type="text" placeholder="Tu nombre">
-            <button onclick="saveStudentName()" class="btn-primary w-full">Guardar nombre</button>
+            <p class="text-sm font-extrabold text-[#40B89C] mb-2">👋 Bienvenido al aula</p>
+            <h2 id="welcomeStudentName" class="text-3xl font-extrabold mb-3">¡Hola!</h2>
+            <p class="text-slate-600">Continúa aprendiendo paso a paso y practica cada técnica antes de avanzar.</p>
 
             <div class="mt-6 p-5 rounded-3xl bg-[#EAF8FF]">
-              <h3 class="text-xl font-extrabold">Ruta rápida</h3>
-              <p class="text-sm text-slate-600">Mira el video, practica la figura y marca como visto.</p>
+              <p class="text-sm font-extrabold text-slate-500">Tu siguiente paso</p>
+              <h3 id="nextModuleName" class="text-2xl font-extrabold mt-1">Introducción</h3>
+              <p id="welcomeProgressText" class="text-sm text-slate-600 mt-2">0 de 21 módulos completados</p>
+              <button id="continueModuleButton" class="btn-primary w-full mt-4">Continuar</button>
+            </div>
+
+            <div class="mt-5 p-5 rounded-3xl border border-slate-200">
+              <h3 class="text-lg font-extrabold">📌 Consejo</h3>
+              <p class="text-sm text-slate-600 mt-1">Practica varias veces cada torsión antes de pasar a la siguiente figura.</p>
             </div>
           </div>
 
@@ -454,9 +461,7 @@
       renderPracticeVideos();
       selectVideo(videos.find(video => video.available).id);
       updateProgress();
-
-      const savedName = localStorage.getItem("studentName");
-      if (savedName) document.getElementById("studentName").value = savedName;
+      updateWelcomePanel();
     }
 
     if (localStorage.getItem("courseAccess") === "true") {
@@ -526,7 +531,29 @@
       }
       renderVideoList();
       updateProgress();
+      updateWelcomePanel();
     };
+
+    function updateWelcomePanel() {
+      const name = currentStudentName || localStorage.getItem("studentName") || "artista de globos";
+      const nextVideo = videos.find(video => video.available && !watched.includes(video.id))
+        || videos.find(video => video.available);
+      const done = videos.filter(video => video.available && watched.includes(video.id)).length;
+
+      document.getElementById("welcomeStudentName").textContent = `¡Hola, ${name}!`;
+      document.getElementById("nextModuleName").textContent = nextVideo ? nextVideo.title : "¡Contenido completado!";
+      document.getElementById("welcomeProgressText").textContent = `${done} de ${videos.length} módulos completados`;
+
+      const button = document.getElementById("continueModuleButton");
+      button.textContent = nextVideo ? "Continuar" : "Repasar módulos";
+      button.onclick = () => {
+        const target = nextVideo || videos.find(video => video.available);
+        if (target) {
+          selectVideo(target.id);
+          document.getElementById("videoFrame").scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      };
+    }
 
     function updateProgress() {
       const availableVideos = videos.filter(video => video.available);
@@ -536,15 +563,6 @@
       document.getElementById("progressText").textContent = `${done} de ${total} módulos completados · ${percent}%`;
       document.getElementById("progressFill").style.width = `${percent}%`;
     }
-
-    window.saveStudentName = function () {
-      const name = document.getElementById("studentName").value.trim();
-      if (!name) return alert("Escribe tu nombre 🎈");
-      currentStudentName = name;
-      localStorage.setItem("studentName", name);
-      document.getElementById("userEmail").textContent = name;
-      alert("Nombre guardado 🎈");
-    };
 
     window.sendQuestion = async function () {
       const question = document.getElementById("studentQuestion").value.trim();
