@@ -37,11 +37,14 @@
             background-color: var(--primary);
             color: var(--white);
             border: none;
-            padding: 10px 20px;
+            padding: 12px 24px;
             border-radius: 6px;
             cursor: pointer;
             font-weight: 600;
             transition: background 0.3s;
+            display: inline-block;
+            text-align: center;
+            font-size: 1rem;
         }
         .btn:hover { background-color: var(--primary-hover); }
         .btn:disabled { background-color: var(--locked); cursor: not-allowed; }
@@ -111,16 +114,98 @@
 
         main { padding: 30px; max-width: 1200px; margin: 0 auto; width: 100%; flex: 1; }
 
-        /* Secciones */
         .section-header { margin-bottom: 30px; }
         
-        /* Modulos Grid */
-        .modules-grid, .tutorials-grid {
+        /* Reproductor Principal de Módulos (Nuevo Diseño) */
+        .main-player-wrapper {
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            margin-bottom: 40px;
+        }
+        
+        .main-video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 ratio */
+            height: 0;
+            background: #000;
+            pointer-events: auto;
+        }
+        
+        .main-video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+        
+        .main-video-container.locked-bg {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 1.5rem;
+            padding-bottom: 40%;
+            background: var(--locked);
+        }
+
+        .main-player-info {
+            padding: 30px;
+        }
+        .main-player-info h2 { margin-bottom: 15px; color: var(--text-dark); font-size: 1.8rem; }
+        .main-player-info p { color: var(--text-light); font-size: 1.1rem; line-height: 1.6; margin-bottom: 20px; }
+
+        /* Navegación de botones inferiores */
+        .module-nav-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px;
+        }
+        
+        .mod-nav-btn {
+            background: var(--white);
+            border: 2px solid var(--border);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-dark);
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .mod-nav-btn:hover:not(.locked) {
+            border-color: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+        
+        .mod-nav-btn.active {
+            border-color: var(--primary);
+            background: var(--bg-color);
+            color: var(--primary);
+        }
+        
+        .mod-nav-btn.locked {
+            opacity: 0.6;
+            background: #f3f4f6;
+            cursor: not-allowed;
+            color: var(--text-light);
+        }
+
+        /* Otras grillas (Tutoriales, Descargas) */
+        .tutorials-grid, .downloads-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 20px;
         }
-
+        
         .card {
             background: var(--white);
             border-radius: 10px;
@@ -130,84 +215,28 @@
             position: relative;
         }
         .card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px rgba(0,0,0,0.1); }
-        .card.locked { opacity: 0.7; filter: grayscale(100%); pointer-events: none; }
         
         .video-container {
             position: relative;
-            padding-bottom: 56.25%; /* 16:9 */
+            padding-bottom: 56.25%;
             height: 0;
             background: #000;
-            pointer-events: auto;
         }
-        
-        /* Iframe para YouTube */
         .video-container iframe {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: 0;
+            top: 0; left: 0; width: 100%; height: 100%; border: 0;
         }
-        
-        .video-container.locked-bg {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            font-size: 1.2rem;
-            padding-bottom: 0;
-            height: 170px;
-            background: var(--text-light);
-        }
+        .tutorials-grid .video-container { padding-bottom: 177.77%; }
 
         .card-body { padding: 20px; }
-        .card-title { font-size: 1.1rem; margin-bottom: 10px; font-weight: 700; }
-        .card-desc { font-size: 0.9rem; color: var(--text-light); margin-bottom: 15px; }
         
-        /* Tutorial Shorts especiales */
-        .tutorials-grid .video-container { padding-bottom: 177.77%; /* 9:16 Shorts ratio */ }
-
         /* Blog / Dudas */
         .consultas-container { max-width: 800px; margin: 0 auto; }
-        
-        .consulta-form {
-            background: var(--white);
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            margin-bottom: 30px;
-        }
-        
-        .consulta-form textarea {
-            width: 100%;
-            padding: 15px;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            outline: none;
-            resize: vertical;
-            margin-bottom: 15px;
-            font-size: 1rem;
-        }
-        
+        .consulta-form { background: var(--white); padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 30px; }
+        .consulta-form textarea { width: 100%; padding: 15px; border: 1px solid var(--border); border-radius: 6px; outline: none; resize: vertical; margin-bottom: 15px; font-size: 1rem; }
         .consulta-form textarea:focus { border-color: var(--primary); }
-
-        .comentario-card {
-            background: var(--white);
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
-            margin-bottom: 15px;
-            border-left: 4px solid var(--secondary);
-        }
-
-        .comentario-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            font-size: 0.9rem;
-        }
-        
+        .comentario-card { background: var(--white); padding: 20px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.03); margin-bottom: 15px; border-left: 4px solid var(--secondary); }
+        .comentario-header { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.9rem; }
         .comentario-header strong { color: var(--primary); font-size: 1rem; }
         .comentario-header .fecha { color: var(--text-light); }
         .comentario-body { line-height: 1.5; }
@@ -251,6 +280,7 @@
                 <div class="nav-tab active" onclick="cambiarTab('modulos')">🏠 Inicio</div>
                 <div class="nav-tab" onclick="cambiarTab('modulos')">🎓 Módulos</div>
                 <div class="nav-tab" onclick="cambiarTab('tutoriales')">🎈 Tutoriales</div>
+                <div class="nav-tab" onclick="cambiarTab('descargas')">📄 Descargas</div>
                 <div class="nav-tab" onclick="cambiarTab('consultas')">💬 Preguntas</div>
             </div>
             <div>
@@ -269,14 +299,24 @@
         </section>
 
         <main>
-            <!-- Vista de Modulos -->
+            <!-- Vista de Modulos (NUEVO DISEÑO) -->
             <section id="tab-modulos">
                 <div class="section-header">
-                    <h3 style="color: var(--text-dark);">Ruta de Aprendizaje</h3>
-                    <p>Completa cada módulo para desbloquear el siguiente. Progreso: <span id="progress-text">0</span>/5</p>
+                    <h3 style="color: var(--text-dark); font-size: 1.5rem;">Ruta de Aprendizaje</h3>
+                    <p>Completa el video actual para desbloquear el siguiente. Nivel actual: <span id="progress-text" style="font-weight: bold; color: var(--primary);">0</span>/5</p>
                 </div>
-                <div class="modules-grid" id="modules-container">
+                
+                <!-- Reproductor Grande -->
+                <div class="main-player-wrapper" id="main-player-container">
                     <!-- Se inyecta por JS -->
+                </div>
+
+                <!-- Botones de Navegación -->
+                <div style="margin-top: 20px;">
+                    <h3 style="color: var(--text-dark); margin-bottom: 20px;">Selecciona un Módulo:</h3>
+                    <div class="module-nav-grid" id="module-nav-container">
+                        <!-- Se inyecta por JS -->
+                    </div>
                 </div>
             </section>
 
@@ -291,21 +331,39 @@
                 </div>
             </section>
 
+            <!-- Vista de Descargas -->
+            <section id="tab-descargas" class="hidden">
+                <div class="section-header">
+                    <h3 style="color: var(--text-dark);">Recursos y Archivos</h3>
+                    <p>Descarga el material complementario para acompañar tu aprendizaje.</p>
+                </div>
+                <div class="downloads-grid">
+                    <div class="card" style="padding: 30px; display: flex; flex-direction: column; align-items: center; text-align: center;">
+                        <div style="font-size: 50px; margin-bottom: 15px;">PDF</div>
+                        <h4 style="margin-bottom: 10px; color: var(--text-dark);">Guía de Materiales</h4>
+                        <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 20px; flex-grow: 1;">Lista completa de marcas recomendadas, medidas de globos y tipos de infladores ideales.</p>
+                        <a href="URL_DE_TU_PDF_AQUI" target="_blank" download class="btn" style="text-decoration: none; width: 100%;">Descargar Guía</a>
+                    </div>
+                    <div class="card" style="padding: 30px; display: flex; flex-direction: column; align-items: center; text-align: center;">
+                        <div style="font-size: 50px; margin-bottom: 15px;">📜</div>
+                        <h4 style="margin-bottom: 10px; color: var(--text-dark);">Tabla de Torciones</h4>
+                        <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 20px; flex-grow: 1;">Un resumen rápido con los nombres y técnicas de cada torción básica para imprimir.</p>
+                        <a href="URL_DE_TU_PDF_AQUI" target="_blank" download class="btn" style="text-decoration: none; width: 100%;">Descargar Tabla</a>
+                    </div>
+                </div>
+            </section>
+
             <!-- Vista de Dudas y Consultas -->
             <section id="tab-consultas" class="hidden">
                 <div class="section-header" style="max-width: 800px; margin: 0 auto 30px auto;">
                     <h3 style="color: var(--text-dark);">Foro de Consultas</h3>
                     <p>¿Tienes dudas sobre algún módulo o tutorial? Escríbenos aquí y la comunidad te ayudará.</p>
                 </div>
-                
                 <div class="consultas-container">
-                    <!-- Formulario de nueva consulta -->
                     <div class="consulta-form">
                         <textarea id="nueva-consulta" rows="4" placeholder="Escribe tu duda, pregunta o comentario aquí..."></textarea>
                         <button class="btn" onclick="publicarConsulta()">Publicar Consulta</button>
                     </div>
-
-                    <!-- Lista de comentarios -->
                     <div id="lista-consultas">
                         <!-- Se inyecta por JS -->
                     </div>
@@ -314,18 +372,11 @@
         </main>
     </div>
 
-    <!-- Agregar el SDK de Firebase (versión compat para no romper el código clásico) -->
+    <!-- SDK de Firebase -->
     <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
 
     <script>
-        // --- PREPARACIÓN PARA FIREBASE (Próximo paso) ---
-        const firebaseConfig = {
-            // Tu configuración de Firebase irá aquí pronto
-        };
-        // firebase.initializeApp(firebaseConfig);
-        // const db = firebase.firestore();
-
         // --- BASE DE DATOS LOCAL ---
         const PASSWORD_CORRECTA = "globoflexiaTan2026";
         
@@ -362,7 +413,9 @@
             { autor: "Soporte Técnico", texto: "¡Bienvenidos al foro oficial del curso! Dejen aquí cualquier duda que tengan con respecto a los materiales o las técnicas de globoflexia.", fecha: new Date().toLocaleDateString() }
         ];
 
+        // Estado del usuario
         let progresoActual = parseInt(localStorage.getItem('globoflexia_progreso')) || 0;
+        let moduloViendo = progresoActual; // Controla qué video se está mostrando en grande
 
         // --- FUNCIONES DE AUTENTICACIÓN ---
         function verificarSesion() {
@@ -400,78 +453,114 @@
             location.reload();
         }
 
-        // --- NAVEGACIÓN ---
         function cambiarTab(tabId) {
             document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
             event.target.classList.add('active');
 
             document.getElementById('tab-modulos').classList.add('hidden');
             document.getElementById('tab-tutoriales').classList.add('hidden');
+            document.getElementById('tab-descargas').classList.add('hidden');
             document.getElementById('tab-consultas').classList.add('hidden');
 
             document.getElementById(`tab-${tabId}`).classList.remove('hidden');
         }
 
-        // --- RENDERIZADO DE MÓDULOS ---
+        // --- RENDERIZADO PRINCIPAL ---
         function renderizarApp() {
+            // Asegurarse de que el modulo viendo no exceda el progreso
+            if (moduloViendo > progresoActual) moduloViendo = progresoActual;
+            
             renderModulos();
             renderTutoriales();
             renderConsultas();
         }
 
         function renderModulos() {
-            const container = document.getElementById('modules-container');
-            container.innerHTML = '';
+            const mainContainer = document.getElementById('main-player-container');
+            const navContainer = document.getElementById('module-nav-container');
             
             document.getElementById('progress-text').innerText = progresoActual;
 
+            // 1. Renderizar Reproductor Principal
+            const modActual = modulosData[moduloViendo];
+            const isAvailable = modActual.available;
+            
+            let playerHTML = '';
+            let btnHTML = '';
+
+            if(isAvailable) {
+                playerHTML = `
+                <div class="main-video-container">
+                    <iframe src="https://www.youtube.com/embed/${modActual.ytId}?controls=0&modestbranding=1&rel=0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>`;
+            } else {
+                playerHTML = `
+                <div class="main-video-container locked-bg">
+                    <span>🔒 Próximamente disponible</span>
+                </div>`;
+            }
+
+            // Si está viendo exactamente el nivel en el que va (no uno anterior), mostramos botón avanzar
+            if(isAvailable && moduloViendo === progresoActual && progresoActual < 4) {
+                btnHTML = `<button class="btn" style="margin-top: 15px;" onclick="avanzarProgreso()">✅ Marcar como Visto y Avanzar</button>`;
+            } else if (moduloViendo < progresoActual) {
+                btnHTML = `<div style="color: var(--success); font-weight: bold; font-size: 1.1rem; margin-top: 15px;">✓ Módulo Completado</div>`;
+            }
+
+            mainContainer.innerHTML = `
+                ${playerHTML}
+                <div class="main-player-info">
+                    <h2>${modActual.title}</h2>
+                    <p>${modActual.desc}</p>
+                    ${btnHTML}
+                </div>
+            `;
+
+            // 2. Renderizar Cuadrícula Inferior de Botones
+            navContainer.innerHTML = '';
             modulosData.forEach((mod, index) => {
-                let estaDesbloqueado = false;
-                if(mod.available) {
-                    if(index <= progresoActual) estaDesbloqueado = true;
-                }
+                let statusIcon = '';
+                let isLocked = false;
+                let activeClass = (index === moduloViendo) ? 'active' : '';
 
-                const card = document.createElement('div');
-                card.className = `card ${estaDesbloqueado || !mod.available ? '' : 'locked'}`;
-                if(!mod.available) card.classList.add('locked');
-
-                let mediaHTML = '';
-                if(mod.available && estaDesbloqueado) {
-                    mediaHTML = `
-                    <div class="video-container">
-                        <iframe src="https://www.youtube.com/embed/${mod.ytId}?controls=0&modestbranding=1&rel=0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                    </div>`;
+                if (!mod.available || index > progresoActual) {
+                    isLocked = true;
+                    statusIcon = '🔒';
+                } else if (index < progresoActual) {
+                    statusIcon = '✅';
                 } else {
-                    mediaHTML = `
-                    <div class="video-container locked-bg">
-                        <span>🔒 ${mod.available ? 'Desbloquea el módulo anterior' : 'Próximamente'}</span>
-                    </div>`;
+                    statusIcon = '▶️';
                 }
 
-                let btnHTML = '';
-                if(mod.available && estaDesbloqueado && index === progresoActual && index < 4) {
-                    btnHTML = `<button class="btn" style="width:100%" onclick="avanzarProgreso()">Marcar como Visto y Avanzar</button>`;
-                } else if(index < progresoActual) {
-                    btnHTML = `<div style="color: var(--success); font-weight: bold;">✓ Completado</div>`;
-                }
-
-                card.innerHTML = `
-                    ${mediaHTML}
-                    <div class="card-body">
-                        <h4 class="card-title">${mod.title}</h4>
-                        <p class="card-desc">${mod.desc}</p>
-                        ${btnHTML}
-                    </div>
+                const btn = document.createElement('div');
+                btn.className = `mod-nav-btn ${isLocked ? 'locked' : ''} ${activeClass}`;
+                btn.innerHTML = `
+                    <span style="font-size: 1.5rem;">${statusIcon}</span>
+                    <span>${mod.title}</span>
                 `;
-                container.appendChild(card);
+                
+                if(!isLocked) {
+                    btn.onclick = () => cambiarModuloViendo(index);
+                }
+                
+                navContainer.appendChild(btn);
             });
+        }
+
+        function cambiarModuloViendo(index) {
+            moduloViendo = index;
+            renderModulos();
+            // Scroll suave hacia arriba para ver el video
+            document.getElementById('tab-modulos').scrollIntoView({ behavior: 'smooth' });
         }
 
         function avanzarProgreso() {
             if(progresoActual < 4) {
                 progresoActual++;
+                moduloViendo = progresoActual; // Cambiar automáticamente la vista al nuevo nivel
                 localStorage.setItem('globoflexia_progreso', progresoActual);
                 renderModulos();
+                document.getElementById('tab-modulos').scrollIntoView({ behavior: 'smooth' });
             }
         }
 
@@ -499,7 +588,6 @@
         function renderConsultas() {
             const contenedorLista = document.getElementById('lista-consultas');
             contenedorLista.innerHTML = '';
-
             const comentariosInvertidos = [...consultasData].reverse();
 
             comentariosInvertidos.forEach(c => {
