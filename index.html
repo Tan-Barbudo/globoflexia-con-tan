@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Globoflexia con Tan Barbudo</title>
+    <style>
+        :root {
+            --primary: #EE4040;
+            --primary-hover: #d93030;
+            --secondary: #40B89C;
+            --bg-color: #EAF8FF;
+            --text-dark: #22333B;
+            --text-light: #667085;
+            --white: #ffffff;
+            --success: #40B89C;
+            --locked: #A5A5A5;
+            --border: #E4EAF0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            min-height: 100vh;
+        }
+
+        /* Utilidades */
+        .hidden { display: none !important; }
+        .btn {
+            background-color: var(--primary);
+            color: var(--white);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-block;
+            text-align: center;
+            font-size: 1rem;
+        }
+        .btn:hover { background-color: var(--primary-hover); }
+        .btn:disabled { background-color: var(--locked); cursor: not-allowed; }
+        
+        /* LOGIN Pantalla */
+        #login-view {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            padding: 15px;
+        }
+
+        .login-card {
+            background: var(--white);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .login-card h1 { margin-bottom: 10px; color: var(--primary); }
+        .login-card p { margin-bottom: 25px; color: var(--text-light); }
+        .error-msg { color: #EF4444; font-size: 0.875rem; margin-top: 10px; display: none; }
+
+        /* APP PRINCIPAL */
+        #app-view { display: flex; flex-direction: column; min-height: 100vh; }
+        
+        header {
+            background: var(--white);
+            padding: 15px 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .nav-tabs { display: flex; gap: 20px; }
+        .nav-tab {
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-light);
+            padding: 5px 0;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        .nav-tab:hover, .nav-tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        main { padding: 30px; max-width: 1200px; margin: 0 auto; width: 100%; flex: 1; }
+
+        .section-header { margin-bottom: 30px; }
+        
+        /* Reproductor Principal de Inicio */
+        .main-player-wrapper {
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            margin-bottom: 40px;
+        }
+        
+        .main-video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            background: #000;
+            pointer-events: auto;
+        }
+        
+        .main-video-container iframe {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%; border: 0;
+        }
+        
+        .main-video-container.locked-bg {
+            display: flex; justify-content: center; align-items: center;
+            color: white; font-size: 1.5rem; padding-bottom: 40%; background: var(--locked);
+        }
+
+        .main-player-info { padding: 30px; }
+        .main-player-info h2 { margin-bottom: 15px; color: var(--text-dark); font-size: 1.8rem; }
+        .main-player-info p { color: var(--text-light); font-size: 1.1rem; line-height: 1.6; margin-bottom: 20px; }
+
+        /* Navegación de botones */
+        .module-nav-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px;
+        }
+        
+        .mod-nav-btn {
+            background: var(--white); border: 2px solid var(--border); padding: 15px;
+            border-radius: 8px; text-align: center; cursor: pointer; font-weight: 600;
+            color: var(--text-dark); transition: all 0.2s; display: flex; flex-direction: column;
+            align-items: center; gap: 5px;
+        }
+        
+        .mod-nav-btn:hover:not(.locked) { border-color: var(--primary-hover); transform: translateY(-2px); }
+        .mod-nav-btn.active { border-color: var(--primary); background: var(--bg-color); color: var(--primary); }
+        .mod-nav-btn.locked { opacity: 0.6; background: #f3f4f6; cursor: not-allowed; color: var(--text-light); }
+
+        /* Grilla Tutoriales */
+        .tutorials-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .card { background: var(--white); border-radius: 10px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: transform 0.2s; position: relative; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px rgba(0,0,0,0.1); }
+        .video-container { position: relative; padding-bottom: 56.25%; height: 0; background: #000; }
+        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
+        .tutorials-grid .video-container { padding-bottom: 177.77%; }
+        .card-body { padding: 15px; }
+        
+        /* Blog / Dudas */
+        .consultas-container { max-width: 800px; margin: 0 auto; }
+        .consulta-form { background: var(--white); padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 30px; }
+        .consulta-form textarea { width: 100%; padding: 15px; border: 1px solid var(--border); border-radius: 6px; outline: none; resize: vertical; margin-bottom: 15px; font-size: 1rem; }
+        .consulta-form textarea:focus { border-color: var(--primary); }
+        .comentario-card { background: var(--white); padding: 20px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.03); margin-bottom: 15px; border-left: 4px solid var(--secondary); }
+        .comentario-header { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.9rem; }
+        .comentario-header strong { color: var(--primary); font-size: 1rem; }
+        .comentario-header .fecha { color: var(--text-light); }
+        .comentario-body { line-height: 1.5; }
+
+        @media (max-width: 768px) {
+            header { padding: 12px 15px; }
+            .header-brand { order: 1; }
+            .header-user { order: 2; }
+            .nav-tabs { order: 3; width: 100%; justify-content: space-between; overflow-x: auto; padding-bottom: 5px; }
+            .nav-tabs::-webkit-scrollbar { display: none; }
+            .header-brand img { width: 45px !important; }
+            .brand-text h2 { font-size: 1.2rem !important; }
+            .brand-text p { display: none; }
+            #user-greeting { display: none; }
+            .nav-tab { font-size: 0.9rem; white-space: nowrap; }
+            main { padding: 15px; }
+            .main-player-info { padding: 20px; }
+            .main-player-info h2 { font-size: 1.4rem; }
+            .section-header h3 { font-size: 1.3rem !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Pantalla de Login -->
+    <div id="login-view">
+        <div class="login-card">
+            <img src="logo.png" alt="Tan Barbudo" style="width:120px;display:block;margin:0 auto 20px;">
+            <h1>Globoflexia con Tan</h1>
+            <p>Curso creativo y personalizado</p>
+            
+            <p id="login-error" class="error-msg">Ocurrió un error al iniciar sesión.</p>
+            
+            <button class="btn" style="width: 100%; margin-top: 10px; background-color: #4285F4; display: flex; align-items: center; justify-content: center; gap: 10px;" onclick="iniciarSesionConGoogle()">
+                <span style="background-color: white; border-radius: 50%; padding: 2px; width: 20px; height: 20px; display: inline-block; color: #4285F4; font-weight: bold;">G</span>
+                Ingresar con Google
+            </button>
+        </div>
+    </div>
+
+    <!-- Aplicación Principal -->
+    <div id="app-view" class="hidden">
+        <header>
+            <div class="header-brand" style="display:flex;align-items:center;gap:12px;">
+                <img src="logo.png" style="width:60px;">
+                <div class="brand-text">
+                    <h2 style="margin:0;color:#EE4040;">Globoflexia con Tan</h2>
+                    <p style="margin:0;font-size:13px;color:#666;">Curso creativo y personalizado</p>
+                </div>
+            </div>
+            
+            <div class="nav-tabs">
+                <div class="nav-tab active" onclick="cambiarTab('inicio')" data-target="inicio">🏠 Inicio</div>
+                <div class="nav-tab" onclick="cambiarTab('modulos')" data-target="modulos">🎓 Módulos</div>
+                <div class="nav-tab" onclick="cambiarTab('tutoriales')" data-target="tutoriales">🎈 Tutoriales</div>
+                <div class="nav-tab" onclick="cambiarTab('consultas')" data-target="consultas">💬 Preguntas</div>
+            </div>
+            
+            <div class="header-user" style="display:flex;align-items:center;gap:15px;">
+                <span id="user-greeting" style="font-weight: 600;"></span>
+                <button class="btn" style="padding: 8px 16px; font-size: 0.9rem;" onclick="cerrarSesion()">Salir</button>
+            </div>
+        </header>
+
+        <!-- Banner Principal -->
+        <section style="max-width:1200px; margin: 20px 15px; background:white; border-radius:20px; overflow:hidden; box-shadow:0 8px 20px rgba(0,0,0,.08); @media(min-width: 768px){margin: 30px auto;}">
+            <img src="banner.png" style="width:100%;display:block;">
+            <div style="padding: 25px; @media(min-width: 768px){padding: 35px;}">
+                <h1 style="font-size: clamp(1.6rem, 4vw, 2.5rem); line-height: 1.3; margin-bottom:15px; color: var(--text-dark);">
+                    Dios te ha dado creatividad... ¡es momento de desarrollarla! 🎈
+                </h1>
+                <p style="font-size: clamp(0.95rem, 2vw, 1.125rem); color:#666;">
+                    Aprende paso a paso y transforma un simple globo en una herramienta para sorprender, servir y bendecir.
+                </p>
+            </div>
+        </section>
+
+        <main>
+            <!-- Vista de INICIO -->
+            <section id="tab-inicio">
+                <div class="section-header">
+                    <h3 style="color: var(--text-dark); font-size: 1.5rem;">Ruta de Aprendizaje</h3>
+                    <p>Completa el video actual para desbloquear el siguiente. Nivel actual: <span id="progress-text" style="font-weight: bold; color: var(--primary);">0</span>/5</p>
+                </div>
+                
+                <div class="main-player-wrapper" id="main-player-container">
+                    <!-- Se inyecta por JS -->
+                </div>
+            </section>
+
+            <!-- Vista de MÓDULOS -->
+            <section id="tab-modulos" class="hidden">
+                <div class="section-header">
+                    <h3 style="color: var(--text-dark); font-size: 1.5rem;">Selecciona un Módulo</h3>
+                    <p>Repasa las clases que ya tienes desbloqueadas. Haz clic en cualquiera para ver el video.</p>
+                </div>
+
+                <div class="module-nav-grid" id="module-nav-container">
+                    <!-- Se inyecta por JS -->
+                </div>
+            </section>
+
+            <!-- Vista de Tutoriales -->
+            <section id="tab-tutoriales" class="hidden">
+                <div class="section-header">
+                    <h3 style="color: var(--text-dark);">Tutoriales de Práctica Rápida</h3>
+                    <p>Crea figuras increíbles paso a paso (Shorts).</p>
+                </div>
+                <div class="tutorials-grid" id="tutorials-container">
+                    <!-- Se inyecta por JS -->
+                </div>
+            </section>
+
+            <!-- Vista de Dudas y Consultas -->
+            <section id="tab-consultas" class="hidden">
+                <div class="section-header" style="max-width: 800px; margin: 0 auto 30px auto;">
+                    <h3 style="color: var(--text-dark);">Foro de Consultas</h3>
+                    <p>¿Tienes dudas sobre algún módulo o tutorial? Escríbenos aquí y la comunidad te ayudará.</p>
+                </div>
+                <div class="consultas-container">
+                    <div class="consulta-form">
+                        <textarea id="nueva-consulta" rows="4" placeholder="Escribe tu duda, pregunta o comentario aquí..."></textarea>
+                        <button class="btn" onclick="publicarConsulta()">Publicar Consulta</button>
+                    </div>
+                    <div id="lista-consultas">
+                        <!-- Se inyecta por JS -->
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- SDK de Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+
+    <script>
+        // --- 1. CONFIGURACIÓN DE FIREBASE ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyDshp-WOGdI3_ST8WoTLa6Jm5UqGludJ38",
+            authDomain: "globoflexia-tan-barbudo.firebaseapp.com",
+            projectId: "globoflexia-tan-barbudo",
+            storageBucket: "globoflexia-tan-barbudo.firebasestorage.app",
+            messagingSenderId: "372829377933",
+            appId: "1:372829377933:web:5f0686db4eb7e74f68d9c4",
+            measurementId: "G-8TNL59G05J"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const provider = new firebase.auth.GoogleAuthProvider();
+
+        // --- 2. BASE DE DATOS LOCAL Y VARIABLES ---
+        const modulosData = [
+            { id: 0, title: "Introducción", desc: "Bienvenida y explicación de cómo trabajaremos durante las próximas semanas.", ytId: "W0r-6JJ8SZo", available: true },
+            { id: 1, title: "Módulo 1", desc: "Cómo está organizado el curso y construcción de una base sólida antes de crear nuestras primeras figuras.", ytId: "uabgTdjDMfk", available: true },
+            { id: 2, title: "Módulo 2", desc: "Tipos de infladores para globoflexia, sus características, ventajas y cuándo utilizar cada uno.", ytId: "mu4jCp8BN3o", available: true },
+            { id: 3, title: "Módulo 3", desc: "Conoce a fondo el material, tipos de globos, medidas y cómo elegir calidad.", ytId: "NNaU2kGoMxY", available: true },
+            { id: 4, title: "Módulo 4", desc: "Técnicas fundamentales: inflar correctamente, nudos seguros y torciones básicas.", ytId: "991rgpDtq1g", available: true },
+            { id: 5, title: "Módulo 5 al 16 + Bonus", desc: "Contenido avanzado, figuras complejas y técnicas de decoración profesional.", ytId: "", available: false }
+        ];
+
+        const tutorialesData = [
+            { title: "Serpiente", ytId: "IHlMd2KkE5Y" },
+            { title: "Cangrejo", ytId: "ItfPu3jZ25g" },
+            { title: "Perro", ytId: "7Ay4HbAYWbI" },
+            { title: "Pulpo", ytId: "oQc3BjYo0-o" },
+            { title: "Cruz", ytId: "qQ6zrk8GADk" },
+            { title: "Ratón Volador", ytId: "W83CIGJfk7o" },
+            { title: "Gato", ytId: "y8EiwTbj3ow" },
+            { title: "Conejo", ytId: "Z9rCt_X0kTc" },
+            { title: "Dinosaurio", ytId: "iKBwsdc7aEU" },
+            { title: "Pony", ytId: "_j2SJgQOEB0" },
+            { title: "Corazón", ytId: "7faPIOkhalo" },
+            { title: "Flor", ytId: "jkDQqBiI8lU" },
+            { title: "Estrella/Copo", ytId: "KYHJv1DNMoU" },
+            { title: "Flor de Pulsera", ytId: "UjuvTMRMJL8" },
+            { title: "Perro con retazos", ytId: "igi1ZJWvbKc" },
+            { title: "Oso", ytId: "ujmuGc46E1E" },
+            { title: "Uvas", ytId: "Y0VCbVJNI8M" }
+        ];
+
+        let consultasData = JSON.parse(localStorage.getItem('globoflexia_consultas')) || [
+            { autor: "Soporte Técnico", texto: "¡Bienvenidos al foro oficial del curso! Dejen aquí cualquier duda que tengan con respecto a los materiales o las técnicas de globoflexia.", fecha: new Date().toLocaleDateString() }
+        ];
+
+        let progresoActual = parseInt(localStorage.getItem('globoflexia_progreso')) || 0;
+        let moduloViendo = progresoActual; 
+        let tutorialesCompletados = JSON.parse(localStorage.getItem('globoflexia_tutoriales_completados')) || [];
+
+        // --- 3. FUNCIONES DE AUTENTICACIÓN ---
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                document.getElementById('login-view').classList.add('hidden');
+                document.getElementById('app-view').classList.remove('hidden');
+                document.getElementById('user-greeting').innerText = `Hola, ${user.displayName}`;
+                
+                // Guardamos el usuario localmente para el foro de consultas
+                localStorage.setItem('globoflexia_user', user.displayName);
+                renderizarApp();
+            } else {
+                document.getElementById('login-view').classList.remove('hidden');
+                document.getElementById('app-view').classList.add('hidden');
+            }
+        });
+
+        function iniciarSesionConGoogle() {
+            const errorDiv = document.getElementById('login-error');
+            errorDiv.style.display = 'none'; 
+
+            auth.signInWithPopup(provider)
+                .catch((error) => {
+                    console.error("Error al iniciar sesión:", error);
+                    errorDiv.innerText = "Error al iniciar sesión con Google. Intenta nuevamente.";
+                    errorDiv.style.display = 'block';
+                });
+        }
+
+        function cerrarSesion() {
+            auth.signOut().then(() => {
+                localStorage.removeItem('globoflexia_user');
+                location.reload(); 
+            });
+        }
+
+        // --- 4. FUNCIONES DE NAVEGACIÓN Y RENDERIZADO ---
+        function cambiarTab(tabId) {
+            document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
+            const activeTab = document.querySelector(`.nav-tab[data-target="${tabId}"]`);
+            if(activeTab) activeTab.classList.add('active');
+
+            document.getElementById('tab-inicio').classList.add('hidden');
+            document.getElementById('tab-modulos').classList.add('hidden');
+            document.getElementById('tab-tutoriales').classList.add('hidden');
+            document.getElementById('tab-consultas').classList.add('hidden');
+
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+        }
+
+        function renderizarApp() {
+            if (moduloViendo > progresoActual) moduloViendo = progresoActual;
+            renderModulos();
+            renderTutoriales();
+            renderConsultas();
+        }
+
+        function renderModulos() {
+            const mainContainer = document.getElementById('main-player-container');
+            const navContainer = document.getElementById('module-nav-container');
+            
+            document.getElementById('progress-text').innerText = progresoActual;
+
+            const modActual = modulosData[moduloViendo];
+            const isAvailable = modActual.available;
+            
+            let playerHTML = '';
+            let btnHTML = '';
+
+            if(isAvailable) {
+                playerHTML = `
+                <div class="main-video-container">
+                    <iframe src="https://www.youtube.com/embed/${modActual.ytId}?controls=0&modestbranding=1&rel=0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>`;
+            } else {
+                playerHTML = `
+                <div class="main-video-container locked-bg">
+                    <span style="font-size: 1.2rem; text-align: center; padding: 0 20px;">🔒 Próximamente disponible</span>
+                </div>`;
+            }
+
+            if(isAvailable && moduloViendo === progresoActual && progresoActual < 4) {
+                btnHTML = `<button class="btn" style="margin-top: 15px; width: 100%;" onclick="avanzarProgreso()">✅ Marcar como Visto y Avanzar</button>`;
+            } else if (moduloViendo < progresoActual) {
+                btnHTML = `<div style="color: var(--success); font-weight: bold; font-size: 1.1rem; margin-top: 15px; text-align: center;">✓ Módulo Completado</div>`;
+            }
+
+            mainContainer.innerHTML = `
+                ${playerHTML}
+                <div class="main-player-info">
+                    <h2>${modActual.title}</h2>
+                    <p>${modActual.desc}</p>
+                    ${btnHTML}
+                </div>
+            `;
+
+            navContainer.innerHTML = '';
+            modulosData.forEach((mod, index) => {
+                let statusIcon = '';
+                let isLocked = false;
+                let activeClass = (index === moduloViendo) ? 'active' : '';
+
+                if (!mod.available || index > progresoActual) {
+                    isLocked = true;
+                    statusIcon = '🔒';
+                } else if (index < progresoActual) {
+                    statusIcon = '✅';
+                } else {
+                    statusIcon = '▶️';
+                }
+
+                const btn = document.createElement('div');
+                btn.className = `mod-nav-btn ${isLocked ? 'locked' : ''} ${activeClass}`;
+                btn.innerHTML = `
+                    <span style="font-size: 1.5rem;">${statusIcon}</span>
+                    <span>${mod.title}</span>
+                `;
+                
+                if(!isLocked) {
+                    btn.onclick = () => cambiarModuloViendo(index);
+                }
+                
+                navContainer.appendChild(btn);
+            });
+        }
+
+        function cambiarModuloViendo(index) {
+            moduloViendo = index;
+            renderModulos();
+            cambiarTab('inicio'); 
+            window.scrollTo({ top: 0, behavior: 'smooth' }); 
+        }
+
+        function avanzarProgreso() {
+            if(progresoActual < 4) {
+                progresoActual++;
+                moduloViendo = progresoActual; 
+                localStorage.setItem('globoflexia_progreso', progresoActual);
+                renderModulos();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        function renderTutoriales() {
+            const container = document.getElementById('tutorials-container');
+            container.innerHTML = '';
+
+            tutorialesData.forEach(tut => {
+                const isCompleted = tutorialesCompletados.includes(tut.ytId);
+                const card = document.createElement('div');
+                card.className = 'card';
+                
+                let btnHtml = '';
+                if (isCompleted) {
+                    btnHtml = `<button class="btn" style="background: var(--success); width: 100%; padding: 10px; font-size: 0.95rem;" onclick="toggleTutorial('${tut.ytId}')">✅ Completado</button>`;
+                } else {
+                    btnHtml = `<button class="btn" style="background: var(--bg-color); color: var(--text-dark); border: 1px solid var(--border); width: 100%; padding: 10px; font-size: 0.95rem;" onclick="toggleTutorial('${tut.ytId}')">Marcar como visto</button>`;
+                }
+
+                card.innerHTML = `
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/${tut.ytId}?controls=0&modestbranding=1&rel=0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <div class="card-body" style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
+                        <h4 class="card-title" style="text-align: center; margin: 0;">🎈 ${tut.title}</h4>
+                        ${btnHtml}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function toggleTutorial(ytId) {
+            if (tutorialesCompletados.includes(ytId)) {
+                tutorialesCompletados = tutorialesCompletados.filter(id => id !== ytId);
+            } else {
+                tutorialesCompletados.push(ytId);
+            }
+            localStorage.setItem('globoflexia_tutoriales_completados', JSON.stringify(tutorialesCompletados));
+            renderTutoriales();
+        }
+
+        function renderConsultas() {
+            const contenedorLista = document.getElementById('lista-consultas');
+            contenedorLista.innerHTML = '';
+            const comentariosInvertidos = [...consultasData].reverse();
+
+            comentariosInvertidos.forEach(c => {
+                const comentarioDiv = document.createElement('div');
+                comentarioDiv.className = 'comentario-card';
+                comentarioDiv.innerHTML = `
+                    <div class="comentario-header">
+                        <strong>👤 ${c.autor}</strong>
+                        <span class="fecha">${c.fecha}</span>
+                    </div>
+                    <div class="comentario-body">
+                        ${c.texto}
+                    </div>
+                `;
+                contenedorLista.appendChild(comentarioDiv);
+            });
+        }
+
+        function publicarConsulta() {
+            const textArea = document.getElementById('nueva-consulta');
+            const texto = textArea.value;
+
+            if(texto.trim() === '') {
+                alert('Por favor, escribe una consulta antes de publicar.');
+                return;
+            }
+
+            const autor = localStorage.getItem('globoflexia_user') || 'Usuario Anónimo';
+            const fecha = new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+            consultasData.push({ autor, texto, fecha });
+            localStorage.setItem('globoflexia_consultas', JSON.stringify(consultasData));
+
+            textArea.value = '';
+            renderConsultas();
+        }
+    </script>
+</body>
+</html>
