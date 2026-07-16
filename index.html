@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Globoflexia con Tan Barbudo</title>
     <style>
+        /* --- VARIABLES DE DISEÑO --- */
         :root {
             --primary: #EE4040;
             --primary-hover: #d93030;
@@ -18,6 +19,7 @@
             --border: #E4EAF0;
         }
 
+        /* --- ESTILOS GLOBALES --- */
         * {
             margin: 0;
             padding: 0;
@@ -31,8 +33,9 @@
             min-height: 100vh;
         }
 
-        /* Utilidades */
+        /* --- CLASES DE UTILIDAD --- */
         .hidden { display: none !important; }
+        
         .btn {
             background-color: var(--primary);
             color: var(--white);
@@ -49,7 +52,7 @@
         .btn:hover { background-color: var(--primary-hover); }
         .btn:disabled { background-color: var(--locked); cursor: not-allowed; }
         
-        /* LOGIN Pantalla */
+        /* --- PANTALLA DE AUTENTICACIÓN --- */
         #login-view {
             height: 100vh;
             display: flex;
@@ -73,7 +76,7 @@
         .login-card p { margin-bottom: 25px; color: var(--text-light); }
         .error-msg { color: #EF4444; font-size: 0.875rem; margin-top: 10px; display: none; }
 
-        /* APP PRINCIPAL */
+        /* --- ENCABEZADO DE NAVEGACIÓN --- */
         #app-view { display: flex; flex-direction: column; min-height: 100vh; }
         
         header {
@@ -107,8 +110,53 @@
         main { padding: 30px; max-width: 1200px; margin: 0 auto; width: 100%; flex: 1; }
 
         .section-header { margin-bottom: 30px; }
+
+        /* --- BANNER PRINCIPAL (HERO SECTION) --- */
+        .hero-banner-container {
+            max-width: 1200px;
+            margin: 30px auto;
+            background: var(--white);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0,0,0,.08);
+            display: flex;
+            flex-direction: row; /* Lado a lado en Computadora */
+            align-items: center;
+            gap: 20px;
+            padding: 25px;
+        }
+
+        .hero-banner-image-wrapper {
+            flex: 1;
+            max-width: 50%;
+        }
+
+        .hero-banner-image-wrapper img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 12px;
+        }
+
+        .hero-banner-text-content {
+            flex: 1;
+            padding: 20px;
+        }
+
+        .hero-banner-text-content h1 {
+            font-size: clamp(1.8rem, 3vw, 2.4rem);
+            line-height: 1.3;
+            margin-bottom: 15px;
+            color: var(--text-dark);
+        }
+
+        .hero-banner-text-content p {
+            font-size: clamp(1rem, 1.5vw, 1.15rem);
+            color: var(--text-light);
+            line-height: 1.6;
+        }
         
-        /* Reproductor Principal de Inicio */
+        /* --- REPRODUCTOR PRINCIPAL DE MÓDULOS --- */
         .main-player-wrapper {
             background: var(--white);
             border-radius: 12px;
@@ -119,10 +167,9 @@
         
         .main-video-container {
             position: relative;
-            padding-bottom: 56.25%;
+            padding-bottom: 56.25%; /* Relación 16:9 clásica */
             height: 0;
             background: #000;
-            pointer-events: auto;
         }
         
         .main-video-container iframe {
@@ -139,7 +186,7 @@
         .main-player-info h2 { margin-bottom: 15px; color: var(--text-dark); font-size: 1.8rem; }
         .main-player-info p { color: var(--text-light); font-size: 1.1rem; line-height: 1.6; margin-bottom: 20px; }
 
-        /* Navegación de botones */
+        /* --- NAVEGACIÓN ENTRE MÓDULOS --- */
         .module-nav-grid {
             display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px;
         }
@@ -155,19 +202,18 @@
         .mod-nav-btn.active { border-color: var(--primary); background: var(--bg-color); color: var(--primary); }
         .mod-nav-btn.locked { opacity: 0.6; background: #f3f4f6; cursor: not-allowed; color: var(--text-light); }
 
-        /* NUEVA GRILLA DE TUTORIALES: Centrada en PC y responsive en Celular */
+        /* --- GRILLA DE TUTORIALES ADAPTABLE (FLEXBOX) --- */
         .tutorials-grid { 
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            display: flex;
+            flex-wrap: wrap;
             gap: 25px;
-            justify-content: center;
-            justify-items: center; /* Alinea las tarjetas al centro de su columna */
+            justify-content: center; /* Centra los videos en la pantalla */
+            align-items: flex-start;
             width: 100%;
             max-width: 1200px;
             margin: 0 auto;
         }
 
-        /* Tarjeta optimizada para proporciones estables */
         .card { 
             background: var(--white); 
             border-radius: 12px; 
@@ -176,23 +222,23 @@
             transition: transform 0.2s, box-shadow 0.2s; 
             position: relative; 
             width: 100%;
-            max-width: 280px; /* Ancho máximo para evitar tarjetas exageradamente anchas */
+            max-width: 280px; /* Evita que las tarjetas se estiren en monitores anchos */
             display: flex;
             flex-direction: column;
         }
         .card:hover { transform: translateY(-5px); box-shadow: 0 12px 20px rgba(0,0,0,0.1); }
         
-        /* Contenedor de video vertical Shorts (Proporción exacta 9:16) */
+        /* Contenedor de video vertical 9:16 (YouTube Shorts) */
         .video-container { 
             position: relative; 
             width: 100%;
-            padding-bottom: 177.7%; /* Relación de aspecto 9:16 vertical */
+            padding-bottom: 177.7%; /* Proporción 9:16 de Shorts */
             background: #000; 
         }
         .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
         .card-body { padding: 15px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
         
-        /* Blog / Dudas */
+        /* --- FORO DE CONSULTAS --- */
         .consultas-container { max-width: 800px; margin: 0 auto; }
         .consulta-form { background: var(--white); padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 30px; }
         .consulta-form textarea { width: 100%; padding: 15px; border: 1px solid var(--border); border-radius: 6px; outline: none; resize: vertical; margin-bottom: 15px; font-size: 1rem; }
@@ -203,6 +249,7 @@
         .comentario-header .fecha { color: var(--text-light); }
         .comentario-body { line-height: 1.5; }
 
+        /* --- ADAPTABILIDAD A DISPOSITIVOS MÓVILES (RESPONSIVE) --- */
         @media (max-width: 768px) {
             header { padding: 12px 15px; }
             .header-brand { order: 1; }
@@ -214,14 +261,30 @@
             .brand-text p { display: none; }
             #user-greeting { display: none; }
             .nav-tab { font-size: 0.9rem; white-space: nowrap; }
+            
             main { padding: 15px; }
             .main-player-info { padding: 20px; }
             .main-player-info h2 { font-size: 1.4rem; }
             .section-header h3 { font-size: 1.3rem !important; }
-            
-            /* Ajustes en celular para la cuadrícula */
+
+            /* Banner en Celular se apila verticalmente */
+            .hero-banner-container {
+                flex-direction: column;
+                margin: 15px;
+                padding: 0;
+            }
+            .hero-banner-image-wrapper {
+                max-width: 100%;
+            }
+            .hero-banner-image-wrapper img {
+                border-radius: 20px 20px 0 0;
+            }
+            .hero-banner-text-content {
+                padding: 20px;
+            }
+
+            /* Tutoriales en Celular */
             .tutorials-grid {
-                grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
                 gap: 15px;
                 padding: 0 10px;
             }
@@ -273,16 +336,14 @@
             </div>
         </header>
 
-        <!-- Banner Principal -->
-        <section style="max-width:1200px; margin: 20px 15px; background:white; border-radius:20px; overflow:hidden; box-shadow:0 8px 20px rgba(0,0,0,.08); @media(min-width: 768px){margin: 30px auto;}">
-            <img src="banner.png" style="width:100%;display:block;">
-            <div style="padding: 25px; @media(min-width: 768px){padding: 35px;}">
-                <h1 style="font-size: clamp(1.6rem, 4vw, 2.5rem); line-height: 1.3; margin-bottom:15px; color: var(--text-dark);">
-                    Dios te ha dado creatividad... ¡es momento de desarrollarla! 🎈
-                </h1>
-                <p style="font-size: clamp(0.95rem, 2vw, 1.125rem); color:#666;">
-                    Aprende paso a paso y transforma un simple globo en una herramienta para sorprender, servir y bendecir.
-                </p>
+        <!-- BANNER DE BIENVENIDA (RESPONSIVE OPTIMIZADO) -->
+        <section class="hero-banner-container">
+            <div class="hero-banner-image-wrapper">
+                <img src="banner.png" alt="Globoflexia con Tan">
+            </div>
+            <div class="hero-banner-text-content">
+                <h1>Dios te ha dado creatividad... ¡es momento de desarrollarla! 🎈</h1>
+                <p>Aprende paso a paso y transforma un simple globo en una herramienta para sorprender, servir y bendecir.</p>
             </div>
         </section>
 
@@ -378,7 +439,7 @@
             { id: 5, title: "Módulo 5 al 16 + Bonus", desc: "Contenido avanzado, figuras complejas y técnicas de decoración profesional.", ytId: "", available: false }
         ];
 
-        // Lista estática que garantiza que siempre se rendericen los 17 videos
+        // Lista estática inmutable que garantiza contenido visible bajo cualquier escenario de red
         const tutorialesData = [
             { title: "Serpiente", ytId: "IHlMd2KkE5Y" },
             { title: "Cangrejo", ytId: "ItfPu3jZ25g" },
@@ -404,19 +465,21 @@
         let tutorialesCompletados = [];
         let unsubscribeConsultas = null;
 
-        // --- 3. FUNCIONES DE AUTENTICACIÓN Y SINCRONIZACIÓN ---
+        // --- 3. FUNCIONES DE SINCRONIZACIÓN DE FIRESTORE ---
 
         function cargarProgresoDesdeNube(userId) {
+            // Carga de inmediato el estado desde el almacenamiento local para optimizar tiempos visuales
             tutorialesCompletados = JSON.parse(localStorage.getItem('globoflexia_tutoriales_completados')) || [];
             progresoActual = parseInt(localStorage.getItem('globoflexia_progreso')) || 0;
             moduloViendo = progresoActual;
             renderizarApp();
 
+            // Sincronización asíncrona de respaldo en segundo plano
             const docRef = db.collection("progreso_usuarios").doc(userId);
             docRef.get().then(function(doc) {
                 if (doc.exists) {
                     const data = doc.data();
-                    console.log("Sincronización en segundo plano con Firestore completada:", data);
+                    console.log("Progreso asíncrono sincronizado:", data);
                     
                     if ((data.progresoActual || 0) >= progresoActual) {
                         progresoActual = data.progresoActual || 0;
@@ -431,7 +494,7 @@
                     renderizarApp();
                 }
             }).catch(function(error) {
-                console.warn("Firestore no disponible en este momento. Trabajando con datos locales estables.");
+                console.warn("Sincronización en la nube desactivada, operando localmente sin problemas.");
             });
         }
 
@@ -442,11 +505,11 @@
                 ultimoAcceso: firebase.firestore.FieldValue.serverTimestamp()
             }, { merge: true })
             .catch(function(error) {
-                console.warn("No se pudo respaldar el progreso en Firestore. Los datos se mantienen seguros localmente.");
+                console.warn("No se pudo escribir en Firestore. Avance asegurado localmente.");
             });
         }
 
-        // --- 4. FORO DE CONSULTAS CON SINCRONIZACIÓN EN TIEMPO REAL ---
+        // --- 4. FORO EN TIEMPO REAL ---
 
         function escucharConsultasNube() {
             unsubscribeConsultas = db.collection("consultas")
@@ -513,12 +576,12 @@
                 textArea.value = '';
             })
             .catch(function(error) {
-                console.error("Error al publicar la consulta en Firestore:", error);
-                alert("No se pudo publicar tu duda en la nube. Intenta de nuevo.");
+                console.error("Error al publicar consulta:", error);
+                alert("No se pudo publicar tu duda. Intenta de nuevo.");
             });
         }
 
-        // --- 5. FUNCIONES DE AUTENTICACIÓN ---
+        // --- 5. CONTROL DE SESIÓN ---
 
         function ingresarAPanel(user) {
             document.getElementById('login-view').classList.add('hidden');
@@ -556,8 +619,8 @@
                     }
                 })
                 .catch(function(error) {
-                    console.error("Error al iniciar sesión por ventana emergente:", error);
-                    alert("Error en el inicio de sesión: " + error.message + " (" + error.code + ")");
+                    console.error("Error al iniciar sesión:", error);
+                    alert("Error en el inicio de sesión: " + error.message);
                     if (errorDiv) {
                         errorDiv.innerText = "Error al conectar con Google: " + error.message;
                         errorDiv.style.display = 'block';
@@ -572,7 +635,7 @@
             });
         }
 
-        // --- 6. FUNCIONES DE NAVEGACIÓN Y RENDERIZADO ---
+        // --- 6. NAVEGACIÓN Y RENDERIZADO ---
         function cambiarTab(tabId) {
             document.querySelectorAll('.nav-tab').forEach(function(el) { el.classList.remove('active'); });
             const activeTab = document.querySelector(".nav-tab[data-target='" + tabId + "']");
