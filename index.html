@@ -322,15 +322,15 @@
 
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
+        const db = firebase.firestore(); // NUEVO: Instancia de Firestore Database
         const provider = new firebase.auth.GoogleAuthProvider();
 
-        // Forzar persistencia LOCAL explícitamente para mantener sesión en el navegador
         auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
             .catch(function(err) { console.error("Error de persistencia:", err); });
 
         provider.setCustomParameters({ prompt: 'select_account' });
 
-        // --- 2. BASE DE DATOS LOCAL Y VARIABLES ---
+        // --- 2. VARIABLES DE ESTADO Y DATOS LOCALES ---
         const modulosData = [
             { id: 0, title: "Introducción", desc: "Bienvenida y explicación de cómo trabajaremos durante las próximas semanas.", ytId: "W0r-6JJ8SZo", available: true },
             { id: 1, title: "Módulo 1", desc: "Cómo está organizado el curso y construcción de una base sólida antes de crear nuestras primeras figuras.", ytId: "uabgTdjDMfk", available: true },
@@ -364,11 +364,64 @@
             { autor: "Soporte Técnico", texto: "¡Bienvenidos al foro oficial del curso! Dejen aquí cualquier duda que tengan con respecto a los materiales o las técnicas de globoflexia.", fecha: new Date().toLocaleDateString() }
         ];
 
-        let progresoActual = parseInt(localStorage.getItem('globoflexia_progreso')) || 0;
-        let moduloViendo = progresoActual; 
-        let tutorialesCompletados = JSON.parse(localStorage.getItem('globoflexia_tutoriales_completados')) || [];
+        // Estado del usuario en memoria de ejecución (se inicializa por defecto)
+        let progresoActual = 0;
+        let moduloViendo = 0; 
+        let tutorialesCompletados = [];
 
-        // --- 3. FUNCIONES DE AUTENTICACIÓN (MÉTODO POPUP OPTIMIZADO) ---
+        // --- 3. NUEVO: FUNCIONES DE SINCRONIZACIÓN DE FIRESTORE ---
+
+        // Carga los datos de progreso del usuario de forma asíncrona desde la nube
+        function cargarProgresoDesdeNube(userId) {
+            const docRef = db.collection("progreso_usuarios").doc(userId);
+
+            docRef.get().then(function(doc) {
+                if (doc.exists) {
+                    const data = doc.data();
+                    console.log("Progreso encontrado en Firestore:", data);
+                    
+                    // Asignamos la información descargada a las variables globales[cite: 1]
+                    progresoActual = data.progresoActual || 0;
+                    tutorialesCompletados = data.tutorialesCompletados || [];
+                } else {
+                    console.log("No hay historial para este usuario. Creando registro inicial en la nube.");
+                    
+                    // Si no existe, creamos el documento inicial con valores en cero
+                    guardarProgresoEnNube(userId, 0, []);
+                    progresoActual = 0;
+                    tutorialesCompletados = [];
+                }
+                
+                // Forzamos al reproductor a posicionarse en el video correspondiente a su progreso[cite: 1]
+                moduloViendo = progresoActual;
+                renderizarApp();
+            }).catch(function(error) {
+                console.error("Error al descargar progreso de Firestore, usando LocalStorage temporal:", error);
+                
+                // Mecanismo de respaldo: si falla la nube, lee la memoria del navegador[cite: 1]
+                progresoActual = parseInt(localStorage.getItem('globoflexia_progreso')) || 0;
+                tutorialesCompletados = JSON.parse(localStorage.getItem('globoflexia_tutoriales_completados')) || [];
+                moduloViendo = progresoActual;
+                renderizarApp();
+            });
+        }
+
+        // Guarda el estado del alumno en el servidor de Firebase
+        function guardarProgresoEnNube(userId, moduloProgreso, listaTutoriales) {
+            db.collection("progreso_usuarios").doc(userId).set({
+                progresoActual: moduloProgreso,
+                tutorialesCompletados: listaTutoriales,
+                ultimoAcceso: firebase.firestore.FieldValue.serverTimestamp()
+            }, { merge: true }) // Merge evita sobreescribir otros datos del documento
+            .then(function() {
+                console.log("Sincronización con Firestore exitosa.");
+            })
+            .catch(function(error) {
+                console.error("Error al subir cambios a Firestore:", error);
+            });
+        }
+
+        // --- 4. FUNCIONES DE AUTENTICACIÓN ---
 
         function ingresarAPanel(user) {
             document.getElementById('login-view').classList.add('hidden');
@@ -376,12 +429,13 @@
             document.getElementById('user-greeting').innerText = "Hola, " + (user.displayName || "Usuario");
             
             localStorage.setItem('globoflexia_user', user.displayName || "Usuario");
-            renderizarApp();
+            
+            // NUEVO: Al autenticar, descargamos su progreso antes de renderizar la app[cite: 1]
+            cargarProgresoDesdeNube(user.uid);
         }
 
-        // Observador que detecta la sesión inmediatamente al cargar o al iniciar sesión con éxito
         auth.onAuthStateChanged(function(user) {
-            console.log("onAuthStateChanged detectó al usuario:", user ? user.displayName : "Ninguno");
+            console.log("Cambio de estado detectado. Usuario activo:", user ? user.displayName : "Ninguno");
             if (user) {
                 ingresarAPanel(user);
             } else {
@@ -394,7 +448,6 @@
             const errorDiv = document.getElementById('login-error');
             if (errorDiv) errorDiv.style.display = 'none'; 
 
-            // Cambiamos signInWithRedirect por signInWithPopup
             auth.signInWithPopup(provider)
                 .then(function(result) {
                     if (result.user) {
@@ -419,7 +472,7 @@
             });
         }
 
-        // --- 4. FUNCIONES DE NAVEGACIÓN Y RENDERIZADO ---
+        // --- 5. FUNCIONES DE NAVEGACIÓN Y RENDERIZADO ---
         function cambiarTab(tabId) {
             document.querySelectorAll('.nav-tab').forEach(function(el) { el.classList.remove('active'); });
             const activeTab = document.querySelector(".nav-tab[data-target='" + tabId + "']");
@@ -514,7 +567,16 @@
             if(progresoActual < 4) {
                 progresoActual++;
                 moduloViendo = progresoActual; 
+                
+                // Guardamos en LocalStorage por respaldo[cite: 1]
                 localStorage.setItem('globoflexia_progreso', progresoActual);
+                
+                // NUEVO: Sincronizar el progreso del módulo con la nube
+                const currentUser = auth.currentUser;
+                if (currentUser) {
+                    guardarProgresoEnNube(currentUser.uid, progresoActual, tutorialesCompletados);
+                }
+                
                 renderModulos();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
@@ -547,14 +609,22 @@
             });
         }
 
-        // Marcar y guardar tutoriales de práctica rápida completados en local storage[cite: 1]
         function toggleTutorial(ytId) {
             if (tutorialesCompletados.includes(ytId)) {
                 tutorialesCompletados = tutorialesCompletados.filter(function(id) { return id !== ytId; });
             } else {
                 tutorialesCompletados.push(ytId);
             }
+            
+            // Guardamos localmente por respaldo[cite: 1]
             localStorage.setItem('globoflexia_tutoriales_completados', JSON.stringify(tutorialesCompletados));
+            
+            // NUEVO: Sincronizar el progreso de los tutoriales rápidos con la nube
+            const currentUser = auth.currentUser;
+            if (currentUser) {
+                guardarProgresoEnNube(currentUser.uid, progresoActual, tutorialesCompletados);
+            }
+
             renderTutoriales();
         }
 
@@ -577,7 +647,6 @@
             });
         }
 
-        // Publicar y guardar comentarios del foro localmente para consultas[cite: 1]
         function publicarConsulta() {
             const textArea = document.getElementById('nueva-consulta');
             const texto = textArea.value;
