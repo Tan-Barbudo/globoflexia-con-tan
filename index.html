@@ -155,14 +155,19 @@
         .mod-nav-btn.active { border-color: var(--primary); background: var(--bg-color); color: var(--primary); }
         .mod-nav-btn.locked { opacity: 0.6; background: #f3f4f6; cursor: not-allowed; color: var(--text-light); }
 
-        /* Grilla de Tutoriales (Optimizada para centrar elementos dinámicamente) */
+        /* NUEVA GRILLA DE TUTORIALES: Centrada en PC y responsive en Celular */
         .tutorials-grid { 
-            display: flex; 
-            flex-wrap: wrap; 
-            gap: 25px; 
-            justify-content: center; 
-            align-items: flex-start;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 25px;
+            justify-content: center;
+            justify-items: center; /* Alinea las tarjetas al centro de su columna */
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
         }
+
+        /* Tarjeta optimizada para proporciones estables */
         .card { 
             background: var(--white); 
             border-radius: 12px; 
@@ -171,19 +176,21 @@
             transition: transform 0.2s, box-shadow 0.2s; 
             position: relative; 
             width: 100%;
-            max-width: 310px;
+            max-width: 280px; /* Ancho máximo para evitar tarjetas exageradamente anchas */
+            display: flex;
+            flex-direction: column;
         }
         .card:hover { transform: translateY(-5px); box-shadow: 0 12px 20px rgba(0,0,0,0.1); }
         
-        /* Contenedor de Video (Establecido a la proporción vertical 9:16 de YouTube Shorts) */
+        /* Contenedor de video vertical Shorts (Proporción exacta 9:16) */
         .video-container { 
             position: relative; 
             width: 100%;
-            padding-bottom: 177.77%; 
+            padding-bottom: 177.7%; /* Relación de aspecto 9:16 vertical */
             background: #000; 
         }
         .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
-        .card-body { padding: 20px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+        .card-body { padding: 15px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
         
         /* Blog / Dudas */
         .consultas-container { max-width: 800px; margin: 0 auto; }
@@ -211,6 +218,16 @@
             .main-player-info { padding: 20px; }
             .main-player-info h2 { font-size: 1.4rem; }
             .section-header h3 { font-size: 1.3rem !important; }
+            
+            /* Ajustes en celular para la cuadrícula */
+            .tutorials-grid {
+                grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+                gap: 15px;
+                padding: 0 10px;
+            }
+            .card {
+                max-width: 250px;
+            }
         }
     </style>
 </head>
@@ -296,9 +313,9 @@
 
             <!-- Vista de Tutoriales -->
             <section id="tab-tutoriales" class="hidden">
-                <div class="section-header">
-                    <h3 style="color: var(--text-dark);">Tutoriales de Práctica Rápida</h3>
-                    <p>Crea figuras increíbles paso a paso (Shorts).</p>
+                <div class="section-header" style="text-align: center; max-width: 600px; margin: 0 auto 30px auto;">
+                    <h3 style="color: var(--text-dark); font-size: 1.6rem; margin-bottom: 8px;">Tutoriales de Práctica Rápida</h3>
+                    <p style="color: var(--text-light);">Crea figuras increíbles paso a paso (Shorts).</p>
                 </div>
                 <div class="tutorials-grid" id="tutorials-container">
                     <!-- Se inyecta por JS -->
@@ -390,20 +407,17 @@
         // --- 3. FUNCIONES DE AUTENTICACIÓN Y SINCRONIZACIÓN ---
 
         function cargarProgresoDesdeNube(userId) {
-            // El estado local de completado se carga de inmediato para evitar esperas visuales
             tutorialesCompletados = JSON.parse(localStorage.getItem('globoflexia_tutoriales_completados')) || [];
             progresoActual = parseInt(localStorage.getItem('globoflexia_progreso')) || 0;
             moduloViendo = progresoActual;
             renderizarApp();
 
-            // Intentamos sincronizar con Firestore en segundo plano para actualizar si el servidor tiene un progreso más avanzado
             const docRef = db.collection("progreso_usuarios").doc(userId);
             docRef.get().then(function(doc) {
                 if (doc.exists) {
                     const data = doc.data();
                     console.log("Sincronización en segundo plano con Firestore completada:", data);
                     
-                    // Solo sobreescribimos localmente si el progreso del servidor es mayor o igual
                     if ((data.progresoActual || 0) >= progresoActual) {
                         progresoActual = data.progresoActual || 0;
                         moduloViendo = progresoActual;
@@ -412,7 +426,6 @@
                         tutorialesCompletados = data.tutorialesCompletados;
                     }
                     
-                    // Guardamos la sincronización en el almacenamiento local
                     localStorage.setItem('globoflexia_progreso', progresoActual);
                     localStorage.setItem('globoflexia_tutoriales_completados', JSON.stringify(tutorialesCompletados));
                     renderizarApp();
@@ -423,7 +436,6 @@
         }
 
         function guardarProgresoEnNube(userId, moduloProgreso, listaTutoriales) {
-            // Guarda los datos de progreso de forma asíncrona
             db.collection("progreso_usuarios").doc(userId).set({
                 progresoActual: moduloProgreso,
                 tutorialesCompletados: listaTutoriales,
@@ -701,11 +713,9 @@
                 tutorialesCompletados.push(ytId);
             }
             
-            // Forzar actualización visual inmediata en la memoria del navegador
             localStorage.setItem('globoflexia_tutoriales_completados', JSON.stringify(tutorialesCompletados));
             renderTutoriales();
             
-            // Sincronizar en Firestore de fondo de forma silenciosa si hay conexión activa
             const currentUser = auth.currentUser;
             if (currentUser) {
                 guardarProgresoEnNube(currentUser.uid, progresoActual, tutorialesCompletados);
