@@ -155,12 +155,12 @@
         .mod-nav-btn.active { border-color: var(--primary); background: var(--bg-color); color: var(--primary); }
         .mod-nav-btn.locked { opacity: 0.6; background: #f3f4f6; cursor: not-allowed; color: var(--text-light); }
 
-        /* Grilla Tutoriales (Corregido para centrado estético) */
+        /* Grilla de Tutoriales (Optimizada para centrar elementos dinámicamente) */
         .tutorials-grid { 
             display: flex; 
             flex-wrap: wrap; 
             gap: 25px; 
-            justify-content: center; /* Centra los tutoriales en pantallas grandes */
+            justify-content: center; 
             align-items: flex-start;
         }
         .card { 
@@ -171,15 +171,15 @@
             transition: transform 0.2s, box-shadow 0.2s; 
             position: relative; 
             width: 100%;
-            max-width: 310px; /* Tamaño máximo estandarizado */
+            max-width: 310px;
         }
         .card:hover { transform: translateY(-5px); box-shadow: 0 12px 20px rgba(0,0,0,0.1); }
         
-        /* Contenedor de Video (Optimizado para formato vertical 9:16 de Shorts) */
+        /* Contenedor de Video (Establecido a la proporción vertical 9:16 de YouTube Shorts) */
         .video-container { 
             position: relative; 
             width: 100%;
-            padding-bottom: 177.77%; /* Proporción exacta 9:16 vertical */
+            padding-bottom: 177.77%; 
             background: #000; 
         }
         .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
@@ -361,8 +361,8 @@
             { id: 5, title: "Módulo 5 al 16 + Bonus", desc: "Contenido avanzado, figuras complejas y técnicas de decoración profesional.", ytId: "", available: false }
         ];
 
-        // Lista de respaldo estática para asegurar que siempre haya contenido visible y ordenado
-        const tutorialesFallback = [
+        // Lista estática que garantiza que siempre se rendericen los 17 videos
+        const tutorialesData = [
             { title: "Serpiente", ytId: "IHlMd2KkE5Y" },
             { title: "Cangrejo", ytId: "ItfPu3jZ25g" },
             { title: "Perro", ytId: "7Ay4HbAYWbI" },
@@ -382,104 +382,55 @@
             { title: "Uvas con globoflexia", ytId: "Y0VCbVJNI8M" }
         ];
 
-        let tutorialesData = [];
-
         let progresoActual = 0;
         let moduloViendo = 0; 
         let tutorialesCompletados = [];
         let unsubscribeConsultas = null;
 
-        // --- 3. FUNCIONES DE SINCRONIZACIÓN DE FIRESTORE ---
+        // --- 3. FUNCIONES DE AUTENTICACIÓN Y SINCRONIZACIÓN ---
 
         function cargarProgresoDesdeNube(userId) {
-            const docRef = db.collection("progreso_usuarios").doc(userId);
+            // El estado local de completado se carga de inmediato para evitar esperas visuales
+            tutorialesCompletados = JSON.parse(localStorage.getItem('globoflexia_tutoriales_completados')) || [];
+            progresoActual = parseInt(localStorage.getItem('globoflexia_progreso')) || 0;
+            moduloViendo = progresoActual;
+            renderizarApp();
 
+            // Intentamos sincronizar con Firestore en segundo plano para actualizar si el servidor tiene un progreso más avanzado
+            const docRef = db.collection("progreso_usuarios").doc(userId);
             docRef.get().then(function(doc) {
                 if (doc.exists) {
                     const data = doc.data();
-                    console.log("Progreso encontrado en Firestore:", data);
+                    console.log("Sincronización en segundo plano con Firestore completada:", data);
                     
-                    progresoActual = data.progresoActual || 0;
-                    tutorialesCompletados = data.tutorialesCompletados || [];
-                } else {
-                    console.log("No hay historial para este usuario. Creando registro inicial en la nube.");
-                    guardarProgresoEnNube(userId, 0, []);
-                    progresoActual = 0;
-                    tutorialesCompletados = [];
+                    // Solo sobreescribimos localmente si el progreso del servidor es mayor o igual
+                    if ((data.progresoActual || 0) >= progresoActual) {
+                        progresoActual = data.progresoActual || 0;
+                        moduloViendo = progresoActual;
+                    }
+                    if (data.tutorialesCompletados && data.tutorialesCompletados.length > tutorialesCompletados.length) {
+                        tutorialesCompletados = data.tutorialesCompletados;
+                    }
+                    
+                    // Guardamos la sincronización en el almacenamiento local
+                    localStorage.setItem('globoflexia_progreso', progresoActual);
+                    localStorage.setItem('globoflexia_tutoriales_completados', JSON.stringify(tutorialesCompletados));
+                    renderizarApp();
                 }
-                
-                moduloViendo = progresoActual;
-                renderizarApp();
             }).catch(function(error) {
-                console.error("Error al descargar progreso de Firestore, usando LocalStorage temporal:", error);
-                
-                progresoActual = parseInt(localStorage.getItem('globoflexia_progreso')) || 0;
-                tutorialesCompletados = JSON.parse(localStorage.getItem('globoflexia_tutoriales_completados')) || [];
-                moduloViendo = progresoActual;
-                renderizarApp();
+                console.warn("Firestore no disponible en este momento. Trabajando con datos locales estables.");
             });
         }
 
         function guardarProgresoEnNube(userId, moduloProgreso, listaTutoriales) {
+            // Guarda los datos de progreso de forma asíncrona
             db.collection("progreso_usuarios").doc(userId).set({
                 progresoActual: moduloProgreso,
                 tutorialesCompletados: listaTutoriales,
                 ultimoAcceso: firebase.firestore.FieldValue.serverTimestamp()
             }, { merge: true })
-            .then(function() {
-                console.log("Sincronización con Firestore exitosa.");
-            })
             .catch(function(error) {
-                console.error("Error al subir cambios a Firestore:", error);
-            });
-        }
-
-        function escucharVideosDesdeNube() {
-            db.collection("videos").onSnapshot(function(snapshot) {
-                const videosNube = [];
-                snapshot.forEach(function(doc) {
-                    const data = doc.data();
-                    const videoTitle = data.title || data.titulo || "";
-                    let videoUrl = data.youtubeEmbedUrl || data.url || "";
-                    
-                    // Solo agregamos el video si contiene información y una URL válida
-                    if (videoTitle && videoUrl && videoUrl.trim() !== "") {
-                        let videoId = videoUrl;
-                        if (videoId.includes("embed/")) {
-                            videoId = videoId.split("embed/")[1];
-                            if (videoId.includes("?")) {
-                                videoId = videoId.split("?")[0];
-                            }
-                        } else if (videoId.includes("v=")) {
-                            videoId = videoId.split("v=")[1];
-                        } else if (videoId.includes("shorts/")) {
-                            videoId = videoId.split("shorts/")[1];
-                            if (videoId.includes("?")) {
-                                videoId = videoId.split("?")[0];
-                            }
-                        }
-
-                        videosNube.push({
-                            title: videoTitle,
-                            ytId: videoId,
-                            description: data.description || data.descripcion || ""
-                        });
-                    }
-                });
-
-                // Control inteligente: Si la nube no tiene videos válidos, cargamos la lista local
-                if (videosNube.length === 0) {
-                    console.log("No se encontraron videos válidos en Firestore. Cargando lista local estática.");
-                    tutorialesData = tutorialesFallback;
-                } else {
-                    tutorialesData = videosNube;
-                }
-
-                renderTutoriales();
-            }, function(error) {
-                console.error("Error al obtener los videos de Firestore. Usando respaldo local estático:", error);
-                tutorialesData = tutorialesFallback;
-                renderTutoriales();
+                console.warn("No se pudo respaldar el progreso en Firestore. Los datos se mantienen seguros localmente.");
             });
         }
 
@@ -551,7 +502,7 @@
             })
             .catch(function(error) {
                 console.error("Error al publicar la consulta en Firestore:", error);
-                alert("No se pudo publicar tu duda. Intenta de nuevo.");
+                alert("No se pudo publicar tu duda en la nube. Intenta de nuevo.");
             });
         }
 
@@ -566,7 +517,6 @@
             
             cargarProgresoDesdeNube(user.uid);
             escucharConsultasNube();
-            escucharVideosDesdeNube();
         }
 
         auth.onAuthStateChanged(function(user) {
@@ -721,11 +671,6 @@
             const container = document.getElementById('tutorials-container');
             container.innerHTML = '';
 
-            if (tutorialesData.length === 0) {
-                container.innerHTML = "<p style='text-align:center; width:100%; color:var(--text-light);'>Cargando videos tutoriales...</p>";
-                return;
-            }
-
             tutorialesData.forEach(function(tut) {
                 const isCompleted = tutorialesCompletados.includes(tut.ytId);
                 const card = document.createElement('div');
@@ -756,9 +701,11 @@
                 tutorialesCompletados.push(ytId);
             }
             
+            // Forzar actualización visual inmediata en la memoria del navegador
             localStorage.setItem('globoflexia_tutoriales_completados', JSON.stringify(tutorialesCompletados));
             renderTutoriales();
             
+            // Sincronizar en Firestore de fondo de forma silenciosa si hay conexión activa
             const currentUser = auth.currentUser;
             if (currentUser) {
                 guardarProgresoEnNube(currentUser.uid, progresoActual, tutorialesCompletados);
