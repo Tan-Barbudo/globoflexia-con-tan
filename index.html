@@ -449,25 +449,36 @@
     };
 
     function renderVideoList() {
+
       const videoList = document.getElementById("videoList");
+
       videoList.innerHTML = videos.map(video => {
+
         const isWatched = watched.includes(video.id);
-        const status = !video.available ? "🔒 Próximamente" : (isWatched ? "✅ Completado" : "▶ Disponible");
-        const statusClass = !video.available ? "text-slate-500" : (isWatched ? "text-[#40B89C]" : "text-[#EE4040]");
-        const buttonClass = video.available
-          ? "hover:border-[#EE4040] cursor-pointer"
-          : "opacity-70 cursor-not-allowed bg-slate-50";
+
+        const status = !video.available
+          ? "🔒 PRÓXIMAMENTE"
+          : (isWatched ? "✅ COMPLETADO" : "🟢 DISPONIBLE");
+
+        const statusColor = !video.available
+          ? "text-slate-400"
+          : (isWatched ? "text-green-600" : "text-emerald-600");
+
+        const button = !video.available
+          ? `<div class="mt-5 text-center text-sm font-bold text-slate-400">Disponible próximamente</div>`
+          : `<div class="mt-5"><div class="w-full rounded-xl bg-[#EE4040] text-white text-center py-3 font-bold">▶ Ver módulo</div></div>`;
 
         return `
           <button
             ${video.available ? `onclick="selectVideo('${video.id}')"` : "disabled"}
-            class="text-left card p-5 shadow-none border transition ${buttonClass}"
-          >
-            <p class="text-sm font-extrabold ${statusClass}">${status}</p>
-            <h3 class="font-title text-xl font-extrabold">${video.title}</h3>
-            <p class="text-sm text-slate-600">${video.description}</p>
-          </button>
-        `;
+            class="text-left bg-white rounded-3xl border border-slate-200 shadow-sm hover:shadow-lg transition overflow-hidden ${!video.available ? "opacity-80" : ""}">
+            <div class="p-5">
+              <div class="text-xs font-extrabold tracking-wide uppercase ${statusColor}">${status}</div>
+              <h3 class="font-title text-2xl font-extrabold mt-2">${video.title}</h3>
+              <p class="text-slate-600 text-sm mt-3 leading-relaxed">${video.description}</p>
+              ${button}
+            </div>
+          </button>`;
       }).join("");
     }
 
