@@ -309,12 +309,6 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
 
     <script>
-     <!-- SDK de Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
-
-    <script>
         // --- 1. CONFIGURACIÓN DE FIREBASE ---
         const firebaseConfig = {
             apiKey: "AIzaSyDShp-WOGdI3_ST8WoTLa6Jm5UqGludJ38",
@@ -330,10 +324,13 @@
         const auth = firebase.auth();
         const provider = new firebase.auth.GoogleAuthProvider();
 
-        // Evita que pida seleccionar cuenta de Google repetitivamente si ya inició sesión
+        // Forzar persistencia LOCAL explicítamente (evita pérdidas de estado en redirecciones)
+        auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+            .catch((err) => console.error("Error de persistencia:", err));
+
         provider.setCustomParameters({ prompt: 'select_account' });
 
-        // --- 2. VARIABLES DE ESTADO Y DATOS LOCALES ---
+        // --- 2. BASE DE DATOS LOCAL Y VARIABLES ---
         const modulosData = [
             { id: 0, title: "Introducción", desc: "Bienvenida y explicación de cómo trabajaremos durante las próximas semanas.", ytId: "W0r-6JJ8SZo", available: true },
             { id: 1, title: "Módulo 1", desc: "Cómo está organizado el curso y construcción de una base sólida antes de crear nuestras primeras figuras.", ytId: "uabgTdjDMfk", available: true },
@@ -371,43 +368,45 @@
         let moduloViendo = progresoActual; 
         let tutorialesCompletados = JSON.parse(localStorage.getItem('globoflexia_tutoriales_completados')) || [];
 
-        // --- 3. FUNCIONES DE AUTENTICACIÓN MEJORADAS ---
+        // --- 3. FUNCIONES DE AUTENTICACIÓN ---
 
-        // Función centralizada para controlar el flujo visual de ingreso
         function ingresarAPanel(user) {
             document.getElementById('login-view').classList.add('hidden');
             document.getElementById('app-view').classList.remove('hidden');
-            document.getElementById('user-greeting').innerText = `Hola, ${user.displayName}`;
+            document.getElementById('user-greeting').innerText = `Hola, ${user.displayName || "Usuario"}`;
             
-            localStorage.setItem('globoflexia_user', user.displayName);
+            localStorage.setItem('globoflexia_user', user.displayName || "Usuario");
             renderizarApp();
         }
 
-        // Escuchar el cambio en el estado de autenticación (Se ejecuta al cargar la página)
+        // Observador de Autenticación
         auth.onAuthStateChanged((user) => {
+            console.log("Cambio de estado detectado. Usuario activo:", user ? user.displayName : "Ninguno");
             if (user) {
-                // Si el usuario ya está logueado, lo enviamos directo al panel
                 ingresarAPanel(user);
             } else {
-                // Si no hay sesión, mostramos el login
                 document.getElementById('login-view').classList.remove('hidden');
                 document.getElementById('app-view').classList.add('hidden');
             }
         });
 
-        // Captura el resultado al volver de la redirección de Google
+        // Capturar redirección con depuración directa
         auth.getRedirectResult()
             .then((result) => {
                 if (result && result.user) {
-                    console.log("Acceso exitoso tras redirección:", result.user.displayName);
+                    console.log("Sesión establecida correctamente:", result.user.displayName);
                     ingresarAPanel(result.user);
                 }
             })
             .catch((error) => {
-                console.error("Error al retornar de la redirección:", error);
+                console.error("Error crítico capturado tras la redirección:", error);
+                
+                // Mostrar alerta en pantalla para diagnosticar problemas de almacenamiento/cookies del navegador
+                alert("Error de autenticación de Firebase: " + error.code + " - " + error.message);
+                
                 const errorDiv = document.getElementById('login-error');
                 if (errorDiv) {
-                    errorDiv.innerText = "Error de autorización: " + error.message;
+                    errorDiv.innerText = "Error: " + error.message + " (" + error.code + ")";
                     errorDiv.style.display = 'block';
                 }
             });
@@ -418,9 +417,10 @@
 
             auth.signInWithRedirect(provider)
                 .catch((error) => {
-                    console.error("Error al iniciar sesión:", error);
+                    console.error("Error al gatillar signInWithRedirect:", error);
+                    alert("Error al iniciar el flujo: " + error.message);
                     if (errorDiv) {
-                        errorDiv.innerText = "Error al conectar con Google. Intenta nuevamente.";
+                        errorDiv.innerText = "Error al conectar con Google: " + error.message;
                         errorDiv.style.display = 'block';
                     }
                 });
@@ -428,7 +428,7 @@
 
         function cerrarSesion() {
             auth.signOut().then(() => {
-                localStorage.removeItem('globoflexia_user');
+                localStorage.clear(); 
                 location.reload(); 
             });
         }
