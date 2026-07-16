@@ -167,7 +167,6 @@
           <p class="text-lg text-slate-600 mb-6">Aprende paso a paso, mira los tutoriales, descarga recursos y lleva tu progreso.</p>
           <div class="flex flex-wrap gap-3">
             <button onclick="showTab('tab-videos')" class="btn-primary">Continuar aprendiendo</button>
-            <button onclick="showTab('tab-catalogo')" class="btn-secondary">Ver catálogo</button>
           </div>
         </div>
 
@@ -182,17 +181,46 @@
       </div>
 
       <nav class="flex flex-wrap gap-2 mb-6">
-        <button class="tab-btn active" onclick="showTab('tab-videos', this)">🎓 Módulos</button>
+        <button class="tab-btn active" onclick="showTab('tab-home', this)">🏠 Inicio</button>
+        <button class="tab-btn" onclick="showTab('tab-videos', this)">🎓 Módulos</button>
+        <button class="tab-btn" onclick="showTab('tab-progress', this)">📈 Mi progreso</button>
         <button class="tab-btn" onclick="showTab('tab-practica', this)">🎈 Figuras para practicar</button>
-        <button class="tab-btn" onclick="showTab('tab-catalogo', this)">🎈 Catálogo</button>
-        <button class="tab-btn" onclick="showTab('tab-canva', this)">🎨 Canva</button>
-        <button class="tab-btn" onclick="showTab('tab-docs', this)">📄 Descargas</button>
-        <button class="tab-btn" onclick="showTab('tab-notes', this)">📝 Preguntas</button>
-        <button class="tab-btn" onclick="showTab('tab-info', this)">🌐 Redes</button>
-        <button class="tab-btn" onclick="showTab('tab-live', this)">🔴 En vivo</button>
+        <button class="tab-btn" onclick="showTab('tab-notes', this)">💬 Preguntas</button>
       </nav>
 
-      <section id="tab-videos">
+      <section id="tab-home">
+        <div class="grid lg:grid-cols-3 gap-6">
+          <div class="card lg:col-span-2 p-7">
+            <p class="text-sm font-extrabold text-[#40B89C] mb-2">🏠 Inicio</p>
+            <h2 id="homeWelcomeName" class="text-4xl font-extrabold mb-3">¡Bienvenido!</h2>
+            <p class="text-slate-600 mb-6">Continúa avanzando paso a paso en el curso de globoflexia.</p>
+            <div class="p-5 rounded-3xl bg-[#EAF8FF]">
+              <p class="text-sm font-extrabold text-slate-500">Tu siguiente paso</p>
+              <h3 id="homeNextModule" class="text-2xl font-extrabold mt-1">Introducción</h3>
+              <button id="homeContinueButton" class="btn-primary mt-4">Continuar aprendiendo</button>
+            </div>
+          </div>
+          <div class="card p-7">
+            <p class="text-sm font-extrabold text-[#EE4040] mb-2">📌 Recomendación</p>
+            <h3 class="text-2xl font-extrabold mb-2">Practica sin apurarte</h3>
+            <p class="text-slate-600">Repite cada torsión varias veces antes de pasar al siguiente módulo.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="tab-progress" class="hidden">
+        <div class="card p-7">
+          <p class="text-sm font-extrabold text-[#40B89C] mb-2">📈 Mi progreso</p>
+          <h2 class="text-4xl font-extrabold mb-3">Tu recorrido en el curso</h2>
+          <p id="progressPageText" class="text-lg font-bold text-slate-600 mb-4">0 de 21 módulos completados · 0%</p>
+          <div class="progress-bar mb-7">
+            <div id="progressPageFill" class="progress-fill"></div>
+          </div>
+          <div id="progressModuleList" class="grid md:grid-cols-2 xl:grid-cols-3 gap-4"></div>
+        </div>
+      </section>
+
+      <section id="tab-videos" class="hidden">
         <div class="grid lg:grid-cols-3 gap-6">
           <div class="card p-6">
             <p class="text-sm font-extrabold text-[#40B89C] mb-2">👋 Bienvenido al aula</p>
@@ -236,42 +264,11 @@
         </div>
       </section>
 
-      <section id="tab-catalogo" class="hidden">
-        <div class="card p-6">
-          <h2 class="text-3xl font-extrabold mb-3">Catálogo de figuras tipo menú</h2>
-          <p class="text-slate-600 mb-5">Aquí podrás mostrar figuras para cumpleaños, eventos, clases y ventas.</p>
-          <img src="catalogo.png" alt="Catálogo de globoflexia" class="w-full max-w-3xl rounded-3xl mb-5 border mx-auto">
-          <div class="grid md:grid-cols-2 xl:grid-cols-4 gap-4">
-            <div class="card p-4 shadow-none border"><div class="text-5xl mb-2">🐶</div><h3 class="font-title text-xl font-bold">Perro</h3><p>Básico, ideal para comenzar.</p></div>
-            <div class="card p-4 shadow-none border"><div class="text-5xl mb-2">⚔️</div><h3 class="font-title text-xl font-bold">Espada</h3><p>Rápida para eventos.</p></div>
-            <div class="card p-4 shadow-none border"><div class="text-5xl mb-2">🌸</div><h3 class="font-title text-xl font-bold">Flor</h3><p>Bonita y muy pedida.</p></div>
-            <div class="card p-4 shadow-none border"><div class="text-5xl mb-2">👑</div><h3 class="font-title text-xl font-bold">Corona</h3><p>Perfecta para fiestas.</p></div>
-          </div>
-        </div>
-      </section>
 
-      <section id="tab-canva" class="hidden">
-        <div class="card p-6">
-          <h2 class="text-3xl font-extrabold mb-3">Plantillas editables en Canva</h2>
-          <p class="text-slate-600 mb-5">Espacio para dejar plantillas de menú, certificados, publicidad y recursos visuales.</p>
-          <ul class="space-y-3">
-            <li>🎈 <a class="text-[#EE4040] font-bold underline" href="#" target="_blank">Plantilla de catálogo de globos</a></li>
-            <li>📜 <a class="text-[#EE4040] font-bold underline" href="#" target="_blank">Plantilla de certificado</a></li>
-            <li>📱 <a class="text-[#EE4040] font-bold underline" href="#" target="_blank">Plantilla para historias de Instagram</a></li>
-          </ul>
-        </div>
-      </section>
 
-      <section id="tab-docs" class="hidden">
-        <div class="card p-6">
-          <h2 class="text-3xl font-extrabold mb-3">Descargas</h2>
-          <ul class="space-y-3">
-            <li>📘 <a class="text-[#EE4040] font-bold underline" href="https://drive.google.com/file/d/16h36SGpHWzMysT_iOw_Sn9pfs3bqYI2_/view?usp=sharing" target="_blank">Documento de apoyo del curso</a></li>
-            <li>🎈 <a class="text-[#EE4040] font-bold underline" href="#" target="_blank">Lista de materiales recomendados</a></li>
-            <li>🎭 <a class="text-[#EE4040] font-bold underline" href="#" target="_blank">Consejos para shows infantiles</a></li>
-          </ul>
-        </div>
-      </section>
+
+
+
 
       <section id="tab-notes" class="hidden">
         <div class="card p-6">
@@ -283,27 +280,9 @@
         </div>
       </section>
 
-      <section id="tab-info" class="hidden">
-        <div class="card p-6">
-          <h2 class="text-3xl font-extrabold mb-3">Redes sociales</h2>
-          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
-            <a class="btn-secondary text-center" href="https://youtube.com/@payasotanbarbudo?si=orYgWrJ4gCb75uxn" target="_blank">YouTube</a>
-            <a class="btn-secondary text-center" href="https://www.tiktok.com/@payasotanbarbudo?_r=1&_t=ZS-94L1Ar177eG" target="_blank">TikTok</a>
-            <a class="btn-secondary text-center" href="https://www.facebook.com/share/1CyiA78nQJ/" target="_blank">Facebook</a>
-            <a class="btn-secondary text-center" href="https://www.instagram.com/payasotanbarbudo?igsh=dWo2a3U0ZmhiNWdn" target="_blank">Instagram</a>
-            <a class="btn-secondary text-center" href="https://whatsapp.com/channel/0029VadZPwbC6ZveKodyvh41" target="_blank">Canal WhatsApp</a>
-            <a class="btn-secondary text-center" href="https://tanbarbudo-elpayaso.blogspot.com/?m=1" target="_blank">Blog</a>
-          </div>
-        </div>
-      </section>
 
-      <section id="tab-live" class="hidden">
-        <div class="card p-6">
-          <h2 class="text-3xl font-extrabold mb-3">Transmisión en vivo 🔴</h2>
-          <p class="text-slate-600 mb-4">Cuando tengas un vivo, cambia este enlace embed.</p>
-          <iframe class="video-frame" src="https://www.youtube.com/embed/live_stream?channel=UC_x5XG1OV2P6uZZ5FSM9Ttw" allowfullscreen></iframe>
-        </div>
-      </section>
+
+
     </section>
   </main>
 
@@ -462,6 +441,8 @@
       selectVideo(videos.find(video => video.available).id);
       updateProgress();
       updateWelcomePanel();
+      renderProgressPage();
+      updateHomePanel();
     }
 
     if (localStorage.getItem("courseAccess") === "true") {
@@ -469,7 +450,7 @@
     }
 
     window.showTab = function (tabId, btn = null) {
-      const tabs = ["tab-videos", "tab-practica", "tab-catalogo", "tab-canva", "tab-docs", "tab-notes", "tab-info", "tab-live"];
+      const tabs = ["tab-home", "tab-videos", "tab-progress", "tab-practica", "tab-notes"];
       tabs.forEach(id => document.getElementById(id).classList.add("hidden"));
       document.getElementById(tabId).classList.remove("hidden");
 
@@ -532,6 +513,8 @@
       renderVideoList();
       updateProgress();
       updateWelcomePanel();
+      renderProgressPage();
+      updateHomePanel();
     };
 
     function updateWelcomePanel() {
@@ -553,6 +536,46 @@
           document.getElementById("videoFrame").scrollIntoView({ behavior: "smooth", block: "center" });
         }
       };
+    }
+
+
+    function updateHomePanel() {
+      const name = currentStudentName || localStorage.getItem("studentName") || "artista de globos";
+      const nextVideo = videos.find(video => video.available && !watched.includes(video.id))
+        || videos.find(video => video.available);
+
+      document.getElementById("homeWelcomeName").textContent = `¡Hola, ${name}!`;
+      document.getElementById("homeNextModule").textContent = nextVideo ? nextVideo.title : "¡Contenido completado!";
+
+      const button = document.getElementById("homeContinueButton");
+      button.onclick = () => {
+        const target = nextVideo || videos.find(video => video.available);
+        showTab("tab-videos");
+        document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+        const moduleButton = [...document.querySelectorAll(".tab-btn")].find(b => b.textContent.includes("Módulos"));
+        if (moduleButton) moduleButton.classList.add("active");
+        if (target) selectVideo(target.id);
+      };
+    }
+
+    function renderProgressPage() {
+      const total = videos.length;
+      const done = videos.filter(video => video.available && watched.includes(video.id)).length;
+      const percent = total ? Math.round((done / total) * 100) : 0;
+
+      document.getElementById("progressPageText").textContent = `${done} de ${total} módulos completados · ${percent}%`;
+      document.getElementById("progressPageFill").style.width = `${percent}%`;
+      document.getElementById("progressModuleList").innerHTML = videos.map(video => {
+        const isWatched = watched.includes(video.id);
+        const status = !video.available ? "🔒 Próximamente" : (isWatched ? "✅ Completado" : "▶ Pendiente");
+        const className = !video.available ? "text-slate-500" : (isWatched ? "text-[#40B89C]" : "text-[#EE4040]");
+        return `
+          <div class="rounded-3xl border border-slate-200 p-5 ${!video.available ? 'bg-slate-50' : 'bg-white'}">
+            <p class="text-sm font-extrabold ${className}">${status}</p>
+            <h3 class="font-title text-xl font-extrabold">${video.title}</h3>
+          </div>
+        `;
+      }).join("");
     }
 
     function updateProgress() {
