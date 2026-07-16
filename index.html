@@ -243,7 +243,7 @@
                     Dios te ha dado creatividad... ¡es momento de desarrollarla! 🎈
                 </h1>
                 <p style="font-size: clamp(0.95rem, 2vw, 1.125rem); color:#666;">
-                    Aprende paso a paso y transforma un simple globo en una herramienta para sorprender, servir and bendecir.
+                    Aprende paso a paso y transforma un simple globo en una herramienta para sorprender, servir y bendecir.
                 </p>
             </div>
         </section>
@@ -340,7 +340,6 @@
             { id: 5, title: "Módulo 5 al 16 + Bonus", desc: "Contenido avanzado, figuras complejas y técnicas de decoración profesional.", ytId: "", available: false }
         ];
 
-        // NUEVO: Este arreglo se llenará dinámicamente desde Firestore
         let tutorialesData = [];
 
         let progresoActual = 0;
@@ -393,14 +392,11 @@
             });
         }
 
-        // NUEVO: Lee la colección 'videos' de Firestore y actualiza el arreglo de tutorialesData
         function escucharVideosDesdeNube() {
             db.collection("videos").onSnapshot(function(snapshot) {
                 tutorialesData = [];
                 snapshot.forEach(function(doc) {
                     const data = doc.data();
-                    
-                    // Convertimos el enlace de YouTube completo en un ID si es necesario
                     let videoId = data.youtubeEmbedUrl || "";
                     if (videoId.includes("embed/")) {
                         videoId = videoId.split("embed/")[1];
@@ -507,7 +503,7 @@
             
             cargarProgresoDesdeNube(user.uid);
             escucharConsultasNube();
-            escucharVideosDesdeNube(); // NUEVO: Iniciamos la escucha de videos en Firestore
+            escucharVideosDesdeNube();
         }
 
         auth.onAuthStateChanged(function(user) {
@@ -662,7 +658,6 @@
             const container = document.getElementById('tutorials-container');
             container.innerHTML = '';
 
-            // Si aún no se cargan datos de Firestore, evitamos errores de renderizado
             if (tutorialesData.length === 0) {
                 container.innerHTML = "<p style='text-align:center; width:100%; color:var(--text-light);'>Cargando videos tutoriales desde la nube...</p>";
                 return;
