@@ -335,7 +335,7 @@
             { id: 0, title: "Introducción", desc: "Bienvenida y explicación de cómo trabajaremos durante las próximas semanas.", ytId: "W0r-6JJ8SZo", available: true },
             { id: 1, title: "Módulo 1", desc: "Cómo está organizado el curso y construcción de una base sólida antes de crear nuestras primeras figuras.", ytId: "uabgTdjDMfk", available: true },
             { id: 2, title: "Módulo 2", desc: "Tipos de infladores para globoflexia, sus características, ventajas y cuándo utilizar cada uno.", ytId: "mu4jCp8BN3o", available: true },
-            { id: 3, title: "Módulo 3", desc: "Conoce a fondo el material, tipos de globos, medidas y cómo elegir calidad.", ytId: "NNaU2kGoMxY", available: true },
+            { id: 3, title: "Módulo 3", desc: "Conoce a fondo el material, tipos de globos, medidas and cómo elegir calidad.", ytId: "NNaU2kGoMxY", available: true },
             { id: 4, title: "Módulo 4", desc: "Técnicas fundamentales: inflar correctamente, nudos seguros y torciones básicas.", ytId: "991rgpDtq1g", available: true },
             { id: 5, title: "Módulo 5 al 16 + Bonus", desc: "Contenido avanzado, figuras complejas y técnicas de decoración profesional.", ytId: "", available: false }
         ];
@@ -393,9 +393,8 @@
         }
 
         function escucharVideosDesdeNube() {
-            // CORRECCIÓN DE PROGRAMACIÓN: Modificamos la cadena de búsqueda a "'videos'" con comillas simples incluidas
-            // para que coincida exactamente con el nombre de colección que tienes en tu consola de Firestore.
-            db.collection("'videos'").onSnapshot(function(snapshot) {
+            // Buscamos la colección limpia "videos" sin comillas literales
+            db.collection("videos").onSnapshot(function(snapshot) {
                 tutorialesData = [];
                 snapshot.forEach(function(doc) {
                     const data = doc.data();
@@ -415,10 +414,10 @@
                         description: data.description || ""
                     });
                 });
-                console.log("Videos cargados desde la colección 'videos' de Firestore:", tutorialesData);
+                console.log("Videos cargados desde la colección limpia 'videos' de Firestore:", tutorialesData);
                 renderTutoriales();
             }, function(error) {
-                console.error("Error al obtener los videos de la colección de Firestore:", error);
+                console.error("Error al obtener los videos de la colección limpia de Firestore:", error);
             });
         }
 
