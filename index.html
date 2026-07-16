@@ -163,8 +163,8 @@
       <div class="grid lg:grid-cols-3 gap-6 mb-8">
         <div class="card lg:col-span-2 p-7 balloon-bg">
           <p class="inline-block bg-white px-4 py-1 rounded-full font-extrabold text-[#40B89C] mb-3">🎈 Bienvenido al curso</p>
-          <h1 class="text-4xl md:text-5xl font-extrabold mb-3">¡Hola, artista de globos!</h1>
-          <p class="text-lg text-slate-600 mb-6">Aprende paso a paso, mira los tutoriales, descarga recursos y lleva tu progreso.</p>
+          <h1 class="text-4xl md:text-5xl font-extrabold mb-3">Dios te ha dado creatividad... ¡es momento de desarrollarla! 🎈</h1>
+          <p class="text-lg text-slate-600 mb-6">Aprende paso a paso y transforma un simple globo en una herramienta para sorprender, servir y bendecir.</p>
           <div class="flex flex-wrap gap-3">
             <button onclick="showTab('tab-videos')" class="btn-primary">Continuar aprendiendo</button>
           </div>
@@ -172,7 +172,7 @@
 
         <div class="card p-7 bg-[#EE4040] text-white">
           <h2 class="text-3xl font-extrabold mb-4">Mi progreso</h2>
-          <p id="progressText" class="font-bold mb-3">0 de 21 módulos completados · 0%</p>
+          <p id="progressText" class="font-bold mb-3">0 de 5 módulos disponibles · 0%</p>
           <div class="progress-bar bg-white/25">
             <div id="progressFill" class="progress-fill"></div>
           </div>
@@ -212,7 +212,7 @@
         <div class="card p-7">
           <p class="text-sm font-extrabold text-[#40B89C] mb-2">📈 Mi progreso</p>
           <h2 class="text-4xl font-extrabold mb-3">Tu recorrido en el curso</h2>
-          <p id="progressPageText" class="text-lg font-bold text-slate-600 mb-4">0 de 21 módulos completados · 0%</p>
+          <p id="progressPageText" class="text-lg font-bold text-slate-600 mb-4">0 de 5 módulos disponibles · 0%</p>
           <div class="progress-bar mb-7">
             <div id="progressPageFill" class="progress-fill"></div>
           </div>
@@ -230,7 +230,7 @@
             <div class="mt-6 p-5 rounded-3xl bg-[#EAF8FF]">
               <p class="text-sm font-extrabold text-slate-500">Tu siguiente paso</p>
               <h3 id="nextModuleName" class="text-2xl font-extrabold mt-1">Introducción</h3>
-              <p id="welcomeProgressText" class="text-sm text-slate-600 mt-2">0 de 21 módulos completados</p>
+              <p id="welcomeProgressText" class="text-sm text-slate-600 mt-2">0 de 5 módulos disponibles</p>
               <button id="continueModuleButton" class="btn-primary w-full mt-4">Continuar</button>
             </div>
 
@@ -255,7 +255,6 @@
         </div>
       </section>
 
-
       <section id="tab-practica" class="hidden">
         <div class="card p-6">
           <h2 class="text-3xl font-extrabold mb-3">Figuras para practicar</h2>
@@ -263,12 +262,6 @@
           <div id="practiceVideoList" class="grid md:grid-cols-2 xl:grid-cols-3 gap-4"></div>
         </div>
       </section>
-
-
-
-
-
-
 
       <section id="tab-notes" class="hidden">
         <div class="card p-6">
@@ -279,10 +272,6 @@
           <p id="questionMessage" class="mt-3 font-bold text-[#40B89C]"></p>
         </div>
       </section>
-
-
-
-
     </section>
   </main>
 
@@ -295,15 +284,15 @@
       serverTimestamp
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-   const firebaseConfig = {
-  apiKey: "AIzaSyDShp-WOGdI3_ST8WoTLa6Jm5UqGludJ38",
-  authDomain: "globoflexia-tan-barbudo.firebaseapp.com",
-  projectId: "globoflexia-tan-barbudo",
-  storageBucket: "globoflexia-tan-barbudo.firebasestorage.app",
-  messagingSenderId: "372829377933",
-  appId: "1:372829377933:web:5f0686db4eb7e74f68d9c4",
-  measurementId: "G-8TNL59G05J"
-};
+    const firebaseConfig = {
+      apiKey: "AIzaSyDShp-WOGdI3_ST8WoTLa6Jm5UqGludJ38",
+      authDomain: "globoflexia-tan-barbudo.firebaseapp.com",
+      projectId: "globoflexia-tan-barbudo",
+      storageBucket: "globoflexia-tan-barbudo.firebasestorage.app",
+      messagingSenderId: "372829377933",
+      appId: "1:372829377933:web:5f0686db4eb7e74f68d9c4",
+      measurementId: "G-8TNL59G05J"
+    };
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
@@ -384,7 +373,8 @@
 
     let selectedVideo = videos[0];
     let currentStudentName = localStorage.getItem("studentName") || "";
-    let watched = JSON.parse(localStorage.getItem("watchedVideos") || "[]").filter(id => videos.some(video => video.id === id));
+    let watched = JSON.parse(localStorage.getItem("watchedVideos") || "[]")
+      .filter(id => videos.some(video => video.id === id));
 
     const loginBox = document.getElementById("loginBox");
     const appBox = document.getElementById("appBox");
@@ -462,11 +452,17 @@
       const videoList = document.getElementById("videoList");
       videoList.innerHTML = videos.map(video => {
         const isWatched = watched.includes(video.id);
-        const status = !video.available ? '🔒 Próximamente' : (isWatched ? '✅ Completado' : '▶ Disponible');
-        const statusClass = !video.available ? 'text-slate-500' : (isWatched ? 'text-[#40B89C]' : 'text-[#EE4040]');
-        const buttonClass = video.available ? 'hover:border-[#EE4040] cursor-pointer' : 'opacity-70 cursor-not-allowed bg-slate-50';
+        const status = !video.available ? "🔒 Próximamente" : (isWatched ? "✅ Completado" : "▶ Disponible");
+        const statusClass = !video.available ? "text-slate-500" : (isWatched ? "text-[#40B89C]" : "text-[#EE4040]");
+        const buttonClass = video.available
+          ? "hover:border-[#EE4040] cursor-pointer"
+          : "opacity-70 cursor-not-allowed bg-slate-50";
+
         return `
-          <button ${video.available ? `onclick="selectVideo('${video.id}')"` : 'disabled'} class="text-left card p-5 shadow-none border transition ${buttonClass}">
+          <button
+            ${video.available ? `onclick="selectVideo('${video.id}')"` : "disabled"}
+            class="text-left card p-5 shadow-none border transition ${buttonClass}"
+          >
             <p class="text-sm font-extrabold ${statusClass}">${status}</p>
             <h3 class="font-title text-xl font-extrabold">${video.title}</h3>
             <p class="text-sm text-slate-600">${video.description}</p>
@@ -498,6 +494,7 @@
     window.selectVideo = function (id) {
       const video = videos.find(v => v.id === id);
       if (!video || !video.available) return;
+
       selectedVideo = video;
       document.getElementById("videoFrame").src = selectedVideo.youtube;
       document.getElementById("videoTitle").textContent = selectedVideo.title;
@@ -506,10 +503,12 @@
 
     window.markAsWatched = function () {
       if (!selectedVideo) return;
+
       if (!watched.includes(selectedVideo.id)) {
         watched.push(selectedVideo.id);
         localStorage.setItem("watchedVideos", JSON.stringify(watched));
       }
+
       renderVideoList();
       updateProgress();
       updateWelcomePanel();
@@ -517,15 +516,27 @@
       updateHomePanel();
     };
 
+    function getAvailableProgress() {
+      const availableVideos = videos.filter(video => video.available);
+      const total = availableVideos.length;
+      const done = availableVideos.filter(video => watched.includes(video.id)).length;
+      const percent = total ? Math.round((done / total) * 100) : 0;
+
+      return { availableVideos, total, done, percent };
+    }
+
     function updateWelcomePanel() {
       const name = currentStudentName || localStorage.getItem("studentName") || "artista de globos";
       const nextVideo = videos.find(video => video.available && !watched.includes(video.id))
         || videos.find(video => video.available);
-      const done = videos.filter(video => video.available && watched.includes(video.id)).length;
+      const { total, done } = getAvailableProgress();
 
       document.getElementById("welcomeStudentName").textContent = `¡Hola, ${name}!`;
-      document.getElementById("nextModuleName").textContent = nextVideo ? nextVideo.title : "¡Contenido completado!";
-      document.getElementById("welcomeProgressText").textContent = `${done} de ${videos.length} módulos completados`;
+      document.getElementById("nextModuleName").textContent = nextVideo
+        ? nextVideo.title
+        : "¡Contenido completado!";
+      document.getElementById("welcomeProgressText").textContent =
+        `${done} de ${total} módulos disponibles`;
 
       const button = document.getElementById("continueModuleButton");
       button.textContent = nextVideo ? "Continuar" : "Repasar módulos";
@@ -533,11 +544,13 @@
         const target = nextVideo || videos.find(video => video.available);
         if (target) {
           selectVideo(target.id);
-          document.getElementById("videoFrame").scrollIntoView({ behavior: "smooth", block: "center" });
+          document.getElementById("videoFrame").scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+          });
         }
       };
     }
-
 
     function updateHomePanel() {
       const name = currentStudentName || localStorage.getItem("studentName") || "artista de globos";
@@ -545,32 +558,44 @@
         || videos.find(video => video.available);
 
       document.getElementById("homeWelcomeName").textContent = `¡Hola, ${name}!`;
-      document.getElementById("homeNextModule").textContent = nextVideo ? nextVideo.title : "¡Contenido completado!";
+      document.getElementById("homeNextModule").textContent = nextVideo
+        ? nextVideo.title
+        : "¡Contenido completado!";
 
       const button = document.getElementById("homeContinueButton");
       button.onclick = () => {
         const target = nextVideo || videos.find(video => video.available);
+
         showTab("tab-videos");
         document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-        const moduleButton = [...document.querySelectorAll(".tab-btn")].find(b => b.textContent.includes("Módulos"));
+
+        const moduleButton = [...document.querySelectorAll(".tab-btn")]
+          .find(b => b.textContent.includes("Módulos"));
+
         if (moduleButton) moduleButton.classList.add("active");
         if (target) selectVideo(target.id);
       };
     }
 
     function renderProgressPage() {
-      const total = videos.length;
-      const done = videos.filter(video => video.available && watched.includes(video.id)).length;
-      const percent = total ? Math.round((done / total) * 100) : 0;
+      const { total, done, percent } = getAvailableProgress();
 
-      document.getElementById("progressPageText").textContent = `${done} de ${total} módulos completados · ${percent}%`;
+      document.getElementById("progressPageText").textContent =
+        `${done} de ${total} módulos disponibles · ${percent}%`;
       document.getElementById("progressPageFill").style.width = `${percent}%`;
+
       document.getElementById("progressModuleList").innerHTML = videos.map(video => {
         const isWatched = watched.includes(video.id);
-        const status = !video.available ? "🔒 Próximamente" : (isWatched ? "✅ Completado" : "▶ Pendiente");
-        const className = !video.available ? "text-slate-500" : (isWatched ? "text-[#40B89C]" : "text-[#EE4040]");
+        const status = !video.available
+          ? "🔒 Próximamente"
+          : (isWatched ? "✅ Completado" : "▶ Pendiente");
+
+        const className = !video.available
+          ? "text-slate-500"
+          : (isWatched ? "text-[#40B89C]" : "text-[#EE4040]");
+
         return `
-          <div class="rounded-3xl border border-slate-200 p-5 ${!video.available ? 'bg-slate-50' : 'bg-white'}">
+          <div class="rounded-3xl border border-slate-200 p-5 ${!video.available ? "bg-slate-50" : "bg-white"}">
             <p class="text-sm font-extrabold ${className}">${status}</p>
             <h3 class="font-title text-xl font-extrabold">${video.title}</h3>
           </div>
@@ -579,18 +604,19 @@
     }
 
     function updateProgress() {
-      const availableVideos = videos.filter(video => video.available);
-      const total = videos.length;
-      const done = availableVideos.filter(video => watched.includes(video.id)).length;
-      const percent = total ? Math.round((done / total) * 100) : 0;
-      document.getElementById("progressText").textContent = `${done} de ${total} módulos completados · ${percent}%`;
+      const { total, done, percent } = getAvailableProgress();
+
+      document.getElementById("progressText").textContent =
+        `${done} de ${total} módulos disponibles · ${percent}%`;
       document.getElementById("progressFill").style.width = `${percent}%`;
     }
 
     window.sendQuestion = async function () {
       const question = document.getElementById("studentQuestion").value.trim();
       const message = document.getElementById("questionMessage");
-      const name = localStorage.getItem("studentName") || currentStudentName || "Alumno sin nombre";
+      const name = localStorage.getItem("studentName")
+        || currentStudentName
+        || "Alumno sin nombre";
 
       if (!question) {
         message.textContent = "Escribe una pregunta antes de enviar.";
@@ -603,6 +629,7 @@
           question: question,
           createdAt: serverTimestamp()
         });
+
         document.getElementById("studentQuestion").value = "";
         message.textContent = "Pregunta enviada correctamente 🎈";
       } catch (error) {
