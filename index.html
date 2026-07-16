@@ -1,641 +1,544 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Globoflexia con Tan Barbudo</title>
-  <meta name="description" content="Curso de globoflexia creativo y personalizado con Tan Barbudo." />
-  <script src="https://cdn.tailwindcss.com"></script>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
-
-  <style>
-    :root {
-      --rojo: #EE4040;
-      --verde: #40B89C;
-      --amarillo: #F8BD3F;
-      --oscuro: #22333B;
-      --fondo: #EAF8FF;
-      --suave: #F7FCFF;
-    }
-
-    body {
-      font-family: 'Nunito', sans-serif;
-      background: var(--fondo);
-      color: var(--oscuro);
-    }
-
-    h1, h2, h3, .font-title {
-      font-family: 'Baloo 2', cursive;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, var(--rojo), var(--verde));
-      color: white;
-      font-weight: 800;
-      border-radius: 999px;
-      padding: 12px 22px;
-      box-shadow: 0 12px 24px rgba(238, 64, 64, .25);
-      transition: .2s;
-    }
-
-    .btn-primary:hover { transform: translateY(-2px) scale(1.02); }
-
-    .btn-secondary {
-      background: white;
-      color: var(--rojo);
-      font-weight: 800;
-      border-radius: 999px;
-      padding: 12px 22px;
-      border: 2px solid rgba(238,64,64,.2);
-    }
-
-    .card {
-      background: white;
-      border-radius: 28px;
-      box-shadow: 0 14px 35px rgba(34,51,59,.08);
-      border: 1px solid rgba(34,51,59,.06);
-    }
-
-    .input {
-      width: 100%;
-      padding: 13px 16px;
-      border-radius: 18px;
-      border: 2px solid #e8eef2;
-      outline: none;
-    }
-
-    .input:focus {
-      border-color: var(--verde);
-      box-shadow: 0 0 0 4px rgba(64,184,156,.15);
-    }
-
-    .tab-btn {
-      padding: 11px 15px;
-      border-radius: 999px;
-      font-weight: 800;
-      background: white;
-      color: var(--oscuro);
-      border: 1px solid #e7eef2;
-    }
-
-    .tab-btn.active {
-      background: var(--rojo);
-      color: white;
-    }
-
-    .video-frame {
-      width: 100%;
-      aspect-ratio: 16/9;
-      border: 0;
-      border-radius: 22px;
-      background: #dcecf5;
-    }
-
-    .progress-bar {
-      width: 100%;
-      height: 16px;
-      border-radius: 999px;
-      background: #e8f3f7;
-      overflow: hidden;
-    }
-
-    .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--verde), var(--amarillo));
-      width: 0%;
-      transition: .3s;
-    }
-
-    .balloon-bg {
-      background:
-        radial-gradient(circle at 10% 10%, rgba(248,189,63,.35), transparent 22%),
-        radial-gradient(circle at 90% 20%, rgba(64,184,156,.28), transparent 20%),
-        radial-gradient(circle at 70% 90%, rgba(238,64,64,.25), transparent 25%),
-        linear-gradient(160deg, #ffffff 0%, #EAF8FF 100%);
-    }
-  </style>
-</head>
-
-<body>
-  <section id="loginBox" class="min-h-screen flex items-center justify-center px-5 balloon-bg">
-    <div class="card max-w-md w-full p-8 text-center">
-      <img src="logo.png" alt="Logo Tan Barbudo" class="w-28 h-28 object-contain mx-auto mb-4">
-      <p class="inline-block bg-[#FFF0B8] text-[#8B6500] px-4 py-1 rounded-full font-bold mb-3">🎈 Curso online</p>
-      <h1 class="text-4xl font-extrabold mb-2">Globoflexia con Tan Barbudo</h1>
-      <p class="text-slate-600 mb-6">Ingresa tu nombre y la contraseña del curso.</p>
-
-      <div class="space-y-3 text-left">
-        <input id="studentNameLogin" class="input" type="text" placeholder="Tu nombre">
-        <input id="coursePassword" class="input" type="password" placeholder="Contraseña del curso">
-      </div>
-
-      <div class="flex flex-col gap-3 mt-6">
-        <button onclick="loginWithCoursePassword()" class="btn-primary">Entrar al curso</button>
-      </div>
-
-      <p id="authMessage" class="mt-4 text-sm font-bold text-red-500"></p>
-      <p class="mt-4 text-xs text-slate-500">Acceso exclusivo para alumnos autorizados por Tan Barbudo.</p>
-    </div>
-  </section>
-
-  <main id="appBox" class="hidden min-h-screen">
-    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-slate-100">
-      <div class="max-w-7xl mx-auto px-5 py-4 flex items-center justify-between gap-4">
-        <div class="flex items-center gap-3">
-          <img src="logo.png" class="w-12 h-12 object-contain" alt="Logo">
-          <div>
-            <h2 class="font-title text-2xl font-extrabold text-[#EE4040]">Globoflexia con Tan</h2>
-            <p class="text-xs font-bold text-slate-500">Curso creativo y personalizado</p>
-          </div>
-        </div>
-
-        <div class="hidden md:flex items-center gap-2">
-          <span class="text-sm font-bold">👤 <span id="userEmail"></span></span>
-          <button onclick="logoutUser()" class="btn-secondary !py-2 !px-4">Salir</button>
-        </div>
-      </div>
-    </header>
-
-    <section class="max-w-7xl mx-auto px-5 py-8">
-      <div class="grid lg:grid-cols-3 gap-6 mb-8">
-        <div class="card lg:col-span-2 p-7 balloon-bg">
-          <p class="inline-block bg-white px-4 py-1 rounded-full font-extrabold text-[#40B89C] mb-3">🎈 Bienvenido al curso</p>
-          <h1 class="text-4xl md:text-5xl font-extrabold mb-3">Dios te ha dado creatividad... ¡es momento de desarrollarla! 🎈</h1>
-          <p class="text-lg text-slate-600 mb-6">Aprende paso a paso y transforma un simple globo en una herramienta para sorprender, servir y bendecir.</p>
-          <div class="flex flex-wrap gap-3">
-            <button onclick="showTab('tab-videos')" class="btn-primary">Continuar aprendiendo</button>
-          </div>
-        </div>
-
-        <div class="card p-7 bg-[#EE4040] text-white">
-          <h2 class="text-3xl font-extrabold mb-4">Mi progreso</h2>
-          <p id="progressText" class="font-bold mb-3">0 de 5 módulos disponibles · 0%</p>
-          <div class="progress-bar bg-white/25">
-            <div id="progressFill" class="progress-fill"></div>
-          </div>
-          <p class="mt-5 text-white/90">Cada figura es un paso más para sorprender, enseñar y emprender.</p>
-        </div>
-      </div>
-
-      <nav class="flex flex-wrap gap-2 mb-6">
-        <button class="tab-btn active" onclick="showTab('tab-home', this)">🏠 Inicio</button>
-        <button class="tab-btn" onclick="showTab('tab-videos', this)">🎓 Módulos</button>
-        <button class="tab-btn" onclick="showTab('tab-progress', this)">📈 Mi progreso</button>
-        <button class="tab-btn" onclick="showTab('tab-practica', this)">🎈 Figuras para practicar</button>
-        <button class="tab-btn" onclick="showTab('tab-notes', this)">💬 Preguntas</button>
-      </nav>
-
-      <section id="tab-home">
-        <div class="grid lg:grid-cols-3 gap-6">
-          <div class="card lg:col-span-2 p-7">
-            <p class="text-sm font-extrabold text-[#40B89C] mb-2">🏠 Inicio</p>
-            <h2 id="homeWelcomeName" class="text-4xl font-extrabold mb-3">¡Bienvenido!</h2>
-            <p class="text-slate-600 mb-6">Continúa avanzando paso a paso en el curso de globoflexia.</p>
-            <div class="p-5 rounded-3xl bg-[#EAF8FF]">
-              <p class="text-sm font-extrabold text-slate-500">Tu siguiente paso</p>
-              <h3 id="homeNextModule" class="text-2xl font-extrabold mt-1">Introducción</h3>
-              <button id="homeContinueButton" class="btn-primary mt-4">Continuar aprendiendo</button>
-            </div>
-          </div>
-          <div class="card p-7">
-            <p class="text-sm font-extrabold text-[#EE4040] mb-2">📌 Recomendación</p>
-            <h3 class="text-2xl font-extrabold mb-2">Practica sin apurarte</h3>
-            <p class="text-slate-600">Repite cada torsión varias veces antes de pasar al siguiente módulo.</p>
-          </div>
-        </div>
-      </section>
-
-      <section id="tab-progress" class="hidden">
-        <div class="card p-7">
-          <p class="text-sm font-extrabold text-[#40B89C] mb-2">📈 Mi progreso</p>
-          <h2 class="text-4xl font-extrabold mb-3">Tu recorrido en el curso</h2>
-          <p id="progressPageText" class="text-lg font-bold text-slate-600 mb-4">0 de 5 módulos disponibles · 0%</p>
-          <div class="progress-bar mb-7">
-            <div id="progressPageFill" class="progress-fill"></div>
-          </div>
-          <div id="progressModuleList" class="grid md:grid-cols-2 xl:grid-cols-3 gap-4"></div>
-        </div>
-      </section>
-
-      <section id="tab-videos" class="hidden">
-        <div class="grid lg:grid-cols-3 gap-6">
-          <div class="card p-6">
-            <p class="text-sm font-extrabold text-[#40B89C] mb-2">👋 Bienvenido al aula</p>
-            <h2 id="welcomeStudentName" class="text-3xl font-extrabold mb-3">¡Hola!</h2>
-            <p class="text-slate-600">Continúa aprendiendo paso a paso y practica cada técnica antes de avanzar.</p>
-
-            <div class="mt-6 p-5 rounded-3xl bg-[#EAF8FF]">
-              <p class="text-sm font-extrabold text-slate-500">Tu siguiente paso</p>
-              <h3 id="nextModuleName" class="text-2xl font-extrabold mt-1">Introducción</h3>
-              <p id="welcomeProgressText" class="text-sm text-slate-600 mt-2">0 de 5 módulos disponibles</p>
-              <button id="continueModuleButton" class="btn-primary w-full mt-4">Continuar</button>
-            </div>
-
-            <div class="mt-5 p-5 rounded-3xl border border-slate-200">
-              <h3 class="text-lg font-extrabold">📌 Consejo</h3>
-              <p class="text-sm text-slate-600 mt-1">Practica varias veces cada torsión antes de pasar a la siguiente figura.</p>
-            </div>
-          </div>
-
-          <div class="card p-6 lg:col-span-2">
-            <h2 class="text-3xl font-extrabold mb-3">Clase seleccionada</h2>
-            <iframe id="videoFrame" class="video-frame" src="" allowfullscreen></iframe>
-            <h3 id="videoTitle" class="text-2xl font-extrabold mt-4">Selecciona un video</h3>
-            <p id="videoDescription" class="text-slate-600 mb-4">Aquí verás la descripción del video elegido.</p>
-            <button onclick="markAsWatched()" class="btn-primary">Marcar como visto</button>
-          </div>
-        </div>
-
-        <div class="card p-6 mt-6">
-          <h2 class="text-3xl font-extrabold mb-4">Módulos del curso</h2>
-          <div id="videoList" class="grid md:grid-cols-2 xl:grid-cols-3 gap-4"></div>
-        </div>
-      </section>
-
-      <section id="tab-practica" class="hidden">
-        <div class="card p-6">
-          <h2 class="text-3xl font-extrabold mb-3">Figuras para practicar</h2>
-          <p class="text-slate-600 mb-5">Tutoriales cortos para practicar. No modifican el avance del curso.</p>
-          <div id="practiceVideoList" class="grid md:grid-cols-2 xl:grid-cols-3 gap-4"></div>
-        </div>
-      </section>
-
-      <section id="tab-notes" class="hidden">
-        <div class="card p-6">
-          <h2 class="text-3xl font-extrabold mb-3">Preguntas o dudas del alumno</h2>
-          <p class="text-slate-600 mb-4">El alumno puede dejar una duda. Se guardará en Firebase para que Tan pueda revisarla.</p>
-          <textarea id="studentQuestion" class="input min-h-[140px]" placeholder="Escribe tu pregunta o duda aquí..."></textarea>
-          <button onclick="sendQuestion()" class="btn-primary mt-4">Enviar pregunta</button>
-          <p id="questionMessage" class="mt-3 font-bold text-[#40B89C]"></p>
-        </div>
-      </section>
-    </section>
-  </main>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import {
-      getFirestore,
-      collection,
-      addDoc,
-      serverTimestamp
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyDShp-WOGdI3_ST8WoTLa6Jm5UqGludJ38",
-      authDomain: "globoflexia-tan-barbudo.firebaseapp.com",
-      projectId: "globoflexia-tan-barbudo",
-      storageBucket: "globoflexia-tan-barbudo.firebasestorage.app",
-      messagingSenderId: "372829377933",
-      appId: "1:372829377933:web:5f0686db4eb7e74f68d9c4",
-      measurementId: "G-8TNL59G05J"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    const COURSE_PASSWORD = "globoflexiaTan2026";
-
-    const videos = [
-      {
-        id: "introduccion",
-        title: "Introducción",
-        description: "En este video te doy la bienvenida y te explico cómo trabajaremos durante las próximas semanas.",
-        youtube: "https://www.youtube.com/embed/W0r-6JJ8SZo",
-        available: true
-      },
-      {
-        id: "modulo-1",
-        title: "Módulo 1",
-        description: "En esta primera clase conocerás cómo está organizado el curso y comenzaremos a construir una base sólida antes de crear nuestras primeras figuras.",
-        youtube: "https://www.youtube.com/embed/uabgTdjDMfk",
-        available: true
-      },
-      {
-        id: "modulo-2",
-        title: "Módulo 2",
-        description: "En este segundo módulo conocerás los diferentes tipos de infladores para globoflexia, sus características, ventajas y cuándo conviene utilizar cada uno.",
-        youtube: "https://www.youtube.com/embed/mu4jCp8BN3o",
-        available: true
-      },
-      {
-        id: "modulo-3",
-        title: "Módulo 3",
-        description: "En esta clase conocerás a fondo el material con el que trabajaremos durante todo el curso. Aprenderás a identificar los diferentes tipos de globos, comprender qué significan sus medidas y descubrir cómo elegir globos de buena calidad para obtener mejores resultados en cada figura.",
-        youtube: "https://www.youtube.com/embed/NNaU2kGoMxY",
-        available: true
-      },
-      {
-        id: "modulo-4",
-        title: "Módulo 4",
-        description: "En esta clase comenzaremos con las técnicas fundamentales que utilizarás en prácticamente todas las figuras del curso. Aprenderás a inflar correctamente un globo, realizar nudos seguros y dominar las torsiones básicas que son la base de la globoflexia.",
-        youtube: "https://www.youtube.com/embed/991rgpDtq1g",
-        available: true
-      },
-      ...Array.from({ length: 12 }, (_, index) => ({
-        id: `modulo-${index + 5}`,
-        title: `Módulo ${index + 5}`,
-        description: "Este módulo se habilitará próximamente.",
-        youtube: "",
-        available: false
-      })),
-      ...Array.from({ length: 4 }, (_, index) => ({
-        id: `bonus-${index + 1}`,
-        title: `Bonus ${index + 1}`,
-        description: "Este contenido adicional se habilitará próximamente.",
-        youtube: "",
-        available: false
-      }))
-    ];
-
-    const practiceVideos = [
-      { id: "serpiente", title: "Serpiente", youtubeId: "IHlMd2KkE5Y" },
-      { id: "cangrejo", title: "Cangrejo", youtubeId: "ItfPu3jZ25g" },
-      { id: "perro", title: "Perro", youtubeId: "7Ay4HbAYWbI" },
-      { id: "pulpo", title: "Pulpo", youtubeId: "oQc3BjYo0-o" },
-      { id: "cruz", title: "Cruz", youtubeId: "qQ6zrk8GADk" },
-      { id: "raton-volador", title: "Ratón volador", youtubeId: "W83CIGJfk7o" },
-      { id: "gato", title: "Gato", youtubeId: "y8EiwTbj3ow" },
-      { id: "conejo", title: "Conejo", youtubeId: "Z9rCt_X0kTc" },
-      { id: "dinosaurio", title: "Dinosaurio", youtubeId: "iKBwsdc7aEU" },
-      { id: "pony", title: "Pony", youtubeId: "_j2SJgQOEB0" },
-      { id: "corazon", title: "Corazón", youtubeId: "7faPIOkhalo" },
-      { id: "flor", title: "Flor", youtubeId: "jkDQqBiI8lU" },
-      { id: "estrella-copo", title: "Estrella o copo de nieve", youtubeId: "KYHJv1DNMoU" },
-      { id: "flor-pulsera", title: "Flor de pulsera", youtubeId: "UjuvTMRMJL8" },
-      { id: "perro-retazos", title: "Perro con retazos de globo", youtubeId: "igi1ZJWvbKc" },
-      { id: "oso", title: "Oso de globoflexia", youtubeId: "ujmuGc46E1E" },
-      { id: "uvas", title: "Uvas de globoflexia", youtubeId: "Y0VCbVJNI8M" }
-    ];
-
-    let selectedVideo = videos[0];
-    let currentStudentName = localStorage.getItem("studentName") || "";
-    let watched = JSON.parse(localStorage.getItem("watchedVideos") || "[]")
-      .filter(id => videos.some(video => video.id === id));
-
-    const loginBox = document.getElementById("loginBox");
-    const appBox = document.getElementById("appBox");
-    const authMessage = document.getElementById("authMessage");
-
-    window.loginWithCoursePassword = async function () {
-      const name = document.getElementById("studentNameLogin").value.trim();
-      const password = document.getElementById("coursePassword").value.trim();
-
-      if (!name) {
-        authMessage.textContent = "Escribe tu nombre para entrar.";
-        return;
-      }
-
-      if (password !== COURSE_PASSWORD) {
-        authMessage.textContent = "Contraseña incorrecta. Revisa los datos enviados por Tan Barbudo.";
-        return;
-      }
-
-      currentStudentName = name;
-      localStorage.setItem("studentName", name);
-      localStorage.setItem("courseAccess", "true");
-
-      try {
-        await addDoc(collection(db, "accessLogs"), {
-          name: name,
-          action: "login",
-          createdAt: serverTimestamp(),
-          userAgent: navigator.userAgent
-        });
-      } catch (error) {
-        console.log("No se pudo guardar el acceso", error);
-      }
-
-      enterApp();
-    };
-
-    window.logoutUser = function () {
-      localStorage.removeItem("courseAccess");
-      appBox.classList.add("hidden");
-      loginBox.classList.remove("hidden");
-    };
-
-    function enterApp() {
-      loginBox.classList.add("hidden");
-      appBox.classList.remove("hidden");
-      document.getElementById("userEmail").textContent = currentStudentName || "Alumno";
-      initApp();
-    }
-
-    function initApp() {
-      renderVideoList();
-      renderPracticeVideos();
-      selectVideo(videos.find(video => video.available).id);
-      updateProgress();
-      updateWelcomePanel();
-      renderProgressPage();
-      updateHomePanel();
-    }
-
-    if (localStorage.getItem("courseAccess") === "true") {
-      enterApp();
-    }
-
-    window.showTab = function (tabId, btn = null) {
-      const tabs = ["tab-home", "tab-videos", "tab-progress", "tab-practica", "tab-notes"];
-      tabs.forEach(id => document.getElementById(id).classList.add("hidden"));
-      document.getElementById(tabId).classList.remove("hidden");
-
-      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-      if (btn) btn.classList.add("active");
-    };
-
-    function renderVideoList() {
-      const videoList = document.getElementById("videoList");
-      videoList.innerHTML = videos.map(video => {
-        const isWatched = watched.includes(video.id);
-        const status = !video.available ? "🔒 Próximamente" : (isWatched ? "✅ Completado" : "▶ Disponible");
-        const statusClass = !video.available ? "text-slate-500" : (isWatched ? "text-[#40B89C]" : "text-[#EE4040]");
-        const buttonClass = video.available
-          ? "hover:border-[#EE4040] cursor-pointer"
-          : "opacity-70 cursor-not-allowed bg-slate-50";
-
-        return `
-          <button
-            ${video.available ? `onclick="selectVideo('${video.id}')"` : "disabled"}
-            class="text-left card p-5 shadow-none border transition ${buttonClass}"
-          >
-            <p class="text-sm font-extrabold ${statusClass}">${status}</p>
-            <h3 class="font-title text-xl font-extrabold">${video.title}</h3>
-            <p class="text-sm text-slate-600">${video.description}</p>
-          </button>
-        `;
-      }).join("");
-    }
-
-    function renderPracticeVideos() {
-      const practiceVideoList = document.getElementById("practiceVideoList");
-      practiceVideoList.innerHTML = practiceVideos.map(video => `
-        <article class="card p-5 shadow-none border">
-          <div class="aspect-[9/16] max-h-[440px] overflow-hidden rounded-2xl bg-black mb-4">
-            <iframe
-              class="w-full h-full"
-              src="https://www.youtube.com/embed/${video.youtubeId}"
-              title="Tutorial: ${video.title}"
-              loading="lazy"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowfullscreen>
-            </iframe>
-          </div>
-          <p class="text-sm font-extrabold text-[#40B89C]">🎈 Tutorial práctico</p>
-          <h3 class="font-title text-xl font-extrabold">${video.title}</h3>
-        </article>
-      `).join("");
-    }
-
-    window.selectVideo = function (id) {
-      const video = videos.find(v => v.id === id);
-      if (!video || !video.available) return;
-
-      selectedVideo = video;
-      document.getElementById("videoFrame").src = selectedVideo.youtube;
-      document.getElementById("videoTitle").textContent = selectedVideo.title;
-      document.getElementById("videoDescription").textContent = selectedVideo.description;
-    };
-
-    window.markAsWatched = function () {
-      if (!selectedVideo) return;
-
-      if (!watched.includes(selectedVideo.id)) {
-        watched.push(selectedVideo.id);
-        localStorage.setItem("watchedVideos", JSON.stringify(watched));
-      }
-
-      renderVideoList();
-      updateProgress();
-      updateWelcomePanel();
-      renderProgressPage();
-      updateHomePanel();
-    };
-
-    function getAvailableProgress() {
-      const availableVideos = videos.filter(video => video.available);
-      const total = availableVideos.length;
-      const done = availableVideos.filter(video => watched.includes(video.id)).length;
-      const percent = total ? Math.round((done / total) * 100) : 0;
-
-      return { availableVideos, total, done, percent };
-    }
-
-    function updateWelcomePanel() {
-      const name = currentStudentName || localStorage.getItem("studentName") || "artista de globos";
-      const nextVideo = videos.find(video => video.available && !watched.includes(video.id))
-        || videos.find(video => video.available);
-      const { total, done } = getAvailableProgress();
-
-      document.getElementById("welcomeStudentName").textContent = `¡Hola, ${name}!`;
-      document.getElementById("nextModuleName").textContent = nextVideo
-        ? nextVideo.title
-        : "¡Contenido completado!";
-      document.getElementById("welcomeProgressText").textContent =
-        `${done} de ${total} módulos disponibles`;
-
-      const button = document.getElementById("continueModuleButton");
-      button.textContent = nextVideo ? "Continuar" : "Repasar módulos";
-      button.onclick = () => {
-        const target = nextVideo || videos.find(video => video.available);
-        if (target) {
-          selectVideo(target.id);
-          document.getElementById("videoFrame").scrollIntoView({
-            behavior: "smooth",
-            block: "center"
-          });
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Globoflexia con Tan Barbudo</title>
+    <style>
+        :root {
+            --primary: #EE4040;
+            --primary-hover: #d93030;
+            --secondary: #40B89C;
+            --bg-color: #EAF8FF;
+            --text-dark: #22333B;
+            --text-light: #667085;
+            --white: #ffffff;
+            --success: #40B89C;
+            --locked: #A5A5A5;
+            --border: #E4EAF0;
         }
-      };
-    }
 
-    function updateHomePanel() {
-      const name = currentStudentName || localStorage.getItem("studentName") || "artista de globos";
-      const nextVideo = videos.find(video => video.available && !watched.includes(video.id))
-        || videos.find(video => video.available);
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
 
-      document.getElementById("homeWelcomeName").textContent = `¡Hola, ${name}!`;
-      document.getElementById("homeNextModule").textContent = nextVideo
-        ? nextVideo.title
-        : "¡Contenido completado!";
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            min-height: 100vh;
+        }
 
-      const button = document.getElementById("homeContinueButton");
-      button.onclick = () => {
-        const target = nextVideo || videos.find(video => video.available);
+        /* Utilidades */
+        .hidden { display: none !important; }
+        .btn {
+            background-color: var(--primary);
+            color: var(--white);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+        .btn:hover { background-color: var(--primary-hover); }
+        .btn:disabled { background-color: var(--locked); cursor: not-allowed; }
+        
+        /* LOGIN Pantalla */
+        #login-view {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        }
 
-        showTab("tab-videos");
-        document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+        .login-card {
+            background: var(--white);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
 
-        const moduleButton = [...document.querySelectorAll(".tab-btn")]
-          .find(b => b.textContent.includes("Módulos"));
+        .login-card h1 { margin-bottom: 10px; color: var(--primary); }
+        .login-card p { margin-bottom: 25px; color: var(--text-light); }
+        
+        .input-group { margin-bottom: 20px; text-align: left; }
+        .input-group label { display: block; margin-bottom: 5px; font-weight: 600; }
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            outline: none;
+        }
+        .input-group input:focus { border-color: var(--primary); }
+        .error-msg { color: #EF4444; font-size: 0.875rem; margin-top: 10px; display: none; }
 
-        if (moduleButton) moduleButton.classList.add("active");
-        if (target) selectVideo(target.id);
-      };
-    }
+        /* APP PRINCIPAL */
+        #app-view { display: flex; flex-direction: column; min-height: 100vh; }
+        
+        header {
+            background: var(--white);
+            padding: 15px 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        .nav-tabs { display: flex; gap: 20px; }
+        .nav-tab {
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-light);
+            padding: 5px 0;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        .nav-tab:hover, .nav-tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
 
-    function renderProgressPage() {
-      const { total, done, percent } = getAvailableProgress();
+        main { padding: 30px; max-width: 1200px; margin: 0 auto; width: 100%; flex: 1; }
 
-      document.getElementById("progressPageText").textContent =
-        `${done} de ${total} módulos disponibles · ${percent}%`;
-      document.getElementById("progressPageFill").style.width = `${percent}%`;
+        /* Secciones */
+        .section-header { margin-bottom: 30px; }
+        
+        /* Modulos Grid */
+        .modules-grid, .tutorials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
 
-      document.getElementById("progressModuleList").innerHTML = videos.map(video => {
-        const isWatched = watched.includes(video.id);
-        const status = !video.available
-          ? "🔒 Próximamente"
-          : (isWatched ? "✅ Completado" : "▶ Pendiente");
+        .card {
+            background: var(--white);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+            position: relative;
+        }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px rgba(0,0,0,0.1); }
+        .card.locked { opacity: 0.7; filter: grayscale(100%); pointer-events: none; }
+        
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 */
+            height: 0;
+            background: #000;
+            pointer-events: auto;
+        }
+        
+        /* Iframe para YouTube */
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+        
+        .video-container.locked-bg {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 1.2rem;
+            padding-bottom: 0;
+            height: 170px;
+            background: var(--text-light);
+        }
 
-        const className = !video.available
-          ? "text-slate-500"
-          : (isWatched ? "text-[#40B89C]" : "text-[#EE4040]");
+        .card-body { padding: 20px; }
+        .card-title { font-size: 1.1rem; margin-bottom: 10px; font-weight: 700; }
+        .card-desc { font-size: 0.9rem; color: var(--text-light); margin-bottom: 15px; }
+        
+        /* Tutorial Shorts especiales */
+        .tutorials-grid .video-container { padding-bottom: 177.77%; /* 9:16 Shorts ratio */ }
 
-        return `
-          <div class="rounded-3xl border border-slate-200 p-5 ${!video.available ? "bg-slate-50" : "bg-white"}">
-            <p class="text-sm font-extrabold ${className}">${status}</p>
-            <h3 class="font-title text-xl font-extrabold">${video.title}</h3>
-          </div>
-        `;
-      }).join("");
-    }
+        /* Blog / Dudas */
+        .consultas-container { max-width: 800px; margin: 0 auto; }
+        
+        .consulta-form {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+        
+        .consulta-form textarea {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            outline: none;
+            resize: vertical;
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+        
+        .consulta-form textarea:focus { border-color: var(--primary); }
 
-    function updateProgress() {
-      const { total, done, percent } = getAvailableProgress();
+        .comentario-card {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+            margin-bottom: 15px;
+            border-left: 4px solid var(--secondary);
+        }
 
-      document.getElementById("progressText").textContent =
-        `${done} de ${total} módulos disponibles · ${percent}%`;
-      document.getElementById("progressFill").style.width = `${percent}%`;
-    }
+        .comentario-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+        
+        .comentario-header strong { color: var(--primary); font-size: 1rem; }
+        .comentario-header .fecha { color: var(--text-light); }
+        .comentario-body { line-height: 1.5; }
+    </style>
+</head>
+<body>
 
-    window.sendQuestion = async function () {
-      const question = document.getElementById("studentQuestion").value.trim();
-      const message = document.getElementById("questionMessage");
-      const name = localStorage.getItem("studentName")
-        || currentStudentName
-        || "Alumno sin nombre";
+    <!-- Pantalla de Login -->
+    <div id="login-view">
+        <div class="login-card">
+            <img src="logo.png" alt="Tan Barbudo" style="width:120px;display:block;margin:0 auto 20px;">
+            <h1>Globoflexia con Tan</h1>
+            <p>Curso creativo y personalizado</p>
+            
+            <div class="input-group">
+                <label for="username">Nombre de Usuario</label>
+                <input type="text" id="username" placeholder="Ingresa tu nombre">
+            </div>
+            <div class="input-group">
+                <label for="password">Contraseña</label>
+                <input type="password" id="password" placeholder="••••••••••••">
+            </div>
+            
+            <p id="login-error" class="error-msg">Contraseña incorrecta.</p>
+            
+            <button class="btn" style="width: 100%; margin-top: 10px;" onclick="iniciarSesion()">Ingresar al Curso</button>
+        </div>
+    </div>
 
-      if (!question) {
-        message.textContent = "Escribe una pregunta antes de enviar.";
-        return;
-      }
+    <!-- Aplicación Principal -->
+    <div id="app-view" class="hidden">
+        <header>
+            <div style="display:flex;align-items:center;gap:15px;">
+                <img src="logo.png" style="width:60px;">
+                <div>
+                    <h2 style="margin:0;color:#EE4040;">Globoflexia con Tan</h2>
+                    <p style="margin:0;font-size:13px;color:#666;">Curso creativo y personalizado</p>
+                </div>
+            </div>
+            <div class="nav-tabs">
+                <div class="nav-tab active" onclick="cambiarTab('modulos')">🏠 Inicio</div>
+                <div class="nav-tab" onclick="cambiarTab('modulos')">🎓 Módulos</div>
+                <div class="nav-tab" onclick="cambiarTab('tutoriales')">🎈 Tutoriales</div>
+                <div class="nav-tab" onclick="cambiarTab('consultas')">💬 Preguntas</div>
+            </div>
+            <div>
+                <span id="user-greeting" style="margin-right: 15px; font-weight: 600;"></span>
+                <button class="btn" onclick="cerrarSesion()">Salir</button>
+            </div>
+        </header>
 
-      try {
-        await addDoc(collection(db, "questions"), {
-          name: name,
-          question: question,
-          createdAt: serverTimestamp()
-        });
+        <!-- Banner Principal -->
+        <section style="max-width:1200px; margin:30px auto; background:white; border-radius:20px; overflow:hidden; box-shadow:0 8px 20px rgba(0,0,0,.08);">
+            <img src="banner.png" style="width:100%;display:block;">
+            <div style="padding:35px;">
+                <h1 style="font-size:42px; margin-bottom:15px; color: var(--text-dark);">Dios te ha dado creatividad... ¡es momento de desarrollarla! 🎈</h1>
+                <p style="font-size:18px; color:#666;">Aprende paso a paso y transforma un simple globo en una herramienta para sorprender, servir y bendecir.</p>
+            </div>
+        </section>
 
-        document.getElementById("studentQuestion").value = "";
-        message.textContent = "Pregunta enviada correctamente 🎈";
-      } catch (error) {
-        message.textContent = "No se pudo enviar la pregunta. Intenta otra vez.";
-      }
-    };
-  </script>
+        <main>
+            <!-- Vista de Modulos -->
+            <section id="tab-modulos">
+                <div class="section-header">
+                    <h3 style="color: var(--text-dark);">Ruta de Aprendizaje</h3>
+                    <p>Completa cada módulo para desbloquear el siguiente. Progreso: <span id="progress-text">0</span>/5</p>
+                </div>
+                <div class="modules-grid" id="modules-container">
+                    <!-- Se inyecta por JS -->
+                </div>
+            </section>
+
+            <!-- Vista de Tutoriales -->
+            <section id="tab-tutoriales" class="hidden">
+                <div class="section-header">
+                    <h3 style="color: var(--text-dark);">Tutoriales de Práctica Rápida</h3>
+                    <p>Crea figuras increíbles paso a paso (Shorts).</p>
+                </div>
+                <div class="tutorials-grid" id="tutorials-container">
+                    <!-- Se inyecta por JS -->
+                </div>
+            </section>
+
+            <!-- Vista de Dudas y Consultas -->
+            <section id="tab-consultas" class="hidden">
+                <div class="section-header" style="max-width: 800px; margin: 0 auto 30px auto;">
+                    <h3 style="color: var(--text-dark);">Foro de Consultas</h3>
+                    <p>¿Tienes dudas sobre algún módulo o tutorial? Escríbenos aquí y la comunidad te ayudará.</p>
+                </div>
+                
+                <div class="consultas-container">
+                    <!-- Formulario de nueva consulta -->
+                    <div class="consulta-form">
+                        <textarea id="nueva-consulta" rows="4" placeholder="Escribe tu duda, pregunta o comentario aquí..."></textarea>
+                        <button class="btn" onclick="publicarConsulta()">Publicar Consulta</button>
+                    </div>
+
+                    <!-- Lista de comentarios -->
+                    <div id="lista-consultas">
+                        <!-- Se inyecta por JS -->
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Agregar el SDK de Firebase (versión compat para no romper el código clásico) -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+
+    <script>
+        // --- PREPARACIÓN PARA FIREBASE (Próximo paso) ---
+        const firebaseConfig = {
+            // Tu configuración de Firebase irá aquí pronto
+        };
+        // firebase.initializeApp(firebaseConfig);
+        // const db = firebase.firestore();
+
+        // --- BASE DE DATOS LOCAL ---
+        const PASSWORD_CORRECTA = "globoflexiaTan2026";
+        
+        const modulosData = [
+            { id: 0, title: "Introducción", desc: "Bienvenida y explicación de cómo trabajaremos durante las próximas semanas.", ytId: "W0r-6JJ8SZo", available: true },
+            { id: 1, title: "Módulo 1", desc: "Cómo está organizado el curso y construcción de una base sólida antes de crear nuestras primeras figuras.", ytId: "uabgTdjDMfk", available: true },
+            { id: 2, title: "Módulo 2", desc: "Tipos de infladores para globoflexia, sus características, ventajas y cuándo utilizar cada uno.", ytId: "mu4jCp8BN3o", available: true },
+            { id: 3, title: "Módulo 3", desc: "Conoce a fondo el material, tipos de globos, medidas y cómo elegir calidad.", ytId: "NNaU2kGoMxY", available: true },
+            { id: 4, title: "Módulo 4", desc: "Técnicas fundamentales: inflar correctamente, nudos seguros y torciones básicas.", ytId: "991rgpDtq1g", available: true },
+            { id: 5, title: "Módulo 5 al 16 + Bonus", desc: "Contenido avanzado, figuras complejas y técnicas de decoración profesional.", ytId: "", available: false }
+        ];
+
+        const tutorialesData = [
+            { title: "Serpiente", ytId: "IHlMd2KkE5Y" },
+            { title: "Cangrejo", ytId: "ItfPu3jZ25g" },
+            { title: "Perro", ytId: "7Ay4HbAYWbI" },
+            { title: "Pulpo", ytId: "oQc3BjYo0-o" },
+            { title: "Cruz", ytId: "qQ6zrk8GADk" },
+            { title: "Ratón Volador", ytId: "W83CIGJfk7o" },
+            { title: "Gato", ytId: "y8EiwTbj3ow" },
+            { title: "Conejo", ytId: "Z9rCt_X0kTc" },
+            { title: "Dinosaurio", ytId: "iKBwsdc7aEU" },
+            { title: "Pony", ytId: "_j2SJgQOEB0" },
+            { title: "Corazón", ytId: "7faPIOkhalo" },
+            { title: "Flor", ytId: "jkDQqBiI8lU" },
+            { title: "Estrella/Copo", ytId: "KYHJv1DNMoU" },
+            { title: "Flor de Pulsera", ytId: "UjuvTMRMJL8" },
+            { title: "Perro con retazos", ytId: "igi1ZJWvbKc" },
+            { title: "Oso", ytId: "ujmuGc46E1E" },
+            { title: "Uvas", ytId: "Y0VCbVJNI8M" }
+        ];
+
+        let consultasData = JSON.parse(localStorage.getItem('globoflexia_consultas')) || [
+            { autor: "Soporte Técnico", texto: "¡Bienvenidos al foro oficial del curso! Dejen aquí cualquier duda que tengan con respecto a los materiales o las técnicas de globoflexia.", fecha: new Date().toLocaleDateString() }
+        ];
+
+        let progresoActual = parseInt(localStorage.getItem('globoflexia_progreso')) || 0;
+
+        // --- FUNCIONES DE AUTENTICACIÓN ---
+        function verificarSesion() {
+            const usuario = localStorage.getItem('globoflexia_user');
+            if(usuario) {
+                document.getElementById('login-view').classList.add('hidden');
+                document.getElementById('app-view').classList.remove('hidden');
+                document.getElementById('user-greeting').innerText = `Hola, ${usuario}`;
+                renderizarApp();
+            }
+        }
+
+        function iniciarSesion() {
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+            const error = document.getElementById('login-error');
+
+            if(user.trim() === '') {
+                error.innerText = "Por favor ingresa un nombre.";
+                error.style.display = 'block';
+                return;
+            }
+
+            if(pass === PASSWORD_CORRECTA) {
+                localStorage.setItem('globoflexia_user', user);
+                verificarSesion();
+            } else {
+                error.innerText = "Contraseña incorrecta. (Pista: revisa las mayúsculas)";
+                error.style.display = 'block';
+            }
+        }
+
+        function cerrarSesion() {
+            localStorage.removeItem('globoflexia_user');
+            location.reload();
+        }
+
+        // --- NAVEGACIÓN ---
+        function cambiarTab(tabId) {
+            document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
+            event.target.classList.add('active');
+
+            document.getElementById('tab-modulos').classList.add('hidden');
+            document.getElementById('tab-tutoriales').classList.add('hidden');
+            document.getElementById('tab-consultas').classList.add('hidden');
+
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+        }
+
+        // --- RENDERIZADO DE MÓDULOS ---
+        function renderizarApp() {
+            renderModulos();
+            renderTutoriales();
+            renderConsultas();
+        }
+
+        function renderModulos() {
+            const container = document.getElementById('modules-container');
+            container.innerHTML = '';
+            
+            document.getElementById('progress-text').innerText = progresoActual;
+
+            modulosData.forEach((mod, index) => {
+                let estaDesbloqueado = false;
+                if(mod.available) {
+                    if(index <= progresoActual) estaDesbloqueado = true;
+                }
+
+                const card = document.createElement('div');
+                card.className = `card ${estaDesbloqueado || !mod.available ? '' : 'locked'}`;
+                if(!mod.available) card.classList.add('locked');
+
+                let mediaHTML = '';
+                if(mod.available && estaDesbloqueado) {
+                    mediaHTML = `
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/${mod.ytId}?controls=0&modestbranding=1&rel=0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>`;
+                } else {
+                    mediaHTML = `
+                    <div class="video-container locked-bg">
+                        <span>🔒 ${mod.available ? 'Desbloquea el módulo anterior' : 'Próximamente'}</span>
+                    </div>`;
+                }
+
+                let btnHTML = '';
+                if(mod.available && estaDesbloqueado && index === progresoActual && index < 4) {
+                    btnHTML = `<button class="btn" style="width:100%" onclick="avanzarProgreso()">Marcar como Visto y Avanzar</button>`;
+                } else if(index < progresoActual) {
+                    btnHTML = `<div style="color: var(--success); font-weight: bold;">✓ Completado</div>`;
+                }
+
+                card.innerHTML = `
+                    ${mediaHTML}
+                    <div class="card-body">
+                        <h4 class="card-title">${mod.title}</h4>
+                        <p class="card-desc">${mod.desc}</p>
+                        ${btnHTML}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function avanzarProgreso() {
+            if(progresoActual < 4) {
+                progresoActual++;
+                localStorage.setItem('globoflexia_progreso', progresoActual);
+                renderModulos();
+            }
+        }
+
+        // --- RENDERIZADO DE TUTORIALES ---
+        function renderTutoriales() {
+            const container = document.getElementById('tutorials-container');
+            container.innerHTML = '';
+
+            tutorialesData.forEach(tut => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/${tut.ytId}?controls=0&modestbranding=1&rel=0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <div class="card-body" style="padding: 10px;">
+                        <h4 class="card-title" style="text-align: center; margin: 0;">🎈 ${tut.title}</h4>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // --- FORO DE CONSULTAS ---
+        function renderConsultas() {
+            const contenedorLista = document.getElementById('lista-consultas');
+            contenedorLista.innerHTML = '';
+
+            const comentariosInvertidos = [...consultasData].reverse();
+
+            comentariosInvertidos.forEach(c => {
+                const comentarioDiv = document.createElement('div');
+                comentarioDiv.className = 'comentario-card';
+                comentarioDiv.innerHTML = `
+                    <div class="comentario-header">
+                        <strong>👤 ${c.autor}</strong>
+                        <span class="fecha">${c.fecha}</span>
+                    </div>
+                    <div class="comentario-body">
+                        ${c.texto}
+                    </div>
+                `;
+                contenedorLista.appendChild(comentarioDiv);
+            });
+        }
+
+        function publicarConsulta() {
+            const textArea = document.getElementById('nueva-consulta');
+            const texto = textArea.value;
+
+            if(texto.trim() === '') {
+                alert('Por favor, escribe una consulta antes de publicar.');
+                return;
+            }
+
+            const autor = localStorage.getItem('globoflexia_user') || 'Usuario Anónimo';
+            const fecha = new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+            consultasData.push({ autor, texto, fecha });
+            localStorage.setItem('globoflexia_consultas', JSON.stringify(consultasData));
+
+            textArea.value = '';
+            renderConsultas();
+        }
+
+        // Iniciar App
+        verificarSesion();
+    </script>
 </body>
 </html>
