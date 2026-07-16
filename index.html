@@ -155,14 +155,35 @@
         .mod-nav-btn.active { border-color: var(--primary); background: var(--bg-color); color: var(--primary); }
         .mod-nav-btn.locked { opacity: 0.6; background: #f3f4f6; cursor: not-allowed; color: var(--text-light); }
 
-        /* Grilla Tutoriales */
-        .tutorials-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
-        .card { background: var(--white); border-radius: 10px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: transform 0.2s; position: relative; }
-        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px rgba(0,0,0,0.1); }
-        .video-container { position: relative; padding-bottom: 56.25%; height: 0; background: #000; }
+        /* Grilla Tutoriales (Corregido para centrado estético) */
+        .tutorials-grid { 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 25px; 
+            justify-content: center; /* Centra los tutoriales en pantallas grandes */
+            align-items: flex-start;
+        }
+        .card { 
+            background: var(--white); 
+            border-radius: 12px; 
+            overflow: hidden; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05); 
+            transition: transform 0.2s, box-shadow 0.2s; 
+            position: relative; 
+            width: 100%;
+            max-width: 310px; /* Tamaño máximo estandarizado */
+        }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 12px 20px rgba(0,0,0,0.1); }
+        
+        /* Contenedor de Video (Optimizado para formato vertical 9:16 de Shorts) */
+        .video-container { 
+            position: relative; 
+            width: 100%;
+            padding-bottom: 177.77%; /* Proporción exacta 9:16 vertical */
+            background: #000; 
+        }
         .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
-        .tutorials-grid .video-container { padding-bottom: 177.77%; }
-        .card-body { padding: 15px; }
+        .card-body { padding: 20px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
         
         /* Blog / Dudas */
         .consultas-container { max-width: 800px; margin: 0 auto; }
@@ -340,7 +361,7 @@
             { id: 5, title: "Módulo 5 al 16 + Bonus", desc: "Contenido avanzado, figuras complejas y técnicas de decoración profesional.", ytId: "", available: false }
         ];
 
-        // NUEVO: Lista de respaldo estática para garantizar que siempre se visualicen todos los tutoriales
+        // Lista de respaldo estática para asegurar que siempre haya contenido visible y ordenado
         const tutorialesFallback = [
             { title: "Serpiente", ytId: "IHlMd2KkE5Y" },
             { title: "Cangrejo", ytId: "ItfPu3jZ25g" },
@@ -414,38 +435,46 @@
         }
 
         function escucharVideosDesdeNube() {
-            // Buscamos la colección limpia "videos". Si falla o está vacía, cargamos los videos locales.
             db.collection("videos").onSnapshot(function(snapshot) {
-                if (snapshot.empty) {
-                    console.log("Colección 'videos' vacía en Firestore. Cargando lista local de respaldo.");
-                    tutorialesData = tutorialesFallback;
-                    renderTutoriales();
-                    return;
-                }
-
-                tutorialesData = [];
+                const videosNube = [];
                 snapshot.forEach(function(doc) {
                     const data = doc.data();
-                    const videoTitle = data.title || data.titulo || "Sin Título";
+                    const videoTitle = data.title || data.titulo || "";
                     let videoUrl = data.youtubeEmbedUrl || data.url || "";
                     
-                    let videoId = videoUrl;
-                    if (videoId.includes("embed/")) {
-                        videoId = videoId.split("embed/")[1];
-                        if (videoId.includes("?")) {
-                            videoId = videoId.split("?")[0];
+                    // Solo agregamos el video si contiene información y una URL válida
+                    if (videoTitle && videoUrl && videoUrl.trim() !== "") {
+                        let videoId = videoUrl;
+                        if (videoId.includes("embed/")) {
+                            videoId = videoId.split("embed/")[1];
+                            if (videoId.includes("?")) {
+                                videoId = videoId.split("?")[0];
+                            }
+                        } else if (videoId.includes("v=")) {
+                            videoId = videoId.split("v=")[1];
+                        } else if (videoId.includes("shorts/")) {
+                            videoId = videoId.split("shorts/")[1];
+                            if (videoId.includes("?")) {
+                                videoId = videoId.split("?")[0];
+                            }
                         }
-                    } else if (videoId.includes("v=")) {
-                        videoId = videoId.split("v=")[1];
-                    }
 
-                    tutorialesData.push({
-                        title: videoTitle,
-                        ytId: videoId,
-                        description: data.description || data.descripcion || ""
-                    });
+                        videosNube.push({
+                            title: videoTitle,
+                            ytId: videoId,
+                            description: data.description || data.descripcion || ""
+                        });
+                    }
                 });
-                console.log("Videos mapeados desde Firestore:", tutorialesData);
+
+                // Control inteligente: Si la nube no tiene videos válidos, cargamos la lista local
+                if (videosNube.length === 0) {
+                    console.log("No se encontraron videos válidos en Firestore. Cargando lista local estática.");
+                    tutorialesData = tutorialesFallback;
+                } else {
+                    tutorialesData = videosNube;
+                }
+
                 renderTutoriales();
             }, function(error) {
                 console.error("Error al obtener los videos de Firestore. Usando respaldo local estático:", error);
@@ -693,7 +722,7 @@
             container.innerHTML = '';
 
             if (tutorialesData.length === 0) {
-                container.innerHTML = "<p style='text-align:center; width:100%; color:var(--text-light);'>Cargando videos tutoriales desde la nube...</p>";
+                container.innerHTML = "<p style='text-align:center; width:100%; color:var(--text-light);'>Cargando videos tutoriales...</p>";
                 return;
             }
 
@@ -712,8 +741,8 @@
                 card.innerHTML = "<div class='video-container'>" +
                         "<iframe src='https://www.youtube.com/embed/" + tut.ytId + "?controls=0&modestbranding=1&rel=0' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' allowfullscreen></iframe>" +
                     "</div>" +
-                    "<div class='card-body' style='display: flex; flex-direction: column; align-items: center; gap: 12px;'>" +
-                        "<h4 class='card-title' style='text-align: center; margin: 0;'>🎈 " + tut.title + "</h4>" +
+                    "<div class='card-body'>" +
+                        "<h4 style='text-align: center; margin: 0; font-size: 1.1rem; color: var(--text-dark);'>🎈 " + tut.title + "</h4>" +
                         btnHtml +
                     "</div>";
                 container.appendChild(card);
@@ -727,11 +756,9 @@
                 tutorialesCompletados.push(ytId);
             }
             
-            // Guardamos localmente en el navegador inmediatamente para garantizar el cambio visual
             localStorage.setItem('globoflexia_tutoriales_completados', JSON.stringify(tutorialesCompletados));
             renderTutoriales();
             
-            // Intentamos sincronizar en la nube en segundo plano de manera silenciosa
             const currentUser = auth.currentUser;
             if (currentUser) {
                 guardarProgresoEnNube(currentUser.uid, progresoActual, tutorialesCompletados);
