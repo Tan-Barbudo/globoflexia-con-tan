@@ -243,7 +243,7 @@
                     Dios te ha dado creatividad... ¡es momento de desarrollarla! 🎈
                 </h1>
                 <p style="font-size: clamp(0.95rem, 2vw, 1.125rem); color:#666;">
-                    Aprende paso a paso y transforma un simple globo en una herramienta para sorprender, servir y bendecir.
+                    Aprende paso a paso y transforma un simple globo en una herramienta para sorprender, servir and bendecir.
                 </p>
             </div>
         </section>
@@ -322,7 +322,7 @@
 
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
-        const db = firebase.firestore(); // NUEVO: Instancia de Firestore Database
+        const db = firebase.firestore();
         const provider = new firebase.auth.GoogleAuthProvider();
 
         auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
@@ -330,7 +330,7 @@
 
         provider.setCustomParameters({ prompt: 'select_account' });
 
-        // --- 2. VARIABLES DE ESTADO Y DATOS LOCALES ---
+        // --- 2. BASE DE DATOS LOCAL Y VARIABLES ---
         const modulosData = [
             { id: 0, title: "Introducción", desc: "Bienvenida y explicación de cómo trabajaremos durante las próximas semanas.", ytId: "W0r-6JJ8SZo", available: true },
             { id: 1, title: "Módulo 1", desc: "Cómo está organizado el curso y construcción de una base sólida antes de crear nuestras primeras figuras.", ytId: "uabgTdjDMfk", available: true },
@@ -340,38 +340,16 @@
             { id: 5, title: "Módulo 5 al 16 + Bonus", desc: "Contenido avanzado, figuras complejas y técnicas de decoración profesional.", ytId: "", available: false }
         ];
 
-        const tutorialesData = [
-            { title: "Serpiente", ytId: "IHlMd2KkE5Y" },
-            { title: "Cangrejo", ytId: "ItfPu3jZ25g" },
-            { title: "Perro", ytId: "7Ay4HbAYWbI" },
-            { title: "Pulpo", ytId: "oQc3BjYo0-o" },
-            { title: "Cruz", ytId: "qQ6zrk8GADk" },
-            { title: "Ratón Volador", ytId: "W83CIGJfk7o" },
-            { title: "Gato", ytId: "y8EiwTbj3ow" },
-            { title: "Conejo", ytId: "Z9rCt_X0kTc" },
-            { title: "Dinosaurio", ytId: "iKBwsdc7aEU" },
-            { title: "Pony", ytId: "_j2SJgQOEB0" },
-            { title: "Corazón", ytId: "7faPIOkhalo" },
-            { title: "Flor", ytId: "jkDQqBiI8lU" },
-            { title: "Estrella/Copo", ytId: "KYHJv1DNMoU" },
-            { title: "Flor de Pulsera", ytId: "UjuvTMRMJL8" },
-            { title: "Perro con retazos", ytId: "igi1ZJWvbKc" },
-            { title: "Oso", ytId: "ujmuGc46E1E" },
-            { title: "Uvas", ytId: "Y0VCbVJNI8M" }
-        ];
+        // NUEVO: Este arreglo se llenará dinámicamente desde Firestore
+        let tutorialesData = [];
 
-        let consultasData = JSON.parse(localStorage.getItem('globoflexia_consultas')) || [
-            { autor: "Soporte Técnico", texto: "¡Bienvenidos al foro oficial del curso! Dejen aquí cualquier duda que tengan con respecto a los materiales o las técnicas de globoflexia.", fecha: new Date().toLocaleDateString() }
-        ];
-
-        // Estado del usuario en memoria de ejecución (se inicializa por defecto)
         let progresoActual = 0;
         let moduloViendo = 0; 
         let tutorialesCompletados = [];
+        let unsubscribeConsultas = null;
 
-        // --- 3. NUEVO: FUNCIONES DE SINCRONIZACIÓN DE FIRESTORE ---
+        // --- 3. FUNCIONES DE SINCRONIZACIÓN DE FIRESTORE ---
 
-        // Carga los datos de progreso del usuario de forma asíncrona desde la nube
         function cargarProgresoDesdeNube(userId) {
             const docRef = db.collection("progreso_usuarios").doc(userId);
 
@@ -380,25 +358,20 @@
                     const data = doc.data();
                     console.log("Progreso encontrado en Firestore:", data);
                     
-                    // Asignamos la información descargada a las variables globales[cite: 1]
                     progresoActual = data.progresoActual || 0;
                     tutorialesCompletados = data.tutorialesCompletados || [];
                 } else {
                     console.log("No hay historial para este usuario. Creando registro inicial en la nube.");
-                    
-                    // Si no existe, creamos el documento inicial con valores en cero
                     guardarProgresoEnNube(userId, 0, []);
                     progresoActual = 0;
                     tutorialesCompletados = [];
                 }
                 
-                // Forzamos al reproductor a posicionarse en el video correspondiente a su progreso[cite: 1]
                 moduloViendo = progresoActual;
                 renderizarApp();
             }).catch(function(error) {
                 console.error("Error al descargar progreso de Firestore, usando LocalStorage temporal:", error);
                 
-                // Mecanismo de respaldo: si falla la nube, lee la memoria del navegador[cite: 1]
                 progresoActual = parseInt(localStorage.getItem('globoflexia_progreso')) || 0;
                 tutorialesCompletados = JSON.parse(localStorage.getItem('globoflexia_tutoriales_completados')) || [];
                 moduloViendo = progresoActual;
@@ -406,13 +379,12 @@
             });
         }
 
-        // Guarda el estado del alumno en el servidor de Firebase
         function guardarProgresoEnNube(userId, moduloProgreso, listaTutoriales) {
             db.collection("progreso_usuarios").doc(userId).set({
                 progresoActual: moduloProgreso,
                 tutorialesCompletados: listaTutoriales,
                 ultimoAcceso: firebase.firestore.FieldValue.serverTimestamp()
-            }, { merge: true }) // Merge evita sobreescribir otros datos del documento
+            }, { merge: true })
             .then(function() {
                 console.log("Sincronización con Firestore exitosa.");
             })
@@ -421,7 +393,110 @@
             });
         }
 
-        // --- 4. FUNCIONES DE AUTENTICACIÓN ---
+        // NUEVO: Lee la colección 'videos' de Firestore y actualiza el arreglo de tutorialesData
+        function escucharVideosDesdeNube() {
+            db.collection("videos").onSnapshot(function(snapshot) {
+                tutorialesData = [];
+                snapshot.forEach(function(doc) {
+                    const data = doc.data();
+                    
+                    // Convertimos el enlace de YouTube completo en un ID si es necesario
+                    let videoId = data.youtubeEmbedUrl || "";
+                    if (videoId.includes("embed/")) {
+                        videoId = videoId.split("embed/")[1];
+                        if (videoId.includes("?")) {
+                            videoId = videoId.split("?")[0];
+                        }
+                    } else if (videoId.includes("v=")) {
+                        videoId = videoId.split("v=")[1];
+                    }
+
+                    tutorialesData.push({
+                        title: data.title || "Sin Título",
+                        ytId: videoId,
+                        description: data.description || ""
+                    });
+                });
+                console.log("Videos cargados desde Firestore:", tutorialesData);
+                renderTutoriales();
+            }, function(error) {
+                console.error("Error al obtener los videos de Firestore:", error);
+            });
+        }
+
+        // --- 4. FORO DE CONSULTAS CON SINCRONIZACIÓN EN TIEMPO REAL ---
+
+        function escucharConsultasNube() {
+            unsubscribeConsultas = db.collection("consultas")
+                .orderBy("timestamp", "desc")
+                .onSnapshot(function(snapshot) {
+                    const consultas = [];
+                    snapshot.forEach(function(doc) {
+                        consultas.push(doc.data());
+                    });
+                    renderizarConsultasNube(consultas);
+                }, function(error) {
+                    console.error("Error al escuchar consultas en tiempo real:", error);
+                });
+        }
+
+        function renderizarConsultasNube(consultas) {
+            const contenedorLista = document.getElementById('lista-consultas');
+            contenedorLista.innerHTML = '';
+
+            if (consultas.length === 0) {
+                contenedorLista.innerHTML = "<div class='comentario-card'>" +
+                    "<div class='comentario-header'>" +
+                        "<strong>👤 Soporte Técnico</strong>" +
+                        "<span class='fecha'>Hoy</span>" +
+                    "</div>" +
+                    "<div class='comentario-body'>¡Sé el primero en dejar tu duda o comentario sobre el curso de globoflexia!</div>" +
+                "</div>";
+                return;
+            }
+
+            consultas.forEach(function(c) {
+                const comentarioDiv = document.createElement('div');
+                comentarioDiv.className = 'comentario-card';
+                comentarioDiv.innerHTML = "<div class='comentario-header'>" +
+                        "<strong>👤 " + c.autor + "</strong>" +
+                        "<span class='fecha'>" + c.fecha + "</span>" +
+                    "</div>" +
+                    "<div class='comentario-body'>" +
+                        c.texto +
+                    "</div>";
+                contenedorLista.appendChild(comentarioDiv);
+            });
+        }
+
+        function publicarConsulta() {
+            const textArea = document.getElementById('nueva-consulta');
+            const texto = textArea.value;
+
+            if (texto.trim() === '') {
+                alert('Por favor, escribe una consulta antes de publicar.');
+                return;
+            }
+
+            const autor = localStorage.getItem('globoflexia_user') || 'Usuario Anónimo';
+            const fecha = new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+            db.collection("consultas").add({
+                autor: autor,
+                texto: texto,
+                fecha: fecha,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            })
+            .then(function() {
+                textArea.value = '';
+            })
+            .catch(function(error) {
+                console.error("Error al publicar la consulta en Firestore:", error);
+                alert("No se pudo publicar tu duda. Intenta de nuevo.");
+            });
+        }
+
+        // --- 5. FUNCIONES DE AUTENTICACIÓN ---
 
         function ingresarAPanel(user) {
             document.getElementById('login-view').classList.add('hidden');
@@ -430,17 +505,22 @@
             
             localStorage.setItem('globoflexia_user', user.displayName || "Usuario");
             
-            // NUEVO: Al autenticar, descargamos su progreso antes de renderizar la app[cite: 1]
             cargarProgresoDesdeNube(user.uid);
+            escucharConsultasNube();
+            escucharVideosDesdeNube(); // NUEVO: Iniciamos la escucha de videos en Firestore
         }
 
         auth.onAuthStateChanged(function(user) {
-            console.log("Cambio de estado detectado. Usuario activo:", user ? user.displayName : "Ninguno");
             if (user) {
                 ingresarAPanel(user);
             } else {
                 document.getElementById('login-view').classList.remove('hidden');
                 document.getElementById('app-view').classList.add('hidden');
+                
+                if (unsubscribeConsultas) {
+                    unsubscribeConsultas();
+                    unsubscribeConsultas = null;
+                }
             }
         });
 
@@ -451,7 +531,6 @@
             auth.signInWithPopup(provider)
                 .then(function(result) {
                     if (result.user) {
-                        console.log("Inicio de sesión exitoso por Popup:", result.user.displayName);
                         ingresarAPanel(result.user);
                     }
                 })
@@ -472,7 +551,7 @@
             });
         }
 
-        // --- 5. FUNCIONES DE NAVEGACIÓN Y RENDERIZADO ---
+        // --- 6. FUNCIONES DE NAVEGACIÓN Y RENDERIZADO ---
         function cambiarTab(tabId) {
             document.querySelectorAll('.nav-tab').forEach(function(el) { el.classList.remove('active'); });
             const activeTab = document.querySelector(".nav-tab[data-target='" + tabId + "']");
@@ -490,7 +569,6 @@
             if (moduloViendo > progresoActual) moduloViendo = progresoActual;
             renderModulos();
             renderTutoriales();
-            renderConsultas();
         }
 
         function renderModulos() {
@@ -568,10 +646,8 @@
                 progresoActual++;
                 moduloViendo = progresoActual; 
                 
-                // Guardamos en LocalStorage por respaldo[cite: 1]
                 localStorage.setItem('globoflexia_progreso', progresoActual);
                 
-                // NUEVO: Sincronizar el progreso del módulo con la nube
                 const currentUser = auth.currentUser;
                 if (currentUser) {
                     guardarProgresoEnNube(currentUser.uid, progresoActual, tutorialesCompletados);
@@ -585,6 +661,12 @@
         function renderTutoriales() {
             const container = document.getElementById('tutorials-container');
             container.innerHTML = '';
+
+            // Si aún no se cargan datos de Firestore, evitamos errores de renderizado
+            if (tutorialesData.length === 0) {
+                container.innerHTML = "<p style='text-align:center; width:100%; color:var(--text-light);'>Cargando videos tutoriales desde la nube...</p>";
+                return;
+            }
 
             tutorialesData.forEach(function(tut) {
                 const isCompleted = tutorialesCompletados.includes(tut.ytId);
@@ -616,54 +698,14 @@
                 tutorialesCompletados.push(ytId);
             }
             
-            // Guardamos localmente por respaldo[cite: 1]
             localStorage.setItem('globoflexia_tutoriales_completados', JSON.stringify(tutorialesCompletados));
             
-            // NUEVO: Sincronizar el progreso de los tutoriales rápidos con la nube
             const currentUser = auth.currentUser;
             if (currentUser) {
                 guardarProgresoEnNube(currentUser.uid, progresoActual, tutorialesCompletados);
             }
 
             renderTutoriales();
-        }
-
-        function renderConsultas() {
-            const contenedorLista = document.getElementById('lista-consultas');
-            contenedorLista.innerHTML = '';
-            const comentariosInvertidos = [].concat(consultasData).reverse();
-
-            comentariosInvertidos.forEach(function(c) {
-                const comentarioDiv = document.createElement('div');
-                comentarioDiv.className = 'comentario-card';
-                comentarioDiv.innerHTML = "<div class='comentario-header'>" +
-                        "<strong>👤 " + c.autor + "</strong>" +
-                        "<span class='fecha'>" + c.fecha + "</span>" +
-                    "</div>" +
-                    "<div class='comentario-body'>" +
-                        c.texto +
-                    "</div>";
-                contenedorLista.appendChild(comentarioDiv);
-            });
-        }
-
-        function publicarConsulta() {
-            const textArea = document.getElementById('nueva-consulta');
-            const texto = textArea.value;
-
-            if(texto.trim() === '') {
-                alert('Por favor, escribe una consulta antes de publicar.');
-                return;
-            }
-
-            const autor = localStorage.getItem('globoflexia_user') || 'Usuario Anónimo';
-            const fecha = new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-
-            consultasData.push({ autor: autor, texto: texto, fecha: fecha });
-            localStorage.setItem('globoflexia_consultas', JSON.stringify(consultasData));
-
-            textArea.value = '';
-            renderConsultas();
         }
     </script>
 </body>
