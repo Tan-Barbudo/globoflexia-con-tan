@@ -324,7 +324,7 @@
         const auth = firebase.auth();
         const provider = new firebase.auth.GoogleAuthProvider();
 
-        // Forzar persistencia LOCAL explicítamente para evitar pérdidas de estado en redirecciones
+        // Forzar persistencia LOCAL explícitamente para mantener sesión en el navegador
         auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
             .catch(function(err) { console.error("Error de persistencia:", err); });
 
@@ -368,7 +368,7 @@
         let moduloViendo = progresoActual; 
         let tutorialesCompletados = JSON.parse(localStorage.getItem('globoflexia_tutoriales_completados')) || [];
 
-        // --- 3. FUNCIONES DE AUTENTICACIÓN ---
+        // --- 3. FUNCIONES DE AUTENTICACIÓN (MÉTODO POPUP OPTIMIZADO) ---
 
         function ingresarAPanel(user) {
             document.getElementById('login-view').classList.add('hidden');
@@ -379,9 +379,9 @@
             renderizarApp();
         }
 
-        // Observador de Autenticación (Se ejecuta al cargar o al cambiar sesión)
+        // Observador que detecta la sesión inmediatamente al cargar o al iniciar sesión con éxito
         auth.onAuthStateChanged(function(user) {
-            console.log("Cambio de estado detectado. Usuario activo:", user ? user.displayName : "Ninguno");
+            console.log("onAuthStateChanged detectó al usuario:", user ? user.displayName : "Ninguno");
             if (user) {
                 ingresarAPanel(user);
             } else {
@@ -390,35 +390,21 @@
             }
         });
 
-        // Capturar redirección con depuración directa al retornar de Google
-        auth.getRedirectResult()
-            .then(function(result) {
-                if (result && result.user) {
-                    console.log("Sesión establecida correctamente:", result.user.displayName);
-                    ingresarAPanel(result.user);
-                }
-            })
-            .catch(function(error) {
-                console.error("Error crítico capturado tras la redirección:", error);
-                
-                // Mostrar alerta en pantalla para diagnosticar problemas de almacenamiento/cookies del navegador
-                alert("Error de autenticación de Firebase: " + error.code + " - " + error.message);
-                
-                const errorDiv = document.getElementById('login-error');
-                if (errorDiv) {
-                    errorDiv.innerText = "Error: " + error.message + " (" + error.code + ")";
-                    errorDiv.style.display = 'block';
-                }
-            });
-
         function iniciarSesionConGoogle() {
             const errorDiv = document.getElementById('login-error');
             if (errorDiv) errorDiv.style.display = 'none'; 
 
-            auth.signInWithRedirect(provider)
+            // Cambiamos signInWithRedirect por signInWithPopup
+            auth.signInWithPopup(provider)
+                .then(function(result) {
+                    if (result.user) {
+                        console.log("Inicio de sesión exitoso por Popup:", result.user.displayName);
+                        ingresarAPanel(result.user);
+                    }
+                })
                 .catch(function(error) {
-                    console.error("Error al gatillar signInWithRedirect:", error);
-                    alert("Error al iniciar el flujo: " + error.message);
+                    console.error("Error al iniciar sesión por ventana emergente:", error);
+                    alert("Error en el inicio de sesión: " + error.message + " (" + error.code + ")");
                     if (errorDiv) {
                         errorDiv.innerText = "Error al conectar con Google: " + error.message;
                         errorDiv.style.display = 'block';
@@ -561,6 +547,7 @@
             });
         }
 
+        // Marcar y guardar tutoriales de práctica rápida completados en local storage[cite: 1]
         function toggleTutorial(ytId) {
             if (tutorialesCompletados.includes(ytId)) {
                 tutorialesCompletados = tutorialesCompletados.filter(function(id) { return id !== ytId; });
@@ -590,6 +577,7 @@
             });
         }
 
+        // Publicar y guardar comentarios del foro localmente para consultas[cite: 1]
         function publicarConsulta() {
             const textArea = document.getElementById('nueva-consulta');
             const texto = textArea.value;
