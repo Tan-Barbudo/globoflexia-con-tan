@@ -173,7 +173,7 @@
 
         <div class="card p-7 bg-[#EE4040] text-white">
           <h2 class="text-3xl font-extrabold mb-4">Mi progreso</h2>
-          <p id="progressText" class="font-bold mb-3">0 de 0 vistos</p>
+          <p id="progressText" class="font-bold mb-3">0 de 21 módulos completados · 0%</p>
           <div class="progress-bar bg-white/25">
             <div id="progressFill" class="progress-fill"></div>
           </div>
@@ -533,7 +533,7 @@
       const total = videos.length;
       const done = availableVideos.filter(video => watched.includes(video.id)).length;
       const percent = total ? Math.round((done / total) * 100) : 0;
-      document.getElementById("progressText").textContent = `${done} de ${total} vistos · ${percent}%`;
+      document.getElementById("progressText").textContent = `${done} de ${total} módulos completados · ${percent}%`;
       document.getElementById("progressFill").style.width = `${percent}%`;
     }
 
