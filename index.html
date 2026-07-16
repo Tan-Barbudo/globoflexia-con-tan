@@ -362,7 +362,9 @@
         let moduloViendo = progresoActual; 
         let tutorialesCompletados = JSON.parse(localStorage.getItem('globoflexia_tutoriales_completados')) || [];
 
-        // --- 3. FUNCIONES DE AUTENTICACIÓN ---
+      // --- 3. FUNCIONES DE AUTENTICACIÓN ---
+        
+        // Escuchar el cambio en el estado de autenticación de Firebase
         auth.onAuthStateChanged((user) => {
             if (user) {
                 document.getElementById('login-view').classList.add('hidden');
@@ -378,16 +380,41 @@
             }
         });
 
+        // Capturar y procesar el resultado si venimos de una redirección de Google
+        auth.getRedirectResult()
+            .then((result) => {
+                if (result.user) {
+                    console.log("Sesión restaurada tras redirección exitosa para:", result.user.displayName);
+                }
+            })
+            .catch((error) => {
+                console.error("Error al retornar de la redirección:", error);
+                const errorDiv = document.getElementById('login-error');
+                if (errorDiv) {
+                    errorDiv.innerText = "Error de autorización: " + error.message;
+                    errorDiv.style.display = 'block';
+                }
+            });
+
+        // Nueva función robusta utilizando redirección
         function iniciarSesionConGoogle() {
             const errorDiv = document.getElementById('login-error');
             errorDiv.style.display = 'none'; 
 
-            auth.signInWithPopup(provider)
+            // Redireccionar al flujo oficial de login de Google
+            auth.signInWithRedirect(provider)
                 .catch((error) => {
                     console.error("Error al iniciar sesión:", error);
                     errorDiv.innerText = "Error al iniciar sesión con Google. Intenta nuevamente.";
                     errorDiv.style.display = 'block';
                 });
+        }
+
+        function cerrarSesion() {
+            auth.signOut().then(() => {
+                localStorage.removeItem('globoflexia_user');
+                location.reload(); 
+            });
         }
 
         function cerrarSesion() {
