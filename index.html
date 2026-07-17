@@ -10,7 +10,6 @@
             --primary: #EE4040;
             --primary-hover: #d93030;
             --secondary: #40B89C;
-            --secondary-hover: #34a084;
             --bg-color: #EAF8FF;
             --text-dark: #22333B;
             --text-light: #667085;
@@ -18,7 +17,6 @@
             --success: #40B89C;
             --locked: #A5A5A5;
             --border: #E4EAF0;
-            --globo-card-bg: #F0F9FF;
         }
 
         /* --- ESTILOS GLOBALES --- */
@@ -110,6 +108,7 @@
         }
 
         main { padding: 30px; max-width: 1200px; margin: 0 auto; width: 100%; flex: 1; }
+
         .section-header { margin-bottom: 30px; }
 
         /* --- BANNER PRINCIPAL (HERO SECTION) --- */
@@ -127,88 +126,199 @@
             padding: 25px;
         }
 
-        .hero-banner-image-wrapper { flex: 1; max-width: 50%; }
-        .hero-banner-image-wrapper img { width: 100%; height: auto; display: block; border-radius: 12px; }
-        .hero-banner-text-content { flex: 1; padding: 20px; }
-        .hero-banner-text-content h1 { font-size: clamp(1.8rem, 3vw, 2.4rem); line-height: 1.3; margin-bottom: 15px; color: var(--text-dark); }
-        .hero-banner-text-content p { font-size: clamp(1rem, 1.5vw, 1.15rem); color: var(--text-light); line-height: 1.6; }
+        .hero-banner-image-wrapper {
+            flex: 1;
+            max-width: 50%;
+        }
+
+        .hero-banner-image-wrapper img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 12px;
+        }
+
+        .hero-banner-text-content {
+            flex: 1;
+            padding: 20px;
+        }
+
+        .hero-banner-text-content h1 {
+            font-size: clamp(1.8rem, 3vw, 2.4rem);
+            line-height: 1.3;
+            margin-bottom: 15px;
+            color: var(--text-dark);
+        }
+
+        .hero-banner-text-content p {
+            font-size: clamp(1rem, 1.5vw, 1.15rem);
+            color: var(--text-light);
+            line-height: 1.6;
+        }
         
         /* --- REPRODUCTOR PRINCIPAL DE MÓDULOS --- */
-        .main-player-wrapper { background: var(--white); border-radius: 12px; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.08); margin-bottom: 40px; }
-        .main-video-container { position: relative; padding-bottom: 56.25%; height: 0; background: #000; }
-        .main-video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
-        .main-video-container.locked-bg { display: flex; justify-content: center; align-items: center; color: white; font-size: 1.5rem; padding-bottom: 40%; background: var(--locked); }
+        .main-player-wrapper {
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            margin-bottom: 40px;
+        }
+        
+        .main-video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            background: #000;
+        }
+        
+        .main-video-container iframe {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%; border: 0;
+        }
+        
+        .main-video-container.locked-bg {
+            display: flex; justify-content: center; align-items: center;
+            color: white; font-size: 1.5rem; padding-bottom: 40%; background: var(--locked);
+        }
+
         .main-player-info { padding: 30px; }
         .main-player-info h2 { margin-bottom: 15px; color: var(--text-dark); font-size: 1.8rem; }
         .main-player-info p { color: var(--text-light); font-size: 1.1rem; line-height: 1.6; margin-bottom: 20px; }
 
         /* --- NAVEGACIÓN ENTRE MÓDULOS --- */
-        .module-nav-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
-        .mod-nav-btn { background: var(--white); border: 2px solid var(--border); padding: 15px; border-radius: 8px; text-align: center; cursor: pointer; font-weight: 600; color: var(--text-dark); transition: all 0.2s; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+        .module-nav-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px;
+        }
+        
+        .mod-nav-btn {
+            background: var(--white); border: 2px solid var(--border); padding: 15px;
+            border-radius: 8px; text-align: center; cursor: pointer; font-weight: 600;
+            color: var(--text-dark); transition: all 0.2s; display: flex; flex-direction: column;
+            align-items: center; gap: 5px;
+        }
+        
         .mod-nav-btn:hover:not(.locked) { border-color: var(--primary-hover); transform: translateY(-2px); }
         .mod-nav-btn.active { border-color: var(--primary); background: var(--bg-color); color: var(--primary); }
         .mod-nav-btn.locked { opacity: 0.6; background: #f3f4f6; cursor: not-allowed; color: var(--text-light); }
 
-        /* --- REPRODUCTOR DESTACADO DE TUTORIALES --- */
-        .tutorial-featured-container { background: var(--white); border-radius: 16px; padding: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.06); margin-bottom: 40px; display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 450px; margin: 0 auto 40px auto; }
-        .tutorial-featured-player { position: relative; width: 100%; padding-bottom: 177.7%; background: #000; border-radius: 12px; overflow: hidden; }
-        .tutorial-featured-player iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
-        .tutorial-featured-controls { display: flex; justify-content: space-between; width: 100%; margin-top: 15px; gap: 15px; }
-        .tutorial-featured-controls .btn-nav { flex: 1; padding: 10px 16px; font-size: 0.95rem; }
+        /* --- REPRODUCTOR DESTACADO DE TUTORIALES (ARRIBA) --- */
+        .tutorial-featured-container {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+            margin-bottom: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto 40px auto;
+        }
 
-        /* --- GRILLA DE TUTORIALES DE SELECCIÓN --- */
-        .tutorials-grid { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; align-items: flex-start; width: 100%; max-width: 1200px; margin: 0 auto; }
-        .card { background: var(--white); border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: transform 0.2s, box-shadow 0.2s; position: relative; width: 100%; max-width: 220px; display: flex; flex-direction: column; cursor: pointer; }
+        .tutorial-featured-player {
+            position: relative;
+            width: 100%;
+            padding-bottom: 177.7%;
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .tutorial-featured-player iframe {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%; border: 0;
+        }
+
+        .tutorial-featured-controls {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-top: 15px;
+            gap: 15px;
+        }
+
+        .tutorial-featured-controls .btn-nav {
+            flex: 1;
+            padding: 10px 16px;
+            font-size: 0.95rem;
+        }
+
+        /* --- GRILLA DE TUTORIALES DE SELECCIÓN (ABAJO) --- */
+        .tutorials-grid { 
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            align-items: flex-start;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .card { 
+            background: var(--white); 
+            border-radius: 12px; 
+            overflow: hidden; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05); 
+            transition: transform 0.2s, box-shadow 0.2s; 
+            position: relative; 
+            width: 100%;
+            max-width: 220px;
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+        }
         .card:hover { transform: translateY(-5px); box-shadow: 0 12px 20px rgba(0,0,0,0.1); }
         .card.active-selection { border: 3px solid var(--primary); }
-        .thumbnail-container { position: relative; width: 100%; padding-bottom: 177.7%; background: #111; pointer-events: none; }
+        
+        .thumbnail-container { 
+            position: relative; 
+            width: 100%;
+            padding-bottom: 177.7%; 
+            background: #111; 
+            pointer-events: none;
+        }
         .thumbnail-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
         .card-body { padding: 12px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
         .card-body h4 { font-size: 0.95rem; text-align: center; }
         .card-body .btn-completado { font-size: 0.85rem; padding: 8px; width: 100%; }
 
-        /* --- INTERFAZ DEL CREADOR IA G.L.O.B.O --- */
-        .globo-creator-container { max-width: 800px; margin: 0 auto; background: var(--white); padding: 30px; border-radius: 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.06); }
-        .form-group { margin-bottom: 20px; display: flex; flex-direction: column; gap: 8px; }
-        .form-group label { font-weight: 600; color: var(--text-dark); }
-        .form-group select, .form-group input { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 1rem; outline: none; }
-        .form-group select:focus, .form-group input:focus { border-color: var(--secondary); }
-        
-        .globo-output-container { margin-top: 35px; display: flex; flex-direction: column; gap: 20px; }
-        .globo-letter-card { background: var(--globo-card-bg); border-left: 5px solid var(--secondary); padding: 20px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
-        .globo-letter-card h4 { font-size: 1.2rem; color: var(--text-dark); margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
-        .globo-letter-card h4 span { background: var(--secondary); color: white; width: 30px; height: 30px; display: inline-flex; justify-content: center; align-items: center; border-radius: 50%; font-weight: bold; }
-        .globo-letter-card p { line-height: 1.6; color: var(--text-dark); font-size: 1rem; }
-
-        /* --- FORO DE CONSULTAS --- */
+        /* --- FORO DE CONSULTAS CON HILOS --- */
         .consultas-container { max-width: 800px; margin: 0 auto; }
         .consulta-form { background: var(--white); padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 30px; }
         .consulta-form textarea { width: 100%; padding: 15px; border: 1px solid var(--border); border-radius: 6px; outline: none; resize: vertical; margin-bottom: 15px; font-size: 1rem; }
         .consulta-form textarea:focus { border-color: var(--primary); }
+        
         .comentario-card { background: var(--white); padding: 20px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.03); margin-bottom: 15px; border-left: 4px solid var(--primary); position: relative; }
         .comentario-header { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.9rem; }
         .comentario-header strong { color: var(--primary); font-size: 1rem; }
         .comentario-header .fecha { color: var(--text-light); }
         .comentario-body { line-height: 1.5; margin-bottom: 10px; }
+        
+        /* Botón e interfaz de respuesta */
         .btn-reply-trigger { background: none; border: none; color: var(--secondary); font-weight: 600; cursor: pointer; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 5px; margin-top: 5px; }
         .btn-reply-trigger:hover { text-decoration: underline; }
         .reply-box-container { margin-top: 15px; display: flex; gap: 10px; width: 100%; }
         .reply-box-container input { flex: 1; padding: 10px; border: 1px solid var(--border); border-radius: 6px; outline: none; font-size: 0.9rem; }
         .reply-box-container input:focus { border-color: var(--secondary); }
         .reply-box-container .btn-send-reply { padding: 8px 16px; font-size: 0.85rem; background-color: var(--secondary); }
+        
+        /* Diseño de hilos de respuesta indentados */
         .respuestas-lista { margin-top: 15px; padding-left: 25px; border-left: 2px dashed var(--border); display: flex; flex-direction: column; gap: 12px; }
         .respuesta-card { background: #F4FBFF; padding: 12px 15px; border-radius: 8px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.02); }
         .respuesta-header { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 6px; }
         .respuesta-header strong { color: var(--secondary); }
         .respuesta-header .fecha { color: var(--text-light); }
-        .respuesta-card .respuesta-body { font-size: 0.95rem; line-height: 1.4; }
+        .respuesta-body { font-size: 0.95rem; line-height: 1.4; }
 
         /* --- RESPONSIVE MÓVIL --- */
         @media (max-width: 768px) {
             header { padding: 12px 15px; }
             .header-brand { order: 1; }
             .header-user { order: 2; }
-            .nav-tabs { order: 3; width: 100%; justify-content: space-between; overflow-x: auto; padding-bottom: 5px; gap: 15px; }
+            .nav-tabs { order: 3; width: 100%; justify-content: space-between; overflow-x: auto; padding-bottom: 5px; }
             .nav-tabs::-webkit-scrollbar { display: none; }
             .header-brand img { width: 45px !important; }
             .brand-text h2 { font-size: 1.2rem !important; }
@@ -221,7 +331,11 @@
             .main-player-info h2 { font-size: 1.4rem; }
             .section-header h3 { font-size: 1.3rem !important; }
 
-            .hero-banner-container { flex-direction: column; margin: 15px; padding: 0; }
+            .hero-banner-container {
+                flex-direction: column;
+                margin: 15px;
+                padding: 0;
+            }
             .hero-banner-image-wrapper { max-width: 100%; }
             .hero-banner-image-wrapper img { border-radius: 20px 20px 0 0; }
             .hero-banner-text-content { padding: 20px; }
@@ -232,7 +346,6 @@
             .card-body { padding: 8px; }
             .card-body h4 { font-size: 0.85rem; }
             .respuestas-lista { padding-left: 15px; }
-            .globo-creator-container { padding: 20px; }
         }
     </style>
 </head>
@@ -269,7 +382,6 @@
                 <div class="nav-tab active" onclick="cambiarTab('inicio')" data-target="inicio">🏠 Inicio</div>
                 <div class="nav-tab" onclick="cambiarTab('modulos')" data-target="modulos">🎓 Módulos</div>
                 <div class="nav-tab" onclick="cambiarTab('tutoriales')" data-target="tutoriales">🎈 Tutoriales</div>
-                <div class="nav-tab" onclick="cambiarTab('ia-globo')" data-target="ia-globo">💡 Creador G.L.O.B.O</div>
                 <div class="nav-tab" onclick="cambiarTab('consultas')" data-target="consultas">💬 Preguntas</div>
             </div>
             
@@ -309,7 +421,6 @@
                     <h3 style="color: var(--text-dark); font-size: 1.5rem;">Selecciona un Módulo</h3>
                     <p>Repasa las clases que ya tienes desbloqueadas. Haz clic en cualquiera para ver el video.</p>
                 </div>
-
                 <div class="module-nav-grid" id="module-nav-container">
                     <!-- Se inyecta por JS -->
                 </div>
@@ -322,7 +433,6 @@
                     <p style="color: var(--text-light);">Mira el video destacado arriba o selecciona el que quieras aprender abajo.</p>
                 </div>
 
-                <!-- SECCIÓN SUPERIOR: Reproductor Destacado -->
                 <div class="tutorial-featured-container">
                     <h3 id="featured-video-title" style="margin-bottom: 12px; color: var(--text-dark); font-size: 1.3rem; text-align: center;">🎈 Cargando...</h3>
                     <div class="tutorial-featured-player">
@@ -334,44 +444,11 @@
                     </div>
                 </div>
 
-                <!-- SECCIÓN INFERIOR: Galería Completa -->
                 <div class="section-header" style="text-align: center; margin-top: 20px; margin-bottom: 20px;">
                     <h4 style="color: var(--text-dark); font-size: 1.2rem;">Colección Completa de Figuras</h4>
                 </div>
                 <div class="tutorials-grid" id="tutorials-container">
                     <!-- Se inyecta por JS -->
-                </div>
-            </section>
-
-            <!-- VISTA: CREADOR INTELIGENTE G.L.O.B.O -->
-            <section id="tab-ia-globo" class="hidden">
-                <div class="section-header" style="text-align: center; max-width: 600px; margin: 0 auto 30px auto;">
-                    <h3 style="color: var(--text-dark); font-size: 1.6rem; margin-bottom: 8px;">Creador de Historias Inteligente</h3>
-                    <p style="color: var(--text-light);">Selecciona una figura de globoflexia y crea una lección narrativa instantánea con tu metodología.</p>
-                </div>
-
-                <div class="globo-creator-container">
-                    <div class="form-group">
-                        <label for="ia-figure-select">🎈 Selecciona la Figura de Globo:</label>
-                        <select id="ia-figure-select">
-                            <option value="Serpiente">Serpiente</option>
-                            <option value="Cangrejo">Cangrejo</option>
-                            <option value="Perro">Perro</option>
-                            <option value="Pulpo">Pulpo</option>
-                            <option value="Cruz">Cruz</option>
-                            <option value="Flor">Flor</option>
-                            <option value="Espada">Espada / Corazón</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="ia-theme-input">🎯 Eje Temático o Valor (Opcional):</label>
-                        <input type="text" id="ia-theme-input" placeholder="Ej: La fe, la obediencia, el amor al prójimo, compartir...">
-                    </div>
-                    <button id="btn-generate-story" class="btn" style="width: 100%; background-color: var(--secondary);" onclick="generarHistoriaGLOBO()">✨ Crear Estructura Narrativa G.L.O.B.O</button>
-
-                    <div id="globo-output-wrapper" class="globo-output-container hidden">
-                        <!-- Se inyecta dinámicamente -->
-                    </div>
                 </div>
             </section>
 
@@ -399,9 +476,8 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
 
-    <!-- UNICO SCRIPT DE LOGICA LOGICA GLOBAL DE PRODUCCIÓN -->
     <script>
-        // --- 1. INITIALIZACIÓN Y CONFIGURACIÓN ---
+        // --- 1. CONFIGURACIÓN DE FIREBASE ---
         const firebaseConfig = {
             apiKey: "AIzaSyDShp-WOGdI3_ST8WoTLa6Jm5UqGludJ38",
             authDomain: "globoflexia-tan-barbudo.firebaseapp.com",
@@ -422,7 +498,36 @@
 
         provider.setCustomParameters({ prompt: 'select_account' });
 
-        // --- 2. MODELADO DE DATOS LOCALES ---
+        // --- 2. BASE DE DATOS LOCAL Y VARIABLES ---
+        const modulosData = [
+            { id: 0, title: "Introducción", desc: "Bienvenida y explicación de cómo trabajaremos durante las próximas semanas.", ytId: "W0r-6JJ8SZo", available: true },
+            { id: 1, title: "Módulo 1", desc: "Cómo está organizado el curso y construcción de una base sólida antes de crear nuestras primeras figuras.", ytId: "uabgTdjDMfk", available: true },
+            { id: 2, title: "Módulo 2", desc: "Tipos de infladores para globoflexia, sus características, ventajas y cuándo utilizar cada uno.", ytId: "mu4jCp8BN3o", available: true },
+            { id: 3, title: "Módulo 3", desc: "Conoce a fondo el material, tipos de globos, medidas y cómo elegir calidad.", ytId: "NNaU2kGoMxY", available: true },
+            { id: 4, title: "Módulo 4", desc: "Técnicas fundamentales: inflar correctamente, nudos seguros y torciones básicas.", ytId: "991rgpDtq1g", available: true },
+            { id: 5, title: "Módulo 5 al 16 + Bonus", desc: "Contenido advanced, figuras complejas y técnicas de decoración profesional.", ytId: "", available: false }
+        ];
+
+        const tutorialesData = [
+            { title: "Serpiente", ytId: "IHlMd2KkE5Y" },
+            { title: "Cangrejo", ytId: "ItfPu3jZ25g" },
+            { title: "Perro", ytId: "7Ay4HbAYWbI" },
+            { title: "Pulpo", ytId: "oQc3BjYo0-o" },
+            { title: "Cruz", ytId: "qQ6zrk8GADk" },
+            { title: "Ratón Volador", ytId: "W83CIGJfk7o" },
+            { title: "Gato", ytId: "y8EiwTbj3ow" },
+            { title: "Conejo", ytId: "Z9rCt_X0kTc" },
+            { title: "Dinosaurio", ytId: "iKBwsdc7aEU" },
+            { title: "Pony", ytId: "_j2SJgQOEB0" },
+            { title: "Corazón", ytId: "7faPIOkhalo" },
+            { title: "Flor", ytId: "jkDQqBiI8lU" },
+            { title: "Estrella o Copo de Nieve", ytId: "KYHJv1DNMoU" },
+            { title: "Flor de Pulsera", ytId: "UjuvTMRMJL8" },
+            { title: "Perro con retazos", ytId: "igi1ZJWvbKc" },
+            { title: "Oso de globoflexia", ytId: "ujmuGc46E1E" },
+            { title: "Uvas con globoflexia", ytId: "Y0VCbVJNI8M" }
+        ];
+
         let progresoActual = 0;
         let moduloViendo = 0; 
         let tutorialesCompletados = [];
@@ -430,13 +535,15 @@
         let indiceTutorialActivo = 0;
 
         // --- 3. FUNCIONES DE PROGRESO DE FIRESTORE ---
+
         function cargarProgresoDesdeNube(userId) {
             tutorialesCompletados = JSON.parse(localStorage.getItem('globoflexia_tutoriales_completados')) || [];
             progresoActual = parseInt(localStorage.getItem('globoflexia_progreso')) || 0;
             moduloViendo = progresoActual;
             renderizarApp();
 
-            db.collection("progreso_usuarios").doc(userId).get().then(function(doc) {
+            const docRef = db.collection("progreso_usuarios").doc(userId);
+            docRef.get().then(function(doc) {
                 if (doc.exists) {
                     const data = doc.data();
                     if ((data.progresoActual || 0) >= progresoActual) {
@@ -451,7 +558,7 @@
                     renderizarApp();
                 }
             }).catch(function(error) {
-                console.warn("Firestore inaccesible, trabajando de modo local asíncrono.");
+                console.warn("Firestore inaccesible, trabajando de modo local.");
             });
         }
 
@@ -463,7 +570,8 @@
             }, { merge: true }).catch(function(e){ console.warn(e); });
         }
 
-        // --- 4. FORO DE CONSULTAS CON HILOS DE RESPUESTAS ---
+        // --- 4. FORO DE CONSULTAS CON SOPORTE PARA HILOS EN TIEMPO REAL ---
+
         function escucharConsultasNube() {
             unsubscribeConsultas = db.collection("consultas")
                 .orderBy("timestamp", "desc")
@@ -471,6 +579,7 @@
                     const consultas = [];
                     snapshot.forEach(function(doc) {
                         const data = doc.data();
+                        // Incluimos el ID de documento para poder referenciar las respuestas concretas
                         data.id = doc.id; 
                         consultas.push(data);
                     });
@@ -493,6 +602,7 @@
                 const comentarioDiv = document.createElement('div');
                 comentarioDiv.className = 'comentario-card';
                 
+                // 1. Renderizar estructura de la consulta principal
                 let HTML = "<div class='comentario-header'>" +
                         "<strong>👤 " + c.autor + "</strong>" +
                         "<span class='fecha'>" + c.fecha + "</span>" +
@@ -504,6 +614,7 @@
                         "<button class='btn btn-send-reply' onclick=\"publicarRespuestaNube('" + c.id + "')\">Enviar</button>" +
                     "</div>";
 
+                // 2. Renderizar sub-lista de respuestas si existen hilos asociados en el documento
                 if (c.respuestas && c.respuestas.length > 0) {
                     HTML += "<div class='respuestas-lista'>";
                     c.respuestas.forEach(function(r) {
@@ -535,13 +646,14 @@
                 autor: autor,
                 texto: texto,
                 fecha: fecha,
-                respuestas: [], 
+                respuestas: [], // Inicializa el hilo de conversación vacío
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
             }).then(function() {
                 textArea.value = '';
             });
         }
 
+        // NUEVO: Abre/cierra el mini input de respuesta debajo del comentario
         function conmutarCajaRespuesta(docId) {
             const container = document.getElementById('reply-container-' + docId);
             if (container) {
@@ -552,6 +664,7 @@
             }
         }
 
+        // NUEVO: Guarda la respuesta directamente en el arreglo interno del documento correspondiente de Firestore
         function publicarRespuestaNube(docId) {
             const inputField = document.getElementById('reply-input-' + docId);
             const textoRespuesta = inputField.value;
@@ -560,8 +673,13 @@
             const autor = localStorage.getItem('globoflexia_user') || 'Usuario Anónimo';
             const fecha = new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
 
-            const nuevaRespuestaObjeto = { autor: autor, texto: textoRespuesta, fecha: fecha };
+            const nuevaRespuestaObjeto = {
+                autor: autor,
+                texto: textoRespuesta,
+                fecha: fecha
+            };
 
+            // Usamos arrayUnion para añadir el objeto de respuesta sin sobreescribir las respuestas previas
             db.collection("consultas").doc(docId).update({
                 respuestas: firebase.firestore.FieldValue.arrayUnion(nuevaRespuestaObjeto)
             }).then(function() {
@@ -569,51 +687,17 @@
                 document.getElementById('reply-container-' + docId).classList.add('hidden');
             }).catch(function(err) {
                 console.error("Error al registrar respuesta:", err);
+                alert("No se pudo añadir tu respuesta.");
             });
         }
 
-        // --- 5. LOGICA DEL CREADOR SEMÁNTICO G.L.O.B.O ---
-        function generarHistoriaGLOBO() {
-            const figura = document.getElementById('ia-figure-select').value;
-            const tema = document.getElementById('ia-theme-input').value || "un valor o principio general aplicable";
-            const btn = document.getElementById('btn-generate-story');
-            const wrapper = document.getElementById('globo-output-wrapper');
+        // --- 5. FUNCIONES DE AUTENTICACIÓN ---
 
-            btn.disabled = true;
-            btn.innerText = "✨ Diseñando tu formato G.L.O.B.O...";
-            wrapper.classList.add('hidden');
-
-            setTimeout(function() {
-                const historiasSimuladas = {
-                    Gancho: `¿Alguna vez han visto cómo algo común y corriente puede transformarse por completo? Miren este globo estirado... no parece mucho, ¿verdad? Pero miren con atención lo que pasa cuando empezamos a darle forma para crear un(a) ${figura}. ¡Presten mucha atención al sonido del aire!`,
-                    Leccion: `Así como este globo necesita ser inflar y moldeado con cuidado para convertirse en un(a) ${figura} y no reventarse, nuestras vidas necesitan límites sanos y guía. El tema de "${tema}" nos enseña que los procesos de moldeado a veces presionan, pero el resultado final es hermoso.`,
-                    Objetivo: `Enseñar la verdad central sobre "${tema}". El principio bíblico nos recuerda que somos barro en manos del alfarero, creados con un propósito único para servir, alegrar y bendecir a los demás con los talentos que se nos han confiado.`,
-                    Participacion: `¡Ahora es su turno! Quiero que todos hagan el sonido de un inflador: "¡Fis, fas, fis, fas!" cada vez que yo haga un giro en el globo. ¡A la cuenta de tres, me ayudan a inflar la siguiente figura con sus voces!`,
-                    Oportunidad: `Terminemos este momento con una oración: "Señor, gracias por moldear nuestros corazones y darnos la oportunidad de aprender sobre ${tema}. Ayúdanos a ser herramientas de bendición para quienes nos rodean. Amén."`
-                };
-
-                wrapper.innerHTML = `
-                    <div class="globo-letter-card"><h4><span>G</span> Gancho (Rompehielos)</h4><p>${historiasSimuladas.Gancho}</p></div>
-                    <div class="globo-letter-card"><h4><span>L</span> Lección de Vida</h4><p>${historiasSimuladas.Leccion}</p></div>
-                    <div class="globo-letter-card"><h4><span>O</span> Objetivo Bíblico</h4><p>${historiasSimuladas.Objetivo}</p></div>
-                    <div class="globo-letter-card"><h4><span>B</span> Breve Participación</h4><p>${historiasSimuladas.Participacion}</p></div>
-                    <div class="globo-letter-card"><h4><span>O</span> Oportunidad de Oración / Evangelio</h4><p>${historiasSimuladas.Oportunidad}</p></div>
-                `;
-
-                btn.disabled = false;
-                btn.innerText = "✨ Crear Estructura Narrativa G.L.O.B.O";
-                wrapper.classList.remove('hidden');
-                wrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }, 1800);
-        }
-
-        // --- 6. FLUJO DE CONTROL DE SESIÓN ---
         function ingresarAPanel(user) {
             document.getElementById('login-view').classList.add('hidden');
             document.getElementById('app-view').classList.remove('hidden');
             document.getElementById('user-greeting').innerText = "Hola, " + (user.displayName || "Usuario");
             localStorage.setItem('globoflexia_user', user.displayName || "Usuario");
-            
             cargarProgresoDesdeNube(user.uid);
             escucharConsultasNube();
         }
@@ -624,28 +708,19 @@
             } else {
                 document.getElementById('login-view').classList.remove('hidden');
                 document.getElementById('app-view').classList.add('hidden');
-                if (unsubscribeConsultas) {
-                    unsubscribeConsultas();
-                    unsubscribeConsultas = null;
-                }
+                if (unsubscribeConsultas) { unsubscribeConsultas(); unsubscribeConsultas = null; }
             }
         });
 
         function iniciarSesionConGoogle() {
-            auth.signInWithPopup(provider).catch(function(error) {
-                console.error("Error en popup de autenticación:", error);
-                alert("Error de autenticación con Google.");
-            });
+            auth.signInWithPopup(provider).catch(function(e){ console.error(e); });
         }
 
         function cerrarSesion() {
-            auth.signOut().then(function() {
-                localStorage.clear(); 
-                location.reload(); 
-            });
+            auth.signOut().then(function() { localStorage.clear(); location.reload(); });
         }
 
-        // --- 7. MÉTODOS DE RENDERIZADO VISUAL ---
+        // --- 6. NAVEGACIÓN Y RENDERIZADO ---
         function cambiarTab(tabId) {
             document.querySelectorAll('.nav-tab').forEach(function(el) { el.classList.remove('active'); });
             const activeTab = document.querySelector(".nav-tab[data-target='" + tabId + "']");
@@ -654,7 +729,6 @@
             document.getElementById('tab-inicio').classList.add('hidden');
             document.getElementById('tab-modulos').classList.add('hidden');
             document.getElementById('tab-tutoriales').classList.add('hidden');
-            document.getElementById('tab-ia-globo').classList.add('hidden');
             document.getElementById('tab-consultas').classList.add('hidden');
             document.getElementById("tab-" + tabId).classList.remove('hidden');
         }
@@ -746,6 +820,7 @@
             actualizarTutorialDestacado();
         }
 
+        // Cambia el estado de un tutorial individual y sincroniza
         function toggleTutorial(ytId) {
             tutorialesCompletados = tutorialesCompletados.includes(ytId) ? tutorialesCompletados.filter(function(id) { return id !== ytId; }) : [...tutorialesCompletados, ytId];
             localStorage.setItem('globoflexia_tutoriales_completados', JSON.stringify(tutorialesCompletados));
