@@ -167,14 +167,13 @@
         .card-body h4 { font-size: 0.95rem; text-align: center; }
         .card-body .btn-completado { font-size: 0.85rem; padding: 8px; width: 100%; }
 
-        /* --- NUEVO: INTERFAZ DEL CREADOR IA G.L.O.B.O --- */
+        /* --- INTERFAZ DEL CREADOR IA G.L.O.B.O --- */
         .globo-creator-container { max-width: 800px; margin: 0 auto; background: var(--white); padding: 30px; border-radius: 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.06); }
         .form-group { margin-bottom: 20px; display: flex; flex-direction: column; gap: 8px; }
         .form-group label { font-weight: 600; color: var(--text-dark); }
         .form-group select, .form-group input { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 1rem; outline: none; }
         .form-group select:focus, .form-group input:focus { border-color: var(--secondary); }
         
-        /* Formato de tarjetas para el acrónimo devuelto por la IA */
         .globo-output-container { margin-top: 35px; display: flex; flex-direction: column; gap: 20px; }
         .globo-letter-card { background: var(--globo-card-bg); border-left: 5px solid var(--secondary); padding: 20px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
         .globo-letter-card h4 { font-size: 1.2rem; color: var(--text-dark); margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
@@ -202,7 +201,7 @@
         .respuesta-header { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 6px; }
         .respuesta-header strong { color: var(--secondary); }
         .respuesta-header .fecha { color: var(--text-light); }
-        .respuesta-body { font-size: 0.95rem; line-height: 1.4; }
+        .respuesta-card .respuesta-body { font-size: 0.95rem; line-height: 1.4; }
 
         /* --- RESPONSIVE MÓVIL --- */
         @media (max-width: 768px) {
@@ -245,7 +244,9 @@
             <img src="logo.png" alt="Tan Barbudo" style="width:120px;display:block;margin:0 auto 20px;">
             <h1>Globoflexia con Tan</h1>
             <p>Curso creativo y personalizado</p>
+            
             <p id="login-error" class="error-msg">Ocurrió un error al iniciar sesión.</p>
+            
             <button class="btn" style="width: 100%; margin-top: 10px; background-color: #4285F4; display: flex; align-items: center; justify-content: center; gap: 10px;" onclick="iniciarSesionConGoogle()">
                 <span style="background-color: white; border-radius: 50%; padding: 2px; width: 20px; height: 20px; display: inline-block; color: #4285F4; font-weight: bold;">G</span>
                 Ingresar con Google
@@ -296,7 +297,10 @@
                     <h3 style="color: var(--text-dark); font-size: 1.5rem;">Ruta de Aprendizaje</h3>
                     <p>Completa el video actual para desbloquear el siguiente. Nivel actual: <span id="progress-text" style="font-weight: bold; color: var(--primary);">0</span>/5</p>
                 </div>
-                <div class="main-player-wrapper" id="main-player-container"></div>
+                
+                <div class="main-player-wrapper" id="main-player-container">
+                    <!-- Se inyecta por JS -->
+                </div>
             </section>
 
             <!-- Vista de MÓDULOS -->
@@ -305,7 +309,10 @@
                     <h3 style="color: var(--text-dark); font-size: 1.5rem;">Selecciona un Módulo</h3>
                     <p>Repasa las clases que ya tienes desbloqueadas. Haz clic en cualquiera para ver el video.</p>
                 </div>
-                <div class="module-nav-grid" id="module-nav-container"></div>
+
+                <div class="module-nav-grid" id="module-nav-container">
+                    <!-- Se inyecta por JS -->
+                </div>
             </section>
 
             <!-- Vista de Tutoriales -->
@@ -315,6 +322,7 @@
                     <p style="color: var(--text-light);">Mira el video destacado arriba o selecciona el que quieras aprender abajo.</p>
                 </div>
 
+                <!-- SECCIÓN SUPERIOR: Reproductor Destacado -->
                 <div class="tutorial-featured-container">
                     <h3 id="featured-video-title" style="margin-bottom: 12px; color: var(--text-dark); font-size: 1.3rem; text-align: center;">🎈 Cargando...</h3>
                     <div class="tutorial-featured-player">
@@ -326,13 +334,16 @@
                     </div>
                 </div>
 
+                <!-- SECCIÓN INFERIOR: Galería Completa -->
                 <div class="section-header" style="text-align: center; margin-top: 20px; margin-bottom: 20px;">
                     <h4 style="color: var(--text-dark); font-size: 1.2rem;">Colección Completa de Figuras</h4>
                 </div>
-                <div class="tutorials-grid" id="tutorials-container"></div>
+                <div class="tutorials-grid" id="tutorials-container">
+                    <!-- Se inyecta por JS -->
+                </div>
             </section>
 
-            <!-- NUEVA VISTA: CREADOR INTELIGENTE G.L.O.B.O -->
+            <!-- VISTA: CREADOR INTELIGENTE G.L.O.B.O -->
             <section id="tab-ia-globo" class="hidden">
                 <div class="section-header" style="text-align: center; max-width: 600px; margin: 0 auto 30px auto;">
                     <h3 style="color: var(--text-dark); font-size: 1.6rem; margin-bottom: 8px;">Creador de Historias Inteligente</h3>
@@ -358,9 +369,8 @@
                     </div>
                     <button id="btn-generate-story" class="btn" style="width: 100%; background-color: var(--secondary);" onclick="generarHistoriaGLOBO()">✨ Crear Estructura Narrativa G.L.O.B.O</button>
 
-                    <!-- Zona de resultados dinámicos -->
                     <div id="globo-output-wrapper" class="globo-output-container hidden">
-                        <!-- Se inyecta dinámicamente por JS -->
+                        <!-- Se inyecta dinámicamente -->
                     </div>
                 </div>
             </section>
@@ -376,35 +386,193 @@
                         <textarea id="nueva-consulta" rows="4" placeholder="Escribe tu duda, pregunta o comentario aquí..."></textarea>
                         <button class="btn" onclick="publicarConsulta()">Publicar Consulta</button>
                     </div>
-                    <div id="lista-consultas"></div>
+                    <div id="lista-consultas">
+                        <!-- Se inyecta por JS -->
+                    </div>
                 </div>
             </section>
         </main>
     </div>
 
+    <!-- SDK de Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+
+    <!-- UNICO SCRIPT DE LOGICA LOGICA GLOBAL DE PRODUCCIÓN -->
     <script>
-        // --- BASE DE DATOS LOCAL ---
-        const modulosData = [
-            { id: 0, title: "Introducción", desc: "Bienvenida y explicación de cómo trabajaremos durante las próximas semanas.", ytId: "W0r-6JJ8SZo", available: true },
-            { id: 1, title: "Módulo 1", desc: "Cómo está organizado el curso y construcción de una base sólida antes de crear nuestras primeras figuras.", ytId: "uabgTdjDMfk", available: true },
-            { id: 2, title: "Módulo 2", desc: "Tipos de infladores para globoflexia, sus características, ventajas y cuándo utilizar cada uno.", ytId: "mu4jCp8BN3o", available: true },
-            { id: 3, title: "Módulo 3", desc: "Conoce a fondo el material, tipos de globos, medidas y cómo elegir calidad.", ytId: "NNaU2kGoMxY", available: true },
-            { id: 4, title: "Módulo 4", desc: "Técnicas fundamentales: inflar correctamente, nudos seguros y torciones básicas.", ytId: "991rgpDtq1g", available: true },
-            { id: 5, title: "Módulo 5 al 16 + Bonus", desc: "Contenido avanzado, figuras complejas y técnicas de decoración profesional.", ytId: "", available: false }
-        ];
+        // --- 1. INITIALIZACIÓN Y CONFIGURACIÓN ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyDShp-WOGdI3_ST8WoTLa6Jm5UqGludJ38",
+            authDomain: "globoflexia-tan-barbudo.firebaseapp.com",
+            projectId: "globoflexia-tan-barbudo",
+            storageBucket: "globoflexia-tan-barbudo.firebasestorage.app",
+            messagingSenderId: "372829377933",
+            appId: "1:372829377933:web:5f0686db4eb7e74f68d9c4",
+            measurementId: "G-8TNL59G05J"
+        };
 
-        const tutorialesData = [
-            { title: "Serpiente", ytId: "IHlMd2KkE5Y" }, { title: "Cangrejo", ytId: "ItfPu3jZ25g" }, { title: "Perro", ytId: "7Ay4HbAYWbI" },
-            { title: "Pulpo", ytId: "oQc3BjYo0-o" }, { title: "Cruz", ytId: "qQ6zrk8GADk" }, { title: "Ratón Volador", ytId: "W83CIGJfk7o" },
-            { title: "Gato", ytId: "y8EiwTbj3ow" }, { title: "Conejo", ytId: "Z9rCt_X0kTc" }, { title: "Dinosaurio", ytId: "iKBwsdc7aEU" },
-            { title: "Pony", ytId: "_j2SJgQOEB0" }, { title: "Corazón", ytId: "7faPIOkhalo" }, { title: "Flor", ytId: "jkDQqBiI8lU" },
-            { title: "Estrella o Copo de Nieve", ytId: "KYHJv1DNMoU" }, { title: "Flor de Pulsera", ytId: "UjuvTMRMJL8" },
-            { title: "Perro con retazos", ytId: "igi1ZJWvbKc" }, { title: "Oso de globoflexia", ytId: "ujmuGc46E1E" }, { title: "Uvas con globoflexia", ytId: "Y0VCbVJNI8M" }
-        ];
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        const provider = new firebase.auth.GoogleAuthProvider();
 
-        let progresoActual = 0, moduloViendo = 0, tutorialesCompletados = [], unsubscribeConsultas = null, indiceTutorialActivo = 0;
+        auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+            .catch(function(err) { console.error("Error de persistencia:", err); });
 
-        // --- NUEVA FUNCIÓN: CONEXIÓN ASÍNCRONA CON LA IA (FORMATO G.L.O.B.O) ---
+        provider.setCustomParameters({ prompt: 'select_account' });
+
+        // --- 2. MODELADO DE DATOS LOCALES ---
+        let progresoActual = 0;
+        let moduloViendo = 0; 
+        let tutorialesCompletados = [];
+        let unsubscribeConsultas = null;
+        let indiceTutorialActivo = 0;
+
+        // --- 3. FUNCIONES DE PROGRESO DE FIRESTORE ---
+        function cargarProgresoDesdeNube(userId) {
+            tutorialesCompletados = JSON.parse(localStorage.getItem('globoflexia_tutoriales_completados')) || [];
+            progresoActual = parseInt(localStorage.getItem('globoflexia_progreso')) || 0;
+            moduloViendo = progresoActual;
+            renderizarApp();
+
+            db.collection("progreso_usuarios").doc(userId).get().then(function(doc) {
+                if (doc.exists) {
+                    const data = doc.data();
+                    if ((data.progresoActual || 0) >= progresoActual) {
+                        progresoActual = data.progresoActual || 0;
+                        moduloViendo = progresoActual;
+                    }
+                    if (data.tutorialesCompletados && data.tutorialesCompletados.length > tutorialesCompletados.length) {
+                        tutorialesCompletados = data.tutorialesCompletados;
+                    }
+                    localStorage.setItem('globoflexia_progreso', progresoActual);
+                    localStorage.setItem('globoflexia_tutoriales_completados', JSON.stringify(tutorialesCompletados));
+                    renderizarApp();
+                }
+            }).catch(function(error) {
+                console.warn("Firestore inaccesible, trabajando de modo local asíncrono.");
+            });
+        }
+
+        function guardarProgresoEnNube(userId, moduloProgreso, listaTutoriales) {
+            db.collection("progreso_usuarios").doc(userId).set({
+                progresoActual: moduloProgreso,
+                tutorialesCompletados: listaTutoriales,
+                ultimoAcceso: firebase.firestore.FieldValue.serverTimestamp()
+            }, { merge: true }).catch(function(e){ console.warn(e); });
+        }
+
+        // --- 4. FORO DE CONSULTAS CON HILOS DE RESPUESTAS ---
+        function escucharConsultasNube() {
+            unsubscribeConsultas = db.collection("consultas")
+                .orderBy("timestamp", "desc")
+                .onSnapshot(function(snapshot) {
+                    const consultas = [];
+                    snapshot.forEach(function(doc) {
+                        const data = doc.data();
+                        data.id = doc.id; 
+                        consultas.push(data);
+                    });
+                    renderizarConsultasNube(consultas);
+                }, function(error) {
+                    console.error("Error al escuchar consultas en tiempo real:", error);
+                });
+        }
+
+        function renderizarConsultasNube(consultas) {
+            const contenedorLista = document.getElementById('lista-consultas');
+            contenedorLista.innerHTML = '';
+
+            if (consultas.length === 0) {
+                contenedorLista.innerHTML = "<div class='comentario-card'><div class='comentario-body'>¡Sé el primero en dejar tu duda o comentario sobre el curso!</div></div>";
+                return;
+            }
+
+            consultas.forEach(function(c) {
+                const comentarioDiv = document.createElement('div');
+                comentarioDiv.className = 'comentario-card';
+                
+                let HTML = "<div class='comentario-header'>" +
+                        "<strong>👤 " + c.autor + "</strong>" +
+                        "<span class='fecha'>" + c.fecha + "</span>" +
+                    "</div>" +
+                    "<div class='comentario-body'>" + c.texto + "</div>" +
+                    "<button class='btn-reply-trigger' onclick=\"conmutarCajaRespuesta('" + c.id + "')\">💬 Responder a " + c.autor.split(' ')[0] + "</button>" +
+                    "<div id='reply-container-" + c.id + "' class='reply-box-container hidden'>" +
+                        "<input type='text' id='reply-input-" + c.id + "' placeholder='Escribe tu respuesta pública...'>" +
+                        "<button class='btn btn-send-reply' onclick=\"publicarRespuestaNube('" + c.id + "')\">Enviar</button>" +
+                    "</div>";
+
+                if (c.respuestas && c.respuestas.length > 0) {
+                    HTML += "<div class='respuestas-lista'>";
+                    c.respuestas.forEach(function(r) {
+                        HTML += "<div class='respuesta-card'>" +
+                                "<div class='respuesta-header'>" +
+                                    "<strong>↪️ " + r.autor + "</strong>" +
+                                    "<span class='fecha'>" + r.fecha + "</span>" +
+                                "</div>" +
+                                "<div class='respuesta-body'>" + r.texto + "</div>" +
+                            "</div>";
+                    });
+                    HTML += "</div>";
+                }
+
+                comentarioDiv.innerHTML = HTML;
+                contenedorLista.appendChild(comentarioDiv);
+            });
+        }
+
+        function publicarConsulta() {
+            const textArea = document.getElementById('nueva-consulta');
+            const texto = textArea.value;
+            if (texto.trim() === '') return;
+
+            const autor = localStorage.getItem('globoflexia_user') || 'Usuario Anónimo';
+            const fecha = new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+            db.collection("consultas").add({
+                autor: autor,
+                texto: texto,
+                fecha: fecha,
+                respuestas: [], 
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            }).then(function() {
+                textArea.value = '';
+            });
+        }
+
+        function conmutarCajaRespuesta(docId) {
+            const container = document.getElementById('reply-container-' + docId);
+            if (container) {
+                container.classList.toggle('hidden');
+                if (!container.classList.contains('hidden')) {
+                    document.getElementById('reply-input-' + docId).focus();
+                }
+            }
+        }
+
+        function publicarRespuestaNube(docId) {
+            const inputField = document.getElementById('reply-input-' + docId);
+            const textoRespuesta = inputField.value;
+            if (textoRespuesta.trim() === '') return;
+
+            const autor = localStorage.getItem('globoflexia_user') || 'Usuario Anónimo';
+            const fecha = new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+            const nuevaRespuestaObjeto = { autor: autor, texto: textoRespuesta, fecha: fecha };
+
+            db.collection("consultas").doc(docId).update({
+                respuestas: firebase.firestore.FieldValue.arrayUnion(nuevaRespuestaObjeto)
+            }).then(function() {
+                inputField.value = '';
+                document.getElementById('reply-container-' + docId).classList.add('hidden');
+            }).catch(function(err) {
+                console.error("Error al registrar respuesta:", err);
+            });
+        }
+
+        // --- 5. LOGICA DEL CREADOR SEMÁNTICO G.L.O.B.O ---
         function generarHistoriaGLOBO() {
             const figura = document.getElementById('ia-figure-select').value;
             const tema = document.getElementById('ia-theme-input').value || "un valor o principio general aplicable";
@@ -415,11 +583,10 @@
             btn.innerText = "✨ Diseñando tu formato G.L.O.B.O...";
             wrapper.classList.add('hidden');
 
-            // Simulación asíncrona de procesamiento semántico local (puedes reemplazar con tu endpoint de fetch de OpenAI/Gemini)
             setTimeout(function() {
                 const historiasSimuladas = {
                     Gancho: `¿Alguna vez han visto cómo algo común y corriente puede transformarse por completo? Miren este globo estirado... no parece mucho, ¿verdad? Pero miren con atención lo que pasa cuando empezamos a darle forma para crear un(a) ${figura}. ¡Presten mucha atención al sonido del aire!`,
-                    Leccion: `Así como este globo necesita ser inflado y moldeado con cuidado para convertirse en un(a) ${figura} y no reventarse, nuestras vidas necesitan límites sanos y guía. El tema de "${tema}" nos enseña que los procesos de moldeado a veces presionan, pero el resultado final es hermoso.`,
+                    Leccion: `Así como este globo necesita ser inflar y moldeado con cuidado para convertirse en un(a) ${figura} y no reventarse, nuestras vidas necesitan límites sanos y guía. El tema de "${tema}" nos enseña que los procesos de moldeado a veces presionan, pero el resultado final es hermoso.`,
                     Objetivo: `Enseñar la verdad central sobre "${tema}". El principio bíblico nos recuerda que somos barro en manos del alfarero, creados con un propósito único para servir, alegrar y bendecir a los demás con los talentos que se nos han confiado.`,
                     Participacion: `¡Ahora es su turno! Quiero que todos hagan el sonido de un inflador: "¡Fis, fas, fis, fas!" cada vez que yo haga un giro en el globo. ¡A la cuenta de tres, me ayudan a inflar la siguiente figura con sus voces!`,
                     Oportunidad: `Terminemos este momento con una oración: "Señor, gracias por moldear nuestros corazones y darnos la oportunidad de aprender sobre ${tema}. Ayúdanos a ser herramientas de bendición para quienes nos rodean. Amén."`
@@ -437,10 +604,48 @@
                 btn.innerText = "✨ Crear Estructura Narrativa G.L.O.B.O";
                 wrapper.classList.remove('hidden');
                 wrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }, 2000);
+            }, 1800);
         }
 
-        // --- 5. CONTROL DE NAVEGACIÓN Y RENDERIZADO DE INTERFAZ ---
+        // --- 6. FLUJO DE CONTROL DE SESIÓN ---
+        function ingresarAPanel(user) {
+            document.getElementById('login-view').classList.add('hidden');
+            document.getElementById('app-view').classList.remove('hidden');
+            document.getElementById('user-greeting').innerText = "Hola, " + (user.displayName || "Usuario");
+            localStorage.setItem('globoflexia_user', user.displayName || "Usuario");
+            
+            cargarProgresoDesdeNube(user.uid);
+            escucharConsultasNube();
+        }
+
+        auth.onAuthStateChanged(function(user) {
+            if (user) {
+                ingresarAPanel(user);
+            } else {
+                document.getElementById('login-view').classList.remove('hidden');
+                document.getElementById('app-view').classList.add('hidden');
+                if (unsubscribeConsultas) {
+                    unsubscribeConsultas();
+                    unsubscribeConsultas = null;
+                }
+            }
+        });
+
+        function iniciarSesionConGoogle() {
+            auth.signInWithPopup(provider).catch(function(error) {
+                console.error("Error en popup de autenticación:", error);
+                alert("Error de autenticación con Google.");
+            });
+        }
+
+        function cerrarSesion() {
+            auth.signOut().then(function() {
+                localStorage.clear(); 
+                location.reload(); 
+            });
+        }
+
+        // --- 7. MÉTODOS DE RENDERIZADO VISUAL ---
         function cambiarTab(tabId) {
             document.querySelectorAll('.nav-tab').forEach(function(el) { el.classList.remove('active'); });
             const activeTab = document.querySelector(".nav-tab[data-target='" + tabId + "']");
@@ -454,18 +659,26 @@
             document.getElementById("tab-" + tabId).classList.remove('hidden');
         }
 
-        function renderizarApp() { renderModulos(); renderTutoriales(); }
+        function renderizarApp() {
+            renderModulos();
+            renderTutoriales();
+        }
 
         function renderModulos() {
-            const mainContainer = document.getElementById('main-player-container'), navContainer = document.getElementById('module-nav-container');
+            const mainContainer = document.getElementById('main-player-container');
+            const navContainer = document.getElementById('module-nav-container');
             document.getElementById('progress-text').innerText = progresoActual;
+
             const modActual = modulosData[moduloViendo];
-            let playerHTML = modActual.available ? "<div class='main-video-container'><iframe src='https://www.youtube.com/embed/" + modActual.ytId + "?controls=0&modestbranding=1&rel=0' allowfullscreen></iframe></div>" : "<div class='main-video-container locked-bg'><span>🔒 Próximamente</span></div>";
+            let playerHTML = modActual.available ? "<div class='main-video-container'><iframe src='https://www.youtube.com/embed/" + modActual.ytId + "?controls=0&modestbranding=1&rel=0' allowfullscreen></iframe></div>" : "<div class='main-video-container locked-bg'><span>🔒 Próximamente disponible</span></div>";
             let btnHTML = (modActual.available && moduloViendo === progresoActual && progresoActual < 4) ? "<button class='btn' style='margin-top: 15px; width: 100%;' onclick='avanzarProgreso()'>✅ Marcar como Visto y Avanzar</button>" : (moduloViendo < progresoActual ? "<div style='color: var(--success); font-weight: bold; margin-top: 15px; text-align: center;'>✓ Módulo Completado</div>" : "");
+
             mainContainer.innerHTML = playerHTML + "<div class='main-player-info'><h2>" + modActual.title + "</h2><p>" + modActual.desc + "</p>" + btnHTML + "</div>";
+
             navContainer.innerHTML = '';
             modulosData.forEach(function(mod, index) {
-                let isLocked = (!mod.available || index > progresoActual), statusIcon = isLocked ? '🔒' : (index < progresoActual ? '✅' : '▶️');
+                let isLocked = (!mod.available || index > progresoActual);
+                let statusIcon = isLocked ? '🔒' : (index < progresoActual ? '✅' : '▶️');
                 const btn = document.createElement('div');
                 btn.className = "mod-nav-btn " + (isLocked ? 'locked' : '') + " " + (index === moduloViendo ? 'active' : '');
                 btn.innerHTML = "<span style='font-size: 1.5rem;'>" + statusIcon + "</span><span>" + mod.title + "</span>";
@@ -474,8 +687,22 @@
             });
         }
 
-        function cambiarModuloViendo(index) { moduloViendo = index; renderModulos(); cambiarTab('inicio'); window.scrollTo({ top: 0, behavior: 'smooth' }); }
-        function avanzarProgreso() { if(progresoActual < 4) { progresoActual++; moduloViendo = progresoActual; localStorage.setItem('globoflexia_progreso', progresoActual); if (auth.currentUser) guardarProgresoEnNube(auth.currentUser.uid, progresoActual, tutorialesCompletados); renderModulos(); } }
+        function cambiarModuloViendo(index) {
+            moduloViendo = index;
+            renderModulos();
+            cambiarTab('inicio');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function avanzarProgreso() {
+            if(progresoActual < 4) {
+                progresoActual++;
+                moduloViendo = progresoActual;
+                localStorage.setItem('globoflexia_progreso', progresoActual);
+                if (auth.currentUser) guardarProgresoEnNube(auth.currentUser.uid, progresoActual, tutorialesCompletados);
+                renderModulos();
+            }
+        }
 
         function actualizarTutorialDestacado() {
             const videoActivo = tutorialesData[indiceTutorialActivo];
@@ -483,75 +710,48 @@
             document.getElementById('featured-video-iframe').src = "https://www.youtube.com/embed/" + videoActivo.ytId + "?controls=1&modestbranding=1&rel=0";
             document.getElementById('btn-prev-tutorial').disabled = (indiceTutorialActivo === 0);
             document.getElementById('btn-next-tutorial').disabled = (indiceTutorialActivo === tutorialesData.length - 1);
-            document.querySelectorAll('.card').forEach(function(card, idx) { if (idx === indiceTutorialActivo) card.classList.add('active-selection'); else card.classList.remove('active-selection'); });
+
+            document.querySelectorAll('.card').forEach(function(card, idx) {
+                if (idx === indiceTutorialActivo) card.classList.add('active-selection');
+                else card.classList.remove('active-selection');
+            });
         }
 
-        function cambiarTutorialActivoPorIndice(index) { indiceTutorialActivo = index; actualizarTutorialDestacado(); document.querySelector('.tutorial-featured-container').scrollIntoView({ behavior: 'smooth', block: 'center' }); }
-        function cambiarTutorialRelativo(direccion) { const nuevoIndice = indiceTutorialActivo + direccion; if (nuevoIndice >= 0 && nuevoIndice < tutorialesData.length) cambiarTutorialActivoPorIndice(nuevoIndice); }
+        function cambiarTutorialActivoPorIndice(index) {
+            indiceTutorialActivo = index;
+            actualizarTutorialDestacado();
+            document.querySelector('.tutorial-featured-container').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function cambiarTutorialRelativo(direccion) {
+            const nuevoIndice = indiceTutorialActivo + direccion;
+            if (nuevoIndice >= 0 && nuevoIndice < tutorialesData.length) cambiarTutorialActivoPorIndice(nuevoIndice);
+        }
 
         function renderTutoriales() {
-            const container = document.getElementById('tutorials-container'); container.innerHTML = '';
+            const container = document.getElementById('tutorials-container');
+            container.innerHTML = '';
+
             tutorialesData.forEach(function(tut, index) {
                 const isCompleted = tutorialesCompletados.includes(tut.ytId);
                 const card = document.createElement('div');
                 card.className = 'card' + (index === indiceTutorialActivo ? ' active-selection' : '');
                 card.onclick = function(e) { if (e.target.tagName !== 'BUTTON') cambiarTutorialActivoPorIndice(index); };
+                
                 let btnHtml = isCompleted ? "<button class='btn btn-completado' style='background: var(--success); color: white;' onclick=\"event.stopPropagation(); toggleTutorial('" + tut.ytId + "')\">✅ Completado</button>" : "<button class='btn btn-completado' style='background: var(--bg-color); color: var(--text-dark); border: 1px solid var(--border);' onclick=\"event.stopPropagation(); toggleTutorial('" + tut.ytId + "')\">Marcar como visto</button>";
+
                 card.innerHTML = "<div class='thumbnail-container'><iframe src='https://www.youtube.com/embed/" + tut.ytId + "?controls=0&modestbranding=1&rel=0' allowfullscreen></iframe></div><div class='card-body'><h4>" + tut.title + "</h4>" + btnHtml + "</div>";
                 container.appendChild(card);
             });
             actualizarTutorialDestacado();
         }
 
-        function toggleTutorial(ytId) { tutorialesCompletados = tutorialesCompletados.includes(ytId) ? tutorialesCompletados.filter(function(id) { return id !== ytId; }) : [...tutorialesCompletados, ytId]; localStorage.setItem('globoflexia_tutoriales_completados', JSON.stringify(tutorialesCompletados)); renderTutoriales(); if (auth.currentUser) guardarProgresoEnNube(auth.currentUser.uid, progresoActual, tutorialesCompletados); }
-    </script>
-
-    <!-- INICIALIZADOR DE FIREBASE (MANTENIDO) -->
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyDShp-WOGdI3_ST8WoTLa6Jm5UqGludJ38", authDomain: "globoflexia-tan-barbudo.firebaseapp.com", projectId: "globoflexia-tan-barbudo", storageBucket: "globoflexia-tan-barbudo.firebasestorage.app", messagingSenderId: "372829377933", appId: "1:372829377933:web:5f0686db4eb7e74f68d9c4", measurementId: "G-8TNL59G05J"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth(), db = firebase.firestore(), provider = new firebase.auth.GoogleAuthProvider();
-
-        function cargarProgresoDesdeNube(userId) {
-            tutorialesCompletados = JSON.parse(localStorage.getItem('globoflexia_tutoriales_completados')) || [];
-            progresoActual = parseInt(localStorage.getItem('globoflexia_progreso')) || 0; moduloViendo = progresoActual; renderizarApp();
-            db.collection("progreso_usuarios").doc(userId).get().then(function(doc) {
-                if (doc.exists) {
-                    const data = doc.data();
-                    if ((data.progresoActual || 0) >= progresoActual) { progresoActual = data.progresoActual || 0; moduloViendo = progresoActual; }
-                    if (data.tutorialesCompletados && data.tutorialesCompletados.length > tutorialesCompletados.length) { tutorialesCompletados = data.tutorialesCompletados; }
-                    localStorage.setItem('globoflexia_progreso', progresoActual); localStorage.setItem('globoflexia_tutoriales_completados', JSON.stringify(tutorialesCompletados)); renderizarApp();
-                }
-            });
+        function toggleTutorial(ytId) {
+            tutorialesCompletados = tutorialesCompletados.includes(ytId) ? tutorialesCompletados.filter(function(id) { return id !== ytId; }) : [...tutorialesCompletados, ytId];
+            localStorage.setItem('globoflexia_tutoriales_completados', JSON.stringify(tutorialesCompletados));
+            renderTutoriales();
+            if (auth.currentUser) guardarProgresoEnNube(auth.currentUser.uid, progresoActual, tutorialesCompletados);
         }
-
-        function escucharConsultasNube() {
-            unsubscribeConsultas = db.collection("consultas").orderBy("timestamp", "desc").onSnapshot(function(snapshot) {
-                const consultas = []; snapshot.forEach(function(doc) { const data = doc.data(); data.id = doc.id; consultas.push(data); });
-                renderizarConsultasNube(consultas);
-            });
-        }
-
-        function conmutarCajaRespuesta(docId) { const container = document.getElementById('reply-container-' + docId); if (container) { container.classList.toggle('hidden'); if (!container.classList.contains('hidden')) document.getElementById('reply-input-' + docId).focus(); } }
-        
-        function publicarRespuestaNube(docId) {
-            const inputField = document.getElementById('reply-input-' + docId), textoRespuesta = inputField.value; if (textoRespuesta.trim() === '') return;
-            const autor = localStorage.getItem('globoflexia_user') || 'Usuario', fecha = new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-            db.collection("consultas").doc(docId).update({ respuestas: firebase.firestore.FieldValue.arrayUnion({ autor: autor, texto: textoRespuesta, fecha: fecha }) }).then(function() { inputField.value = ''; document.getElementById('reply-container-' + docId).classList.add('hidden'); });
-        }
-
-        function publicarConsulta() {
-            const textArea = document.getElementById('nueva-consulta'), texto = textArea.value; if (texto.trim() === '') return;
-            const autor = localStorage.getItem('globoflexia_user') || 'Usuario', fecha = new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-            db.collection("consultas").add({ autor: autor, texto: texto, fecha: fecha, respuestas: [], timestamp: firebase.firestore.FieldValue.serverTimestamp() }).then(function() { textArea.value = ''; });
-        }
-
-        function ingresarAPanel(user) { document.getElementById('login-view').classList.add('hidden'); document.getElementById('app-view').classList.remove('hidden'); document.getElementById('user-greeting').innerText = "Hola, " + (user.displayName || "Usuario"); localStorage.setItem('globoflexia_user', user.displayName || "Usuario"); cargarProgresoDesdeNube(user.uid); escucharConsultasNube(); }
-        auth.onAuthStateChanged(function(user) { if (user) ingresarAPanel(user); else { document.getElementById('login-view').classList.remove('hidden'); document.getElementById('app-view').classList.add('hidden'); if (unsubscribeConsultas) { unsubscribeConsultas(); unsubscribeConsultas = null; } } });
-        function iniciarSesionConGoogle() { auth.signInWithPopup(provider); }
-        function cerrarSesion() { auth.signOut().then(function() { localStorage.clear(); location.reload(); }); }
     </script>
 </body>
 </html>
