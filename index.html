@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Globoflexia con Tan Barbudo</title>
     <style>
-        /* --- VARIABLES DE DISEÑO --- */
         :root {
             --primary: #EE4040;
             --primary-hover: #d93030;
@@ -19,7 +18,6 @@
             --border: #E4EAF0;
         }
 
-        /* --- ESTILOS GLOBALES --- */
         * {
             margin: 0;
             padding: 0;
@@ -33,9 +31,8 @@
             min-height: 100vh;
         }
 
-        /* --- CLASES DE UTILIDAD --- */
+        /* Utilidades */
         .hidden { display: none !important; }
-        
         .btn {
             background-color: var(--primary);
             color: var(--white);
@@ -50,9 +47,9 @@
             font-size: 1rem;
         }
         .btn:hover { background-color: var(--primary-hover); }
-        .btn:disabled { background-color: var(--locked); cursor: not-allowed; opacity: 0.6; }
+        .btn:disabled { background-color: var(--locked); cursor: not-allowed; }
         
-        /* --- PANTALLA DE AUTENTICACIÓN --- */
+        /* LOGIN Pantalla */
         #login-view {
             height: 100vh;
             display: flex;
@@ -74,9 +71,20 @@
 
         .login-card h1 { margin-bottom: 10px; color: var(--primary); }
         .login-card p { margin-bottom: 25px; color: var(--text-light); }
+        
+        .input-group { margin-bottom: 20px; text-align: left; }
+        .input-group label { display: block; margin-bottom: 5px; font-weight: 600; }
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            outline: none;
+        }
+        .input-group input:focus { border-color: var(--primary); }
         .error-msg { color: #EF4444; font-size: 0.875rem; margin-top: 10px; display: none; }
 
-        /* --- ENCABEZADO DE NAVEGACIÓN --- */
+        /* APP PRINCIPAL */
         #app-view { display: flex; flex-direction: column; min-height: 100vh; }
         
         header {
@@ -89,7 +97,7 @@
             position: sticky;
             top: 0;
             z-index: 10;
-            flex-wrap: wrap;
+            flex-wrap: wrap; 
             gap: 15px;
         }
         
@@ -110,53 +118,8 @@
         main { padding: 30px; max-width: 1200px; margin: 0 auto; width: 100%; flex: 1; }
 
         .section-header { margin-bottom: 30px; }
-
-        /* --- BANNER PRINCIPAL (HERO SECTION) --- */
-        .hero-banner-container {
-            max-width: 1200px;
-            margin: 30px auto;
-            background: var(--white);
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 8px 20px rgba(0,0,0,.08);
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            gap: 20px;
-            padding: 25px;
-        }
-
-        .hero-banner-image-wrapper {
-            flex: 1;
-            max-width: 50%;
-        }
-
-        .hero-banner-image-wrapper img {
-            width: 100%;
-            height: auto;
-            display: block;
-            border-radius: 12px;
-        }
-
-        .hero-banner-text-content {
-            flex: 1;
-            padding: 20px;
-        }
-
-        .hero-banner-text-content h1 {
-            font-size: clamp(1.8rem, 3vw, 2.4rem);
-            line-height: 1.3;
-            margin-bottom: 15px;
-            color: var(--text-dark);
-        }
-
-        .hero-banner-text-content p {
-            font-size: clamp(1rem, 1.5vw, 1.15rem);
-            color: var(--text-light);
-            line-height: 1.6;
-        }
         
-        /* --- REPRODUCTOR PRINCIPAL DE MÓDULOS --- */
+        /* Reproductor Principal de Inicio */
         .main-player-wrapper {
             background: var(--white);
             border-radius: 12px;
@@ -167,153 +130,121 @@
         
         .main-video-container {
             position: relative;
-            padding-bottom: 56.25%;
+            padding-bottom: 56.25%; /* 16:9 ratio */
             height: 0;
             background: #000;
+            pointer-events: auto;
         }
         
         .main-video-container iframe {
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%; border: 0;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
         }
         
         .main-video-container.locked-bg {
-            display: flex; justify-content: center; align-items: center;
-            color: white; font-size: 1.5rem; padding-bottom: 40%; background: var(--locked);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 1.5rem;
+            padding-bottom: 40%;
+            background: var(--locked);
         }
 
         .main-player-info { padding: 30px; }
         .main-player-info h2 { margin-bottom: 15px; color: var(--text-dark); font-size: 1.8rem; }
         .main-player-info p { color: var(--text-light); font-size: 1.1rem; line-height: 1.6; margin-bottom: 20px; }
 
-        /* --- NAVEGACIÓN ENTRE MÓDULOS --- */
+        /* Navegación de botones (Pestaña Módulos) */
         .module-nav-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
         }
         
         .mod-nav-btn {
-            background: var(--white); border: 2px solid var(--border); padding: 15px;
-            border-radius: 8px; text-align: center; cursor: pointer; font-weight: 600;
-            color: var(--text-dark); transition: all 0.2s; display: flex; flex-direction: column;
-            align-items: center; gap: 5px;
-        }
-        
-        .mod-nav-btn:hover:not(.locked) { border-color: var(--primary-hover); transform: translateY(-2px); }
-        .mod-nav-btn.active { border-color: var(--primary); background: var(--bg-color); color: var(--primary); }
-        .mod-nav-btn.locked { opacity: 0.6; background: #f3f4f6; cursor: not-allowed; color: var(--text-light); }
-
-        /* --- REPRODUCTOR DESTACADO DE TUTORIALES (ARRIBA) --- */
-        .tutorial-featured-container {
             background: var(--white);
-            border-radius: 16px;
-            padding: 20px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
-            margin-bottom: 40px;
+            border: 2px solid var(--border);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-dark);
+            transition: all 0.2s;
             display: flex;
             flex-direction: column;
             align-items: center;
-            width: 100%;
-            max-width: 500px;
-            margin: 0 auto 40px auto;
+            gap: 5px;
+        }
+        
+        .mod-nav-btn:hover:not(.locked) {
+            border-color: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+        
+        .mod-nav-btn.active {
+            border-color: var(--primary);
+            background: var(--bg-color);
+            color: var(--primary);
+        }
+        
+        .mod-nav-btn.locked {
+            opacity: 0.6;
+            background: #f3f4f6;
+            cursor: not-allowed;
+            color: var(--text-light);
         }
 
-        .tutorial-featured-player {
-            position: relative;
-            width: 100%;
-            padding-bottom: 177.7%;
-            background: #000;
-            border-radius: 12px;
+        /* Grilla Tutoriales */
+        .tutorials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        
+        .card {
+            background: var(--white);
+            border-radius: 10px;
             overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+            position: relative;
         }
-
-        .tutorial-featured-player iframe {
+        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px rgba(0,0,0,0.1); }
+        
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            background: #000;
+        }
+        .video-container iframe {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%; border: 0;
         }
+        .tutorials-grid .video-container { padding-bottom: 177.77%; }
 
-        .tutorial-featured-controls {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-            margin-top: 15px;
-            gap: 15px;
-        }
-
-        .tutorial-featured-controls .btn-nav {
-            flex: 1;
-            padding: 10px 16px;
-            font-size: 0.95rem;
-        }
-
-        /* --- GRILLA DE TUTORIALES DE SELECCIÓN (ABAJO) --- */
-        .tutorials-grid { 
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
-            align-items: flex-start;
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .card { 
-            background: var(--white); 
-            border-radius: 12px; 
-            overflow: hidden; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05); 
-            transition: transform 0.2s, box-shadow 0.2s; 
-            position: relative; 
-            width: 100%;
-            max-width: 220px;
-            display: flex;
-            flex-direction: column;
-            cursor: pointer;
-        }
-        .card:hover { transform: translateY(-5px); box-shadow: 0 12px 20px rgba(0,0,0,0.1); }
-        .card.active-selection { border: 3px solid var(--primary); }
+        .card-body { padding: 15px; }
         
-        .thumbnail-container { 
-            position: relative; 
-            width: 100%;
-            padding-bottom: 177.7%; 
-            background: #111; 
-            pointer-events: none;
-        }
-        .thumbnail-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
-        .card-body { padding: 12px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
-        .card-body h4 { font-size: 0.95rem; text-align: center; }
-        .card-body .btn-completado { font-size: 0.85rem; padding: 8px; width: 100%; }
-
-        /* --- FORO DE CONSULTAS CON HILOS --- */
+        /* Blog / Dudas */
         .consultas-container { max-width: 800px; margin: 0 auto; }
         .consulta-form { background: var(--white); padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 30px; }
         .consulta-form textarea { width: 100%; padding: 15px; border: 1px solid var(--border); border-radius: 6px; outline: none; resize: vertical; margin-bottom: 15px; font-size: 1rem; }
         .consulta-form textarea:focus { border-color: var(--primary); }
-        
-        .comentario-card { background: var(--white); padding: 20px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.03); margin-bottom: 15px; border-left: 4px solid var(--primary); position: relative; }
+        .comentario-card { background: var(--white); padding: 20px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.03); margin-bottom: 15px; border-left: 4px solid var(--secondary); }
         .comentario-header { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.9rem; }
         .comentario-header strong { color: var(--primary); font-size: 1rem; }
         .comentario-header .fecha { color: var(--text-light); }
-        .comentario-body { line-height: 1.5; margin-bottom: 10px; }
-        
-        /* Botón e interfaz de respuesta */
-        .btn-reply-trigger { background: none; border: none; color: var(--secondary); font-weight: 600; cursor: pointer; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 5px; margin-top: 5px; }
-        .btn-reply-trigger:hover { text-decoration: underline; }
-        .reply-box-container { margin-top: 15px; display: flex; gap: 10px; width: 100%; }
-        .reply-box-container input { flex: 1; padding: 10px; border: 1px solid var(--border); border-radius: 6px; outline: none; font-size: 0.9rem; }
-        .reply-box-container input:focus { border-color: var(--secondary); }
-        .reply-box-container .btn-send-reply { padding: 8px 16px; font-size: 0.85rem; background-color: var(--secondary); }
-        
-        /* Diseño de hilos de respuesta indentados */
-        .respuestas-lista { margin-top: 15px; padding-left: 25px; border-left: 2px dashed var(--border); display: flex; flex-direction: column; gap: 12px; }
-        .respuesta-card { background: #F4FBFF; padding: 12px 15px; border-radius: 8px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.02); }
-        .respuesta-header { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 6px; }
-        .respuesta-header strong { color: var(--secondary); }
-        .respuesta-header .fecha { color: var(--text-light); }
-        .respuesta-body { font-size: 0.95rem; line-height: 1.4; }
+        .comentario-body { line-height: 1.5; }
 
-        /* --- RESPONSIVE MÓVIL --- */
+        /* ========================================================= */
+        /* MAGIA RESPONSIVA (AJUSTES PARA CELULARES Y TABLETS)       */
+        /* ========================================================= */
         @media (max-width: 768px) {
             header { padding: 12px 15px; }
             .header-brand { order: 1; }
@@ -325,27 +256,10 @@
             .brand-text p { display: none; }
             #user-greeting { display: none; }
             .nav-tab { font-size: 0.9rem; white-space: nowrap; }
-            
             main { padding: 15px; }
             .main-player-info { padding: 20px; }
             .main-player-info h2 { font-size: 1.4rem; }
             .section-header h3 { font-size: 1.3rem !important; }
-
-            .hero-banner-container {
-                flex-direction: column;
-                margin: 15px;
-                padding: 0;
-            }
-            .hero-banner-image-wrapper { max-width: 100%; }
-            .hero-banner-image-wrapper img { border-radius: 20px 20px 0 0; }
-            .hero-banner-text-content { padding: 20px; }
-
-            .tutorial-featured-container { max-width: 100%; padding: 10px; margin-bottom: 30px; }
-            .tutorials-grid { gap: 15px; padding: 0 10px; }
-            .card { max-width: 160px; }
-            .card-body { padding: 8px; }
-            .card-body h4 { font-size: 0.85rem; }
-            .respuestas-lista { padding-left: 15px; }
         }
     </style>
 </head>
@@ -358,12 +272,18 @@
             <h1>Globoflexia con Tan</h1>
             <p>Curso creativo y personalizado</p>
             
-            <p id="login-error" class="error-msg">Ocurrió un error al iniciar sesión.</p>
+            <div class="input-group">
+                <label for="username">Nombre de Usuario</label>
+                <input type="text" id="username" placeholder="Ingresa tu nombre">
+            </div>
+            <div class="input-group">
+                <label for="password">Contraseña</label>
+                <input type="password" id="password" placeholder="••••••••••••">
+            </div>
             
-            <button class="btn" style="width: 100%; margin-top: 10px; background-color: #4285F4; display: flex; align-items: center; justify-content: center; gap: 10px;" onclick="iniciarSesionConGoogle()">
-                <span style="background-color: white; border-radius: 50%; padding: 2px; width: 20px; height: 20px; display: inline-block; color: #4285F4; font-weight: bold;">G</span>
-                Ingresar con Google
-            </button>
+            <p id="login-error" class="error-msg">Contraseña incorrecta.</p>
+            
+            <button class="btn" style="width: 100%; margin-top: 10px;" onclick="iniciarSesion()">Ingresar al Curso</button>
         </div>
     </div>
 
@@ -392,13 +312,15 @@
         </header>
 
         <!-- Banner Principal -->
-        <section class="hero-banner-container">
-            <div class="hero-banner-image-wrapper">
-                <img src="banner.png" alt="Globoflexia con Tan">
-            </div>
-            <div class="hero-banner-text-content">
-                <h1>Dios te ha dado creatividad... ¡es momento de desarrollarla! 🎈</h1>
-                <p>Aprende paso a paso y transforma un simple globo en una herramienta para sorprender, servir y bendecir.</p>
+        <section style="max-width:1200px; margin: 20px 15px; background:white; border-radius:20px; overflow:hidden; box-shadow:0 8px 20px rgba(0,0,0,.08); @media(min-width: 768px){margin: 30px auto;}">
+            <img src="banner.png" style="width:100%;display:block;">
+            <div style="padding: 25px; @media(min-width: 768px){padding: 35px;}">
+                <h1 style="font-size: clamp(1.6rem, 4vw, 2.5rem); line-height: 1.3; margin-bottom:15px; color: var(--text-dark);">
+                    Dios te ha dado creatividad... ¡es momento de desarrollarla! 🎈
+                </h1>
+                <p style="font-size: clamp(0.95rem, 2vw, 1.125rem); color:#666;">
+                    Aprende paso a paso y transforma un simple globo en una herramienta para sorprender, servir y bendecir.
+                </p>
             </div>
         </section>
 
@@ -428,24 +350,9 @@
 
             <!-- Vista de Tutoriales -->
             <section id="tab-tutoriales" class="hidden">
-                <div class="section-header" style="text-align: center; max-width: 600px; margin: 0 auto 30px auto;">
-                    <h3 style="color: var(--text-dark); font-size: 1.6rem; margin-bottom: 8px;">Tutoriales de Práctica Rápida</h3>
-                    <p style="color: var(--text-light);">Mira el video destacado arriba o selecciona el que quieras aprender abajo.</p>
-                </div>
-
-                <div class="tutorial-featured-container">
-                    <h3 id="featured-video-title" style="margin-bottom: 12px; color: var(--text-dark); font-size: 1.3rem; text-align: center;">🎈 Cargando...</h3>
-                    <div class="tutorial-featured-player">
-                        <iframe id="featured-video-iframe" src="" allowfullscreen></iframe>
-                    </div>
-                    <div class="tutorial-featured-controls">
-                        <button id="btn-prev-tutorial" class="btn btn-nav" onclick="cambiarTutorialRelativo(-1)">⬅️ Anterior</button>
-                        <button id="btn-next-tutorial" class="btn btn-nav" onclick="cambiarTutorialRelativo(1)">Siguiente ➡️</button>
-                    </div>
-                </div>
-
-                <div class="section-header" style="text-align: center; margin-top: 20px; margin-bottom: 20px;">
-                    <h4 style="color: var(--text-dark); font-size: 1.2rem;">Colección Completa de Figuras</h4>
+                <div class="section-header">
+                    <h3 style="color: var(--text-dark);">Tutoriales de Práctica Rápida</h3>
+                    <p>Crea figuras increíbles paso a paso (Shorts).</p>
                 </div>
                 <div class="tutorials-grid" id="tutorials-container">
                     <!-- Se inyecta por JS -->
@@ -471,34 +378,12 @@
         </main>
     </div>
 
-    <!-- SDK de Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
-
+    <!-- Script sin Firebase Activo por ahora -->
     <script>
-        // --- 1. CONFIGURACIÓN DE FIREBASE ---
-        const firebaseConfig = {
-            apiKey: "AIzaSyDShp-WOGdI3_ST8WoTLa6Jm5UqGludJ38",
-            authDomain: "globoflexia-tan-barbudo.firebaseapp.com",
-            projectId: "globoflexia-tan-barbudo",
-            storageBucket: "globoflexia-tan-barbudo.firebasestorage.app",
-            messagingSenderId: "372829377933",
-            appId: "1:372829377933:web:5f0686db4eb7e74f68d9c4",
-            measurementId: "G-8TNL59G05J"
-        };
-
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
-        const provider = new firebase.auth.GoogleAuthProvider();
-
-        auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-            .catch(function(err) { console.error("Error de persistencia:", err); });
-
-        provider.setCustomParameters({ prompt: 'select_account' });
-
-        // --- 2. BASE DE DATOS LOCAL Y VARIABLES ---
+        // --- BASE DE DATOS LOCAL ---
+        const PASSWORD_CORRECTA = "globoflexiaTan2026";
+        
+        // Módulos actualizados del 0 al 8
         const modulosData = [
             { id: 0, title: "Introducción", desc: "Bienvenida y explicación de cómo trabajaremos durante las próximas semanas.", ytId: "W0r-6JJ8SZo", available: true },
             { id: 1, title: "Módulo 1", desc: "Cómo está organizado el curso y construcción de una base sólida antes de crear nuestras primeras figuras.", ytId: "uabgTdjDMfk", available: true },
@@ -532,108 +417,225 @@
             { title: "Uvas con globoflexia", ytId: "Y0VCbVJNI8M" }
         ];
 
-        let progresoActual = 0;
-        let moduloViendo = 0; 
-        let tutorialesCompletados = [];
-        let unsubscribeConsultas = null;
-        let indiceTutorialActivo = 0;
+        let consultasData = JSON.parse(localStorage.getItem('globoflexia_consultas')) || [
+            { autor: "Soporte Técnico", texto: "¡Bienvenidos al foro oficial del curso! Dejen aquí cualquier duda que tengan con respecto a los materiales o las técnicas de globoflexia.", fecha: new Date().toLocaleDateString() }
+        ];
 
-        // --- 3. FUNCIONES DE PROGRESO DE FIRESTORE ---
+        // Estado del usuario
+        let progresoActual = parseInt(localStorage.getItem('globoflexia_progreso')) || 0;
+        let moduloViendo = progresoActual; 
+        
+        let tutorialesCompletados = JSON.parse(localStorage.getItem('globoflexia_tutoriales_completados')) || [];
 
-        function cargarProgresoDesdeNube(userId) {
-            tutorialesCompletados = JSON.parse(localStorage.getItem('globoflexia_tutoriales_completados')) || [];
-            progresoActual = parseInt(localStorage.getItem('globoflexia_progreso')) || 0;
-            moduloViendo = progresoActual;
-            renderizarApp();
-
-            const docRef = db.collection("progreso_usuarios").doc(userId);
-            docRef.get().then(function(doc) {
-                if (doc.exists) {
-                    const data = doc.data();
-                    if ((data.progresoActual || 0) >= progresoActual) {
-                        progresoActual = data.progresoActual || 0;
-                        moduloViendo = progresoActual;
-                    }
-                    if (data.tutorialesCompletados && data.tutorialesCompletados.length > tutorialesCompletados.length) {
-                        tutorialesCompletados = data.tutorialesCompletados;
-                    }
-                    localStorage.setItem('globoflexia_progreso', progresoActual);
-                    localStorage.setItem('globoflexia_tutoriales_completados', JSON.stringify(tutorialesCompletados));
-                    renderizarApp();
-                }
-            }).catch(function(error) {
-                console.warn("Firestore inaccesible, trabajando de modo local.");
-            });
+        // --- FUNCIONES DE AUTENTICACIÓN ---
+        function verificarSesion() {
+            const usuario = localStorage.getItem('globoflexia_user');
+            if(usuario) {
+                document.getElementById('login-view').classList.add('hidden');
+                document.getElementById('app-view').classList.remove('hidden');
+                document.getElementById('user-greeting').innerText = `Hola, ${usuario}`;
+                renderizarApp();
+            }
         }
 
-        function guardarProgresoEnNube(userId, moduloProgreso, listaTutoriales) {
-            db.collection("progreso_usuarios").doc(userId).set({
-                progresoActual: moduloProgreso,
-                tutorialesCompletados: listaTutoriales,
-                ultimoAcceso: firebase.firestore.FieldValue.serverTimestamp()
-            }, { merge: true }).catch(function(e){ console.warn(e); });
-        }
+        function iniciarSesion() {
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+            const error = document.getElementById('login-error');
 
-        // --- 4. FORO DE CONSULTAS CON SOPORTE PARA HILOS EN TIEMPO REAL ---
-
-        function escucharConsultasNube() {
-            unsubscribeConsultas = db.collection("consultas")
-                .orderBy("timestamp", "desc")
-                .onSnapshot(function(snapshot) {
-                    const consultas = [];
-                    snapshot.forEach(function(doc) {
-                        const data = doc.data();
-                        // Incluimos el ID de documento para poder referenciar las respuestas concretas
-                        data.id = doc.id; 
-                        consultas.push(data);
-                    });
-                    renderizarConsultasNube(consultas);
-                }, function(error) {
-                    console.error("Error al escuchar consultas en tiempo real:", error);
-                });
-        }
-
-        function renderizarConsultasNube(consultas) {
-            const contenedorLista = document.getElementById('lista-consultas');
-            contenedorLista.innerHTML = '';
-
-            if (consultas.length === 0) {
-                contenedorLista.innerHTML = "<div class='comentario-card'><div class='comentario-body'>¡Sé el primero en dejar tu duda o comentario sobre el curso!</div></div>";
+            if(user.trim() === '') {
+                error.innerText = "Por favor ingresa un nombre.";
+                error.style.display = 'block';
                 return;
             }
 
-            consultas.forEach(function(c) {
-                const comentarioDiv = document.createElement('div');
-                comentarioDiv.className = 'comentario-card';
-                
-                // 1. Renderizar estructura de la consulta principal
-                let HTML = "<div class='comentario-header'>" +
-                        "<strong>👤 " + c.autor + "</strong>" +
-                        "<span class='fecha'>" + c.fecha + "</span>" +
-                    "</div>" +
-                    "<div class='comentario-body'>" + c.texto + "</div>" +
-                    "<button class='btn-reply-trigger' onclick=\"conmutarCajaRespuesta('" + c.id + "')\">💬 Responder a " + c.autor.split(' ')[0] + "</button>" +
-                    "<div id='reply-container-" + c.id + "' class='reply-box-container hidden'>" +
-                        "<input type='text' id='reply-input-" + c.id + "' placeholder='Escribe tu respuesta pública...'>" +
-                        "<button class='btn btn-send-reply' onclick=\"publicarRespuestaNube('" + c.id + "')\">Enviar</button>" +
-                    "</div>";
+            if(pass === PASSWORD_CORRECTA) {
+                localStorage.setItem('globoflexia_user', user);
+                verificarSesion();
+            } else {
+                error.innerText = "Contraseña incorrecta. (Pista: revisa las mayúsculas)";
+                error.style.display = 'block';
+            }
+        }
 
-                // 2. Renderizar sub-lista de respuestas si existen hilos asociados en el documento
-                if (c.respuestas && c.respuestas.length > 0) {
-                    HTML += "<div class='respuestas-lista'>";
-                    c.respuestas.forEach(function(r) {
-                        HTML += "<div class='respuesta-card'>" +
-                                "<div class='respuesta-header'>" +
-                                    "<strong>↪️ " + r.autor + "</strong>" +
-                                    "<span class='fecha'>" + r.fecha + "</span>" +
-                                "</div>" +
-                                "<div class='respuesta-body'>" + r.texto + "</div>" +
-                            "</div>";
-                    });
-                    HTML += "</div>";
+        function cerrarSesion() {
+            localStorage.removeItem('globoflexia_user');
+            location.reload();
+        }
+
+        function cambiarTab(tabId) {
+            // Actualizar estilo visual de las pestañas
+            document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
+            const activeTab = document.querySelector(`.nav-tab[data-target="${tabId}"]`);
+            if(activeTab) activeTab.classList.add('active');
+
+            // Ocultar todas las secciones
+            document.getElementById('tab-inicio').classList.add('hidden');
+            document.getElementById('tab-modulos').classList.add('hidden');
+            document.getElementById('tab-tutoriales').classList.add('hidden');
+            document.getElementById('tab-consultas').classList.add('hidden');
+
+            // Mostrar solo la seleccionada
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+        }
+
+        // --- RENDERIZADO PRINCIPAL ---
+        function renderizarApp() {
+            if (moduloViendo > progresoActual) moduloViendo = progresoActual;
+            renderModulos();
+            renderTutoriales();
+            renderConsultas();
+        }
+
+        function renderModulos() {
+            const mainContainer = document.getElementById('main-player-container');
+            const navContainer = document.getElementById('module-nav-container');
+            
+            document.getElementById('progress-text').innerText = progresoActual;
+
+            // 1. Renderizar Reproductor Principal (Para la pestaña INICIO)
+            const modActual = modulosData[moduloViendo];
+            const isAvailable = modActual.available;
+            
+            let playerHTML = '';
+            let btnHTML = '';
+
+            if(isAvailable) {
+                playerHTML = `
+                <div class="main-video-container">
+                    <iframe src="https://www.youtube.com/embed/${modActual.ytId}?controls=0&modestbranding=1&rel=0" allowfullscreen></iframe>
+                </div>`;
+            } else {
+                playerHTML = `
+                <div class="main-video-container locked-bg">
+                    <span style="font-size: 1.2rem; text-align: center; padding: 0 20px;">🔒 Próximamente disponible</span>
+                </div>`;
+            }
+
+            // Botón avanzar o completado (Ahora el límite es 8)
+            if(isAvailable && moduloViendo === progresoActual && progresoActual < 8) {
+                btnHTML = `<button class="btn" style="margin-top: 15px; width: 100%;" onclick="avanzarProgreso()">✅ Marcar como Visto y Avanzar</button>`;
+            } else if (moduloViendo < progresoActual) {
+                btnHTML = `<div style="color: var(--success); font-weight: bold; font-size: 1.1rem; margin-top: 15px; text-align: center;">✓ Módulo Completado</div>`;
+            }
+
+            mainContainer.innerHTML = `
+                ${playerHTML}
+                <div class="main-player-info">
+                    <h2>${modActual.title}</h2>
+                    <p>${modActual.desc}</p>
+                    ${btnHTML}
+                </div>
+            `;
+
+            // 2. Renderizar Cuadrícula de Botones (Para la pestaña MÓDULOS)
+            navContainer.innerHTML = '';
+            modulosData.forEach((mod, index) => {
+                let statusIcon = '';
+                let isLocked = false;
+                let activeClass = (index === moduloViendo) ? 'active' : '';
+
+                if (!mod.available || index > progresoActual) {
+                    isLocked = true;
+                    statusIcon = '🔒';
+                } else if (index < progresoActual) {
+                    statusIcon = '✅';
+                } else {
+                    statusIcon = '▶️';
                 }
 
-                comentarioDiv.innerHTML = HTML;
+                const btn = document.createElement('div');
+                btn.className = `mod-nav-btn ${isLocked ? 'locked' : ''} ${activeClass}`;
+                btn.innerHTML = `
+                    <span style="font-size: 1.5rem;">${statusIcon}</span>
+                    <span>${mod.title}</span>
+                `;
+                
+                if(!isLocked) {
+                    btn.onclick = () => cambiarModuloViendo(index);
+                }
+                
+                navContainer.appendChild(btn);
+            });
+        }
+
+        // Al hacer clic en un módulo desde la grilla
+        function cambiarModuloViendo(index) {
+            moduloViendo = index;
+            renderModulos();
+            cambiarTab('inicio'); 
+            window.scrollTo({ top: 0, behavior: 'smooth' }); 
+        }
+
+        // Ahora avanza hasta < 8
+        function avanzarProgreso() {
+            if(progresoActual < 8) {
+                progresoActual++;
+                moduloViendo = progresoActual; 
+                localStorage.setItem('globoflexia_progreso', progresoActual);
+                renderModulos();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        // --- RENDERIZADO DE TUTORIALES ---
+        function renderTutoriales() {
+            const container = document.getElementById('tutorials-container');
+            container.innerHTML = '';
+
+            tutorialesData.forEach(tut => {
+                const isCompleted = tutorialesCompletados.includes(tut.ytId);
+                const card = document.createElement('div');
+                card.className = 'card';
+                
+                let btnHtml = '';
+                if (isCompleted) {
+                    btnHtml = `<button class="btn" style="background: var(--success); width: 100%; padding: 10px; font-size: 0.95rem;" onclick="toggleTutorial('${tut.ytId}')">✅ Completado</button>`;
+                } else {
+                    btnHtml = `<button class="btn" style="background: var(--bg-color); color: var(--text-dark); border: 1px solid var(--border); width: 100%; padding: 10px; font-size: 0.95rem;" onclick="toggleTutorial('${tut.ytId}')">Marcar como visto</button>`;
+                }
+
+                card.innerHTML = `
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/${tut.ytId}?controls=0&modestbranding=1&rel=0" allowfullscreen></iframe>
+                    </div>
+                    <div class="card-body" style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
+                        <h4 class="card-title" style="text-align: center; margin: 0;">🎈 ${tut.title}</h4>
+                        ${btnHtml}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function toggleTutorial(ytId) {
+            if (tutorialesCompletados.includes(ytId)) {
+                tutorialesCompletados = tutorialesCompletados.filter(id => id !== ytId);
+            } else {
+                tutorialesCompletados.push(ytId);
+            }
+            localStorage.setItem('globoflexia_tutoriales_completados', JSON.stringify(tutorialesCompletados));
+            renderTutoriales();
+        }
+
+        // --- FORO DE CONSULTAS ---
+        function renderConsultas() {
+            const contenedorLista = document.getElementById('lista-consultas');
+            contenedorLista.innerHTML = '';
+            const comentariosInvertidos = [...consultasData].reverse();
+
+            comentariosInvertidos.forEach(c => {
+                const comentarioDiv = document.createElement('div');
+                comentarioDiv.className = 'comentario-card';
+                comentarioDiv.innerHTML = `
+                    <div class="comentario-header">
+                        <strong>👤 ${c.autor}</strong>
+                        <span class="fecha">${c.fecha}</span>
+                    </div>
+                    <div class="comentario-body">
+                        ${c.texto}
+                    </div>
+                `;
                 contenedorLista.appendChild(comentarioDiv);
             });
         }
@@ -641,196 +643,24 @@
         function publicarConsulta() {
             const textArea = document.getElementById('nueva-consulta');
             const texto = textArea.value;
-            if (texto.trim() === '') return;
+
+            if(texto.trim() === '') {
+                alert('Por favor, escribe una consulta antes de publicar.');
+                return;
+            }
 
             const autor = localStorage.getItem('globoflexia_user') || 'Usuario Anónimo';
             const fecha = new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
 
-            db.collection("consultas").add({
-                autor: autor,
-                texto: texto,
-                fecha: fecha,
-                respuestas: [], // Inicializa el hilo de conversación vacío
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            }).then(function() {
-                textArea.value = '';
-            });
+            consultasData.push({ autor, texto, fecha });
+            localStorage.setItem('globoflexia_consultas', JSON.stringify(consultasData));
+
+            textArea.value = '';
+            renderConsultas();
         }
 
-        // NUEVO: Abre/cierra el mini input de respuesta debajo del comentario
-        function conmutarCajaRespuesta(docId) {
-            const container = document.getElementById('reply-container-' + docId);
-            if (container) {
-                container.classList.toggle('hidden');
-                if (!container.classList.contains('hidden')) {
-                    document.getElementById('reply-input-' + docId).focus();
-                }
-            }
-        }
-
-        // NUEVO: Guarda la respuesta directamente en el arreglo interno del documento correspondiente de Firestore
-        function publicarRespuestaNube(docId) {
-            const inputField = document.getElementById('reply-input-' + docId);
-            const textoRespuesta = inputField.value;
-            if (textoRespuesta.trim() === '') return;
-
-            const autor = localStorage.getItem('globoflexia_user') || 'Usuario Anónimo';
-            const fecha = new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-
-            const nuevaRespuestaObjeto = {
-                autor: autor,
-                texto: textoRespuesta,
-                fecha: fecha
-            };
-
-            // Usamos arrayUnion para añadir el objeto de respuesta sin sobreescribir las respuestas previas
-            db.collection("consultas").doc(docId).update({
-                respuestas: firebase.firestore.FieldValue.arrayUnion(nuevaRespuestaObjeto)
-            }).then(function() {
-                inputField.value = '';
-                document.getElementById('reply-container-' + docId).classList.add('hidden');
-            }).catch(function(err) {
-                console.error("Error al registrar respuesta:", err);
-                alert("No se pudo añadir tu respuesta.");
-            });
-        }
-
-        // --- 5. FUNCIONES DE AUTENTICACIÓN ---
-
-        function ingresarAPanel(user) {
-            document.getElementById('login-view').classList.add('hidden');
-            document.getElementById('app-view').classList.remove('hidden');
-            document.getElementById('user-greeting').innerText = "Hola, " + (user.displayName || "Usuario");
-            localStorage.setItem('globoflexia_user', user.displayName || "Usuario");
-            cargarProgresoDesdeNube(user.uid);
-            escucharConsultasNube();
-        }
-
-        auth.onAuthStateChanged(function(user) {
-            if (user) {
-                ingresarAPanel(user);
-            } else {
-                document.getElementById('login-view').classList.remove('hidden');
-                document.getElementById('app-view').classList.add('hidden');
-                if (unsubscribeConsultas) { unsubscribeConsultas(); unsubscribeConsultas = null; }
-            }
-        });
-
-        function iniciarSesionConGoogle() {
-            auth.signInWithPopup(provider).catch(function(e){ console.error(e); });
-        }
-
-        function cerrarSesion() {
-            auth.signOut().then(function() { localStorage.clear(); location.reload(); });
-        }
-
-        // --- 6. NAVEGACIÓN Y RENDERIZADO ---
-        function cambiarTab(tabId) {
-            document.querySelectorAll('.nav-tab').forEach(function(el) { el.classList.remove('active'); });
-            const activeTab = document.querySelector(".nav-tab[data-target='" + tabId + "']");
-            if(activeTab) activeTab.classList.add('active');
-
-            document.getElementById('tab-inicio').classList.add('hidden');
-            document.getElementById('tab-modulos').classList.add('hidden');
-            document.getElementById('tab-tutoriales').classList.add('hidden');
-            document.getElementById('tab-consultas').classList.add('hidden');
-            document.getElementById("tab-" + tabId).classList.remove('hidden');
-        }
-
-        function renderizarApp() {
-            renderModulos();
-            renderTutoriales();
-        }
-
-        function renderModulos() {
-            const mainContainer = document.getElementById('main-player-container');
-            const navContainer = document.getElementById('module-nav-container');
-            document.getElementById('progress-text').innerText = progresoActual;
-
-            const modActual = modulosData[moduloViendo];
-            let playerHTML = modActual.available ? "<div class='main-video-container'><iframe src='https://www.youtube.com/embed/" + modActual.ytId + "?controls=0&modestbranding=1&rel=0' allowfullscreen></iframe></div>" : "<div class='main-video-container locked-bg'><span>🔒 Próximamente disponible</span></div>";
-            let btnHTML = (modActual.available && moduloViendo === progresoActual && progresoActual < 8) ? "<button class='btn' style='margin-top: 15px; width: 100%;' onclick='avanzarProgreso()'>✅ Marcar como Visto y Avanzar</button>" : (moduloViendo < progresoActual ? "<div style='color: var(--success); font-weight: bold; margin-top: 15px; text-align: center;'>✓ Módulo Completado</div>" : "");
-
-            mainContainer.innerHTML = playerHTML + "<div class='main-player-info'><h2>" + modActual.title + "</h2><p>" + modActual.desc + "</p>" + btnHTML + "</div>";
-
-            navContainer.innerHTML = '';
-            modulosData.forEach(function(mod, index) {
-                let isLocked = (!mod.available || index > progresoActual);
-                let statusIcon = isLocked ? '🔒' : (index < progresoActual ? '✅' : '▶️');
-                const btn = document.createElement('div');
-                btn.className = "mod-nav-btn " + (isLocked ? 'locked' : '') + " " + (index === moduloViendo ? 'active' : '');
-                btn.innerHTML = "<span style='font-size: 1.5rem;'>" + statusIcon + "</span><span>" + mod.title + "</span>";
-                if(!isLocked) btn.onclick = function() { cambiarModuloViendo(index); };
-                navContainer.appendChild(btn);
-            });
-        }
-
-        function cambiarModuloViendo(index) {
-            moduloViendo = index;
-            renderModulos();
-            cambiarTab('inicio');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function avanzarProgreso() {
-            if(progresoActual < 8) {
-                progresoActual++;
-                moduloViendo = progresoActual;
-                localStorage.setItem('globoflexia_progreso', progresoActual);
-                if (auth.currentUser) guardarProgresoEnNube(auth.currentUser.uid, progresoActual, tutorialesCompletados);
-                renderModulos();
-            }
-        }
-
-        function actualizarTutorialDestacado() {
-            const videoActivo = tutorialesData[indiceTutorialActivo];
-            document.getElementById('featured-video-title').innerText = "🎈 " + (indiceTutorialActivo + 1) + ". " + videoActivo.title;
-            document.getElementById('featured-video-iframe').src = "https://www.youtube.com/embed/" + videoActivo.ytId + "?controls=1&modestbranding=1&rel=0";
-            document.getElementById('btn-prev-tutorial').disabled = (indiceTutorialActivo === 0);
-            document.getElementById('btn-next-tutorial').disabled = (indiceTutorialActivo === tutorialesData.length - 1);
-
-            document.querySelectorAll('.card').forEach(function(card, idx) {
-                if (idx === indiceTutorialActivo) card.classList.add('active-selection');
-                else card.classList.remove('active-selection');
-            });
-        }
-
-        function cambiarTutorialActivoPorIndice(index) {
-            indiceTutorialActivo = index;
-            actualizarTutorialDestacado();
-            document.querySelector('.tutorial-featured-container').scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-
-        function cambiarTutorialRelativo(direccion) {
-            const nuevoIndice = indiceTutorialActivo + direccion;
-            if (nuevoIndice >= 0 && nuevoIndice < tutorialesData.length) cambiarTutorialActivoPorIndice(nuevoIndice);
-        }
-
-        function renderTutoriales() {
-            const container = document.getElementById('tutorials-container');
-            container.innerHTML = '';
-
-            tutorialesData.forEach(function(tut, index) {
-                const isCompleted = tutorialesCompletados.includes(tut.ytId);
-                const card = document.createElement('div');
-                card.className = 'card' + (index === indiceTutorialActivo ? ' active-selection' : '');
-                card.onclick = function(e) { if (e.target.tagName !== 'BUTTON') cambiarTutorialActivoPorIndice(index); };
-                
-                let btnHtml = isCompleted ? "<button class='btn btn-completado' style='background: var(--success); color: white;' onclick=\"event.stopPropagation(); toggleTutorial('" + tut.ytId + "')\">✅ Completado</button>" : "<button class='btn btn-completado' style='background: var(--bg-color); color: var(--text-dark); border: 1px solid var(--border);' onclick=\"event.stopPropagation(); toggleTutorial('" + tut.ytId + "')\">Marcar como visto</button>";
-
-                card.innerHTML = "<div class='thumbnail-container'><iframe src='https://www.youtube.com/embed/" + tut.ytId + "?controls=0&modestbranding=1&rel=0' allowfullscreen></iframe></div><div class='card-body'><h4>" + tut.title + "</h4>" + btnHtml + "</div>";
-                container.appendChild(card);
-            });
-            actualizarTutorialDestacado();
-        }
-
-        // Cambia el estado de un tutorial individual y sincroniza
-        function toggleTutorial(ytId) {
-            tutorialesCompletados = tutorialesCompletados.includes(ytId) ? tutorialesCompletados.filter(function(id) { return id !== ytId; }) : [...tutorialesCompletados, ytId];
-            localStorage.setItem('globoflexia_tutoriales_completados', JSON.stringify(tutorialesCompletados));
-            renderTutoriales();
-            if (auth.currentUser) guardarProgresoEnNube(auth.currentUser.uid, progresoActual, tutorialesCompletados);
-        }
+        // Iniciar App
+        verificarSesion();
     </script>
 </body>
 </html>
