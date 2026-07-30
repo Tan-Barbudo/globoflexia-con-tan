@@ -407,7 +407,7 @@
             <section id="tab-inicio">
                 <div class="section-header">
                     <h3 style="color: var(--text-dark); font-size: 1.5rem;">Ruta de Aprendizaje</h3>
-                    <p>Completa el video actual para desbloquear el siguiente. Nivel actual: <span id="progress-text" style="font-weight: bold; color: var(--primary);">0</span>/6</p>
+                    <p>Completa el video actual para desbloquear el siguiente. Nivel actual: <span id="progress-text" style="font-weight: bold; color: var(--primary);">0</span>/8</p>
                 </div>
                 
                 <div class="main-player-wrapper" id="main-player-container">
@@ -507,7 +507,9 @@
             { id: 4, title: "Módulo 4", desc: "Técnicas fundamentales: inflar correctamente, nudos seguros y torciones básicas.", ytId: "991rgpDtq1g", available: true },
             { id: 5, title: "Módulo 5", desc: "Avanzamos con nuevas técnicas y figuras para seguir desarrollando tu creatividad.", ytId: "jyjP7Wy31p0", available: true },
             { id: 6, title: "Módulo 6", desc: "Seguimos aprendiendo a transformar los globos con mayor detalle y precisión.", ytId: "ZKy5iBUcZrU", available: true },
-            { id: 7, title: "Módulo 7 al 16 + Bonus", desc: "Contenido avanzado, figuras complejas y técnicas de decoración profesional.", ytId: "", available: false }
+            { id: 7, title: "Módulo 7", desc: "Nuevos retos y figuras paso a paso para elevar el nivel de tu técnica.", ytId: "8Tsgn9pm6HU", available: true },
+            { id: 8, title: "Módulo 8", desc: "Más creaciones sorprendentes y consejos prácticos para un acabado profesional.", ytId: "BZIRceQGIYQ", available: true },
+            { id: 9, title: "Módulo 9 al 16 + Bonus", desc: "Contenido avanzado, figuras complejas y técnicas de decoración profesional.", ytId: "", available: false }
         ];
 
         const tutorialesData = [
@@ -747,7 +749,7 @@
 
             const modActual = modulosData[moduloViendo];
             let playerHTML = modActual.available ? "<div class='main-video-container'><iframe src='https://www.youtube.com/embed/" + modActual.ytId + "?controls=0&modestbranding=1&rel=0' allowfullscreen></iframe></div>" : "<div class='main-video-container locked-bg'><span>🔒 Próximamente disponible</span></div>";
-            let btnHTML = (modActual.available && moduloViendo === progresoActual && progresoActual < 6) ? "<button class='btn' style='margin-top: 15px; width: 100%;' onclick='avanzarProgreso()'>✅ Marcar como Visto y Avanzar</button>" : (moduloViendo < progresoActual ? "<div style='color: var(--success); font-weight: bold; margin-top: 15px; text-align: center;'>✓ Módulo Completado</div>" : "");
+            let btnHTML = (modActual.available && moduloViendo === progresoActual && progresoActual < 8) ? "<button class='btn' style='margin-top: 15px; width: 100%;' onclick='avanzarProgreso()'>✅ Marcar como Visto y Avanzar</button>" : (moduloViendo < progresoActual ? "<div style='color: var(--success); font-weight: bold; margin-top: 15px; text-align: center;'>✓ Módulo Completado</div>" : "");
 
             mainContainer.innerHTML = playerHTML + "<div class='main-player-info'><h2>" + modActual.title + "</h2><p>" + modActual.desc + "</p>" + btnHTML + "</div>";
 
@@ -771,7 +773,7 @@
         }
 
         function avanzarProgreso() {
-            if(progresoActual < 6) {
+            if(progresoActual < 8) {
                 progresoActual++;
                 moduloViendo = progresoActual;
                 localStorage.setItem('globoflexia_progreso', progresoActual);
