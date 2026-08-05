@@ -407,7 +407,7 @@
             <section id="tab-inicio">
                 <div class="section-header">
                     <h3 style="color: var(--text-dark); font-size: 1.5rem;">Ruta de Aprendizaje</h3>
-                    <p>Completa el video actual para desbloquear el siguiente. Nivel actual: <span id="progress-text" style="font-weight: bold; color: var(--primary);">0</span>/8</p>
+                    <p>Completa el video actual para desbloquear el siguiente. Nivel actual: <span id="progress-text" style="font-weight: bold; color: var(--primary);">0</span>/12</p>
                 </div>
                 
                 <div class="main-player-wrapper" id="main-player-container">
@@ -509,7 +509,11 @@
             { id: 6, title: "Módulo 6", desc: "Seguimos aprendiendo a transformar los globos con mayor detalle y precisión.", ytId: "ZKy5iBUcZrU", available: true },
             { id: 7, title: "Módulo 7", desc: "Nuevos retos y figuras paso a paso para elevar el nivel de tu técnica.", ytId: "8Tsgn9pm6HU", available: true },
             { id: 8, title: "Módulo 8", desc: "Más creaciones sorprendentes y consejos prácticos para un acabado profesional.", ytId: "BZIRceQGIYQ", available: true },
-            { id: 9, title: "Módulo 9 al 16 + Bonus", desc: "Contenido avanzado, figuras complejas y técnicas de decoración profesional.", ytId: "", available: false }
+            { id: 9, title: "Módulo 9", desc: "Nuevas figuras y técnicas paso a paso.", ytId: "hZog_ccBe3s", available: true },
+            { id: 10, title: "Módulo 10", desc: "Seguimos perfeccionando nuestras creaciones.", ytId: "6JKL09Wr3cY", available: true },
+            { id: 11, title: "Módulo 11", desc: "Más diseños creativos y detallados.", ytId: "g1csfJzci4w", available: true },
+            { id: 12, title: "Módulo 12", desc: "Retos divertidos para dominar la globoflexia.", ytId: "4Yf0n9S5VfI", available: true },
+            { id: 13, title: "Módulo 13 al 16 + Bonus", desc: "Contenido avanzado, figuras complejas y técnicas de decoración profesional.", ytId: "", available: false }
         ];
 
         const tutorialesData = [
@@ -749,7 +753,7 @@
 
             const modActual = modulosData[moduloViendo];
             let playerHTML = modActual.available ? "<div class='main-video-container'><iframe src='https://www.youtube.com/embed/" + modActual.ytId + "?controls=0&modestbranding=1&rel=0' allowfullscreen></iframe></div>" : "<div class='main-video-container locked-bg'><span>🔒 Próximamente disponible</span></div>";
-            let btnHTML = (modActual.available && moduloViendo === progresoActual && progresoActual < 8) ? "<button class='btn' style='margin-top: 15px; width: 100%;' onclick='avanzarProgreso()'>✅ Marcar como Visto y Avanzar</button>" : (moduloViendo < progresoActual ? "<div style='color: var(--success); font-weight: bold; margin-top: 15px; text-align: center;'>✓ Módulo Completado</div>" : "");
+            let btnHTML = (modActual.available && moduloViendo === progresoActual && progresoActual < 12) ? "<button class='btn' style='margin-top: 15px; width: 100%;' onclick='avanzarProgreso()'>✅ Marcar como Visto y Avanzar</button>" : (moduloViendo < progresoActual ? "<div style='color: var(--success); font-weight: bold; margin-top: 15px; text-align: center;'>✓ Módulo Completado</div>" : "");
 
             mainContainer.innerHTML = playerHTML + "<div class='main-player-info'><h2>" + modActual.title + "</h2><p>" + modActual.desc + "</p>" + btnHTML + "</div>";
 
@@ -773,7 +777,7 @@
         }
 
         function avanzarProgreso() {
-            if(progresoActual < 8) {
+            if(progresoActual < 12) {
                 progresoActual++;
                 moduloViendo = progresoActual;
                 localStorage.setItem('globoflexia_progreso', progresoActual);
